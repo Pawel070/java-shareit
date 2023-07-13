@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
-import ru.practicum.shareit.expections.ItemNotFoundException;
+import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 @Slf4j
@@ -43,7 +43,7 @@ public class InMemoryItemStorage implements ItemStorage {
             throw new ValidationException("Нет аргумента.");
         }
         if (!items.containsKey(item.getId())) {
-            throw new ItemNotFoundException("Вещь с УИН " + item.getId() + " отсутствует.");
+            throw new NotFoundException("Вещь с УИН " + item.getId() + " отсутствует.");
         }
         if (item.getName() == null) {
             item.setName(items.get(item.getId()).getName());
@@ -67,7 +67,7 @@ public class InMemoryItemStorage implements ItemStorage {
             throw new ValidationException("Нет аргумента.");
         }
         if (!items.containsKey(itemId)) {
-            throw new ItemNotFoundException("Вещь с УИН " + itemId + " отсутствует.");
+            throw new NotFoundException("Вещь с УИН " + itemId + " отсутствует.");
         }
         return items.remove(itemId);
     }
@@ -93,7 +93,7 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public Item getItemById(Long itemId) {
         if (!items.containsKey(itemId)) {
-            throw new ItemNotFoundException("Вещь с УИН " + itemId + " отсутствует.");
+            throw new NotFoundException("Вещь с УИН " + itemId + " отсутствует.");
         }
         log.info("Вещь с УИН {} существует.", itemId);
         return items.get(itemId);

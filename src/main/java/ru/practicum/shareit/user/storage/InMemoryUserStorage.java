@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.expections.UserAlreadyExistsException;
-import ru.practicum.shareit.expections.UserNotFoundException;
+import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
 @Slf4j
@@ -52,7 +52,7 @@ public class InMemoryUserStorage implements UserStorage {
                 throw new UserAlreadyExistsException(user.getEmail() + "\" уже используется другим пользователем.");
             }
         } else {
-            throw new UserNotFoundException("Пользователь с УИН : " + aLong + " не зарегистрирован.");
+            throw new NotFoundException("Пользователь с УИН : " + aLong + " не зарегистрирован.");
         }
     }
 
@@ -62,7 +62,7 @@ public class InMemoryUserStorage implements UserStorage {
             log.info("Пользователь с УИН : {} не зарегистрирован.", aLong);
             return users.get(aLong);
         } else {
-            throw new UserNotFoundException("Пользователь с УИН : " + aLong + " не зарегистрирован.");
+            throw new NotFoundException("Пользователь с УИН : " + aLong + " не зарегистрирован.");
         }
     }
 
@@ -77,7 +77,7 @@ public class InMemoryUserStorage implements UserStorage {
             users.remove(aLong);
             log.info("Пользователь с УИН : {} безжалостно удалён.", aLong);
         } else {
-            throw new UserNotFoundException("Пользователь с УИН : " + aLong + " не зарегистрирован.");
+            throw new NotFoundException("Пользователь с УИН : " + aLong + " не зарегистрирован.");
         }
     }
 

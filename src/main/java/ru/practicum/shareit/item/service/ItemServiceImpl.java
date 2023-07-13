@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.expections.ItemNotFoundException;
 
+import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -51,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
         }
         Item oldItem = itemStorage.getItemById(itemId);
         if (!oldItem.getOwner().equals(ownerId)) {
-            throw new ItemNotFoundException("У пользователя нет такой вещи!");
+            throw new NotFoundException("У пользователя нет такой вещи!");
         }
         return mapper.toItemDto(itemStorage.update(mapper.toItem(itemDto, ownerId)));
     }
@@ -61,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("Получен DELETE-запрос на удаление вещи с УИН {}", itemId);
         Item item = itemStorage.getItemById(itemId);
         if (!item.getOwner().equals(ownerId)) {
-            throw new ItemNotFoundException("У пользователя нет такой вещи!");
+            throw new NotFoundException("У пользователя нет такой вещи!");
         }
         return mapper.toItemDto(itemStorage.delete(itemId));
     }
