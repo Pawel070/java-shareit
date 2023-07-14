@@ -43,7 +43,7 @@ class BookingDtoTest {
     );
 
     @Test
-    void BookingDto() throws Exception {
+    void bookingDto() throws Exception {
 
         var res = json.write(bookingDto);
 
