@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.storage;
 import java.util.List;
 
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
 public interface ItemStorage {
 
