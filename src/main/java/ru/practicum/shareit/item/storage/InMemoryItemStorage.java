@@ -31,6 +31,8 @@ public class InMemoryItemStorage implements ItemStorage {
         if (isValidItem(item)) {
             ++currentId;
             item.setId(currentId);
+            item.setName(item.getName());
+            item.setDescription(item.getDescription());
             items.put(item.getId(), item);
         }
         log.info("Новой вещи установлен УИН : {}, УИН владельца : {}", item.getId(), item.getOwner());
@@ -74,6 +76,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public List<Item> getItemsByOwner(Long ownerId) {
+        log.debug("InMemoryItemStorage --> getItemsByOwner");
         return new ArrayList<>(items.values().stream()
                 .filter(item -> item.getOwner().equals(ownerId))
                 .collect(toList()));
@@ -81,6 +84,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public void deleteItemsByOwner(Long ownerId) {
+        log.debug("InMemoryItemStorage --> deleteItemsByOwner");
         List<Long> deleteIds = new ArrayList<>(items.values().stream()
                 .filter(item -> item.getOwner().equals(ownerId))
                 .map(Item::getId)
@@ -92,6 +96,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Item getItemById(Long itemId) {
+        log.debug("InMemoryItemStorage --> getItemById");
         if (!items.containsKey(itemId)) {
             throw new NotFoundException("Вещь с УИН " + itemId + " отсутствует.");
         }
@@ -101,6 +106,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public List<Item> getItemsBySearchQuery(String text) {
+        log.debug("InMemoryItemStorage --> getItemsBySearchQuery");
         List<Item> searchItems = new ArrayList<>();
         if (!text.isBlank()) {
             searchItems = items.values().stream()

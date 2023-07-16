@@ -7,9 +7,9 @@ public class UserAlreadyExistsException extends IllegalArgumentException {
 
     private static final long serialVersionUID = 1L;
 
-    public UserAlreadyExistsException(String message) {
+    public UserAlreadyExistsException(String message) {    // 409
         super(message);
-        log.error("Error {} в {} ", message, message.getClass());
+        log.error("UserAlreadyExistsException Error {} в {} ", message, message.getClass());
     }
 }
 

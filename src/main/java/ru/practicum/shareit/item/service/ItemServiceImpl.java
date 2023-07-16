@@ -25,13 +25,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto create(ItemDto itemDto, Long ownerId) {
-        log.info("Получен POST-запрос на создание вещи");
+        log.info("ItemServiceImpl: Получен POST-запрос на создание вещи");
         return mapper.toItemDto(itemStorage.create(mapper.toItem(itemDto, ownerId)));
     }
 
     @Override
     public List<ItemDto> getItemsByOwner(Long ownderId) {
-        log.info("Получен GET-запрос на получение всех вещей владельца с УИН {}", ownderId);
+        log.info("ItemServiceImpl: Получен GET-запрос на получение всех вещей владельца с УИН {}", ownderId);
         return itemStorage.getItemsByOwner(ownderId).stream()
                 .map(mapper::toItemDto)
                 .collect(toList());
@@ -39,13 +39,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItemById(Long id) {
-        log.info("Получен GET-запрос на получение вещи с УИН {}", id);
+        log.info("ItemServiceImpl: Получен GET-запрос на получение вещи с УИН {}", id);
         return mapper.toItemDto(itemStorage.getItemById(id));
     }
 
     @Override
     public ItemDto update(ItemDto itemDto, Long ownerId, Long itemId) {
-        log.info("Получен PUT-запрос на обновление вещи с УИН {}", itemId);
+        log.info("ItemServiceImpl: Получен PUT-запрос на обновление вещи с УИН {}", itemId);
         if (itemDto.getId() == null) {
             itemDto.setId(itemId);
         }
@@ -58,7 +58,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto delete(Long itemId, Long ownerId) {
-        log.info("Получен DELETE-запрос на удаление вещи с УИН {}", itemId);
+        log.info("ItemServiceImpl: Получен DELETE-запрос на удаление вещи с УИН {}", itemId);
         Item item = itemStorage.getItemById(itemId);
         if (!item.getOwner().equals(ownerId)) {
             throw new NotFoundException("У пользователя нет такой вещи!");
@@ -68,15 +68,17 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void deleteItemsByOwner(Long ownderId) {
-        log.info("Получен DELETE-запрос на удаление всех вещеепользователя с УИН {}", ownderId);
+        log.info("ItemServiceImpl: Получен DELETE-запрос на удаление всех вещеепользователя с УИН {}", ownderId);
         itemStorage.deleteItemsByOwner(ownderId);
     }
 
     @Override
     public List<ItemDto> getItemsBySearchQuery(String text) {
-        log.info("Получен GET-запрос на получение вещей по тексту={}", text);
+        log.info("ItemServiceImpl: Получен GET-запрос на получение вещей по тексту={}", text);
+        text = text.toLowerCase();
         return itemStorage.getItemsBySearchQuery(text).stream()
                 .map(mapper::toItemDto)
                 .collect(toList());
     }
+
 }

@@ -27,14 +27,14 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable Long itemId) {
-        log.info("Получен GET-запрос на получение вещи с УИН {}", itemId);
+        log.info("ItemController: Получен GET-запрос на получение вещи с УИН {}", itemId);
         return itemService.getItemById(itemId);
     }
 
     @ResponseBody
     @PostMapping
     public ItemDto create(@Valid @RequestBody ItemDto itemDto, @RequestHeader(OWNER) Long ownerId) {
-        log.info("Получен POST-запрос на добавление вещи владельцем с УИН {}", ownerId);
+        log.info("ItemController: Получен POST-запрос на добавление вещи владельцем с УИН {}", ownerId);
         ItemDto newItemDto = null;
         if (checkEntity.isExistUser(ownerId)) {
             newItemDto = itemService.create(itemDto, ownerId);
@@ -44,7 +44,7 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getItemsByOwner(@RequestHeader(OWNER) Long ownerId) {
-        log.info("Получен GET-запрос на получение всех вещей владельца с УИН {}", ownerId);
+        log.info("ItemController: Получен GET-запрос на получение всех вещей владельца с УИН {}", ownerId);
         return itemService.getItemsByOwner(ownerId);
     }
 
@@ -52,7 +52,7 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ItemDto update(@RequestBody ItemDto itemDto, @PathVariable Long itemId,
                           @RequestHeader(OWNER) Long ownerId) {
-        log.info("Получен PATCH-запрос на обновление вещи с УИН {}", itemId);
+        log.info("ItemController: Получен PATCH-запрос на обновление вещи с УИН {}", itemId);
         ItemDto newItemDto = null;
         if (checkEntity.isExistUser(ownerId)) {
             newItemDto = itemService.update(itemDto, ownerId, itemId);
@@ -62,13 +62,13 @@ public class ItemController {
 
     @DeleteMapping("/{itemId}")
     public ItemDto delete(@PathVariable Long itemId, @RequestHeader(OWNER) Long ownerId) {
-        log.info("Получен DELETE-запрос на удаление вещи с УИН {}", itemId);
+        log.info("ItemController: Получен DELETE-запрос на удаление вещи с УИН {}", itemId);
         return itemService.delete(itemId, ownerId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> getItemsBySearchQuery(@RequestParam String text) {
-        log.info("Получен GET-запрос на поиск вещи : {}", text);
+        log.info("ItemController: Получен GET-запрос на поиск вещи : {}", text);
         return itemService.getItemsBySearchQuery(text);
     }
 }

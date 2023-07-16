@@ -9,7 +9,9 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
+
 import ru.practicum.shareit.expections.UserAlreadyExistsException;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.user.model.User;
@@ -58,6 +60,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(Long aLong) {
+        log.info("Пользователь с УИН : {} - {}", aLong, users.containsKey(aLong));
         if (users.containsKey(aLong)) {
             log.info("Пользователь с УИН : {} не зарегистрирован.", aLong);
             return users.get(aLong);

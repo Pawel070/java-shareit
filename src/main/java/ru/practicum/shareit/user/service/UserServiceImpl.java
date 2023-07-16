@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.service;
 
-
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -10,8 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
+import ru.practicum.shareit.expections.ConstraintViolationException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 @Slf4j
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsers() {
-        log.info("Получен GET-запрос '/users'");
+        log.info("UserServiceImpl: Получен GET-запрос '/users'");
         return userStorage.getAllUsers().stream()
                 .map(mapper::toUserDto)
                 .collect(toList());
@@ -32,43 +33,47 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(Long id) {
-        log.info("Получен GET-запрос '/users/{}", id);
+        log.info("UserServiceImpl: Получен GET-запрос '/users/{}", id);
         return mapper.toUserDto(userStorage.getUser(id));
     }
 
     @Override
     public UserDto create(UserDto userDto) {
-        log.info("Получен POST-запрос '/users'");
+        log.info("UserServiceImpl: Получен POST-запрос '/users'");
+        User user = mapper.toUser(userDto);
         if (userDto.getId() != null) {
             throw new IllegalArgumentException("УИН должен быть равен null.");
         }
-        if (userStorage.getUser(userDto.getId()) != null) {
-            throw new IllegalArgumentException("Пользователь с таким УИН уже зарезистрирован.");
-        }
         if (userDto.getName() == null || userDto.getName().isBlank()) {
-            throw new IllegalArgumentException("Имя пользователя не может быть пустым.");
+            log.info("UserServiceImpl: Имя пользователя не может быть пустым.");
+            throw new ConstraintViolationException("Имя пользователя не может быть пустым.");
         }
         if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-            throw new IllegalArgumentException("Email пользователя не может быть пустым.");
+            log.info("UserServiceImpl: Email пользователя не может быть пустым.");
+            throw new ConstraintViolationException("Email пользователя не может быть пустым.");
         }
         if (!userDto.getEmail().contains("@")) {
-            throw new IllegalArgumentException("Email пользователя некорректен.");
+            log.info("UserServiceImpl: Email пользователя некорректен.");
+            throw new ConstraintViolationException("Email пользователя некорректен.");
         }
-        return mapper.toUserDto(userStorage.createUser(mapper.toUser(userDto)));
+        log.info("UserServiceImpl: Предварительно создан пользователь с УИД : {}", user.getId());
+        UserDto userDto1 = mapper.toUserDto(userStorage.createUser(mapper.toUser(userDto)));
+        log.info("UserServiceImpl: Пользователь с УИД : {} создан", userDto1.getId());
+        return userDto1;
     }
 
     @Override
     public UserDto update(UserDto userDto, Long id) {
-        log.info("Получен PUT-запрос на обновление пользователя с УИН {}", id);
-        if (userDto.getId() == null) {
-            userDto.setId(id);
-        }
-        return userDto;
+        log.info("UserServiceImpl: Получен PUT-запрос на обновление пользователя с УИН {}", id);
+        UserDto userDto1 = getUser(id);
+        UserDto dto = mapper.toUserDto(userStorage.update(mapper.toUser(userDto), id));
+        log.info("UserServiceImpl: Получен PUT-запрос на обновление пользователя с УИН {}, старый {}, новый {}", id, userDto1, dto);
+        return dto;
     }
 
     @Override
     public void delete(Long userId) {
-        log.info("Получен DELETE-запрос на удаление пользователя с УИН {}", userId);
+        log.info("UserServiceImpl: Получен DELETE-запрос на удаление пользователя с УИН {}", userId);
         userStorage.deleteUser(userId);
     }
 
