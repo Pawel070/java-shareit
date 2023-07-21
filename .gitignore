@@ -32,7 +32,7 @@ db /*
 *.tar.gz
 *.rar
 *.mvn
-mvnw
+mvn
 mvnw.cmd
 
 ### NetBeans ###
@@ -47,6 +47,12 @@ build/
 
 ### VS Code ###
 .vscode/
-
+.db
 *.db
 db/*
+out/
+
+/.github/workflows/
+checkstyle.xml
+shareit.iml
+banner.txt
