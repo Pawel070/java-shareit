@@ -12,7 +12,7 @@ public class ErrorResponse {
     }
 
     public ErrorResponse(String errResponse, String message) {
-        log.error("ErrorResponse Error {} - {} ", errResponse,  message);
+        log.error("ErrorResponse Error {} - {} ", errResponse, message);
         this.errResponse = errResponse;
     }
 

@@ -10,5 +10,5 @@ public class NotFoundException extends IllegalArgumentException {
     public NotFoundException(String message) { // 400
         super(message);
         log.error("NotFoundException Error {} ", message);
-   }
+    }
 }

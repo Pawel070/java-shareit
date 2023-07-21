@@ -1,17 +1,18 @@
 package ru.practicum.shareit.expections;
 
+import java.io.Serial;
+
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Data
-public class MethodArgumentNotValidException extends RuntimeException {  // http:400 Аргумент метода недействителен, возникло исключение
-    private String parameter;
+public class MethodArgumentNotValidException extends RuntimeException {
+    @Serial
+    private static final long serialVersionUID = -2927785002140137706L;  // http:400 Аргумент метода недействителен, возникло исключение
 
     public MethodArgumentNotValidException(String parameter) {
-        log.info("Искомый объект не найден > {}", parameter);
-        this.parameter = parameter;
-        log.error("MethodArgumentNotValidException Error {} ", parameter);
+        log.error("MethodArgumentNotValidException Error: Искомый объект не найден > {} ", parameter);
 
     }
 }

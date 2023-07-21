@@ -10,9 +10,14 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class ItemRequest {
+
     private final Long id; // УИН запроса
+
     private final String description; // что просим
+
     private final String requester; // кто отправил запрос
+
     private final LocalDateTime created; // дата и времени нового запроса
+
 }
 

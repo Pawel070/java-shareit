@@ -4,10 +4,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import java.util.List;
+
 import jdk.jfr.BooleanFlag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.booking.dto.BookingInfoDto;
 
 @Data
 @AllArgsConstructor
@@ -27,4 +30,10 @@ public class ItemDto {
     private Boolean available;
 
     private Long request;
+
+    private BookingInfoDto lastBooking;
+
+    private BookingInfoDto nextBooking;
+
+    private List<CommentDto> comments;
 }

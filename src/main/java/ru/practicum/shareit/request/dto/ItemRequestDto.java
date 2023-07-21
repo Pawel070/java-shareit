@@ -10,9 +10,14 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class ItemRequestDto {
+
     private final Long id;
+
     private String description;
+
     private String requester;
+
     private LocalDateTime created;
+
 }
 

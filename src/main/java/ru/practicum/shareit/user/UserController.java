@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import ru.practicum.shareit.service.CheckEntity;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -18,12 +17,10 @@ import ru.practicum.shareit.user.service.UserService;
 @RequestMapping(path = "/users")
 public class UserController {
     private final UserService userService;
-    private final CheckEntity checker;
 
     @Autowired
-    public UserController(UserService userService, CheckEntity checkEntity) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        checker = checkEntity;
     }
 
     @GetMapping
@@ -55,7 +52,6 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public void delete(@PathVariable Long userId) {
         log.info("UserController: Получен DELETE-запрос на удаление пользователя с УИН {}", userId);
-        checker.deleteItemsByUser(userId);
         userService.delete(userId);
     }
 
