@@ -1,18 +1,13 @@
 package ru.practicum.shareit.booking;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import org.mapstruct.Mapper;
+import org.springframework.web.bind.annotation.Mapping;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.dto.BookingQueryDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
-import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.service.UserServiceImpl;
 
+/*
 @Component
 public class BookingMapper {
     private final UserServiceImpl userService;
@@ -71,4 +66,17 @@ public class BookingMapper {
                 Status.WAITING
         );
     }
+
+ */
+@Mapper//(componentModel = "spring")
+public interface BookingMapper {
+
+    @Mapping//(target = "itemId", source = "item.id")
+    BookingDto toBookingDto(Booking booking);
+
+    @Mapping//(target = "itemId", source = "item.id")
+    BookingInfoDto toBookingInfoDto(Booking booking);
+
+    @Mapping//(target = "item.id", source = "itemId")
+    Booking toBooking(BookingQueryDto bookingInputDto, Long bookerId);
 }
