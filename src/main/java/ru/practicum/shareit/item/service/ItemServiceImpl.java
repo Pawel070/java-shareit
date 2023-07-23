@@ -3,16 +3,19 @@ package ru.practicum.shareit.item.service;
 import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.expections.ValidationException;
@@ -25,6 +28,7 @@ import ru.practicum.shareit.service.CheckEntity;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
     private final ItemMapper mapper;
@@ -125,7 +129,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl: Получен DELETE-запрос на удаление всех вещеепользователя с УИН {}", id);
         repository.deleteById(id);
     }
-
+/*
     @Override
     public List<ItemDto> getItemsBySearchQuery(String text) {
         log.info("ItemServiceImpl: Получен GET-запрос на получение вещей по тексту={}", text);
@@ -134,6 +138,18 @@ public class ItemServiceImpl implements ItemService {
                 .map(mapper::toItemDto)
                 .collect(toList());
     }
+*/
+        @Override
+    public List<ItemDto> searchItemsByText(String text, Integer from, Integer size) {
+        if (text == null || text.isBlank()) {
+            return new ArrayList<>();
+        }
+        Pageable pageable = PageRequest.of(from / size, size, Sort.unsorted());
+        List<Item> resultItems = repository.searchItemsByText(text, pageable);
+        return resultItems.stream().map(mapper::toItemDto)
+                .filter(ItemDto::getAvailable).collect(Collectors.toList());
+    }
+
 
     @Override
     public List<CommentDto> getCommentsByItemId(Long itemId) {

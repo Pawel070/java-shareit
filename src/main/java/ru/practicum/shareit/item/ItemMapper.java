@@ -3,16 +3,21 @@ package ru.practicum.shareit.item;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingInfoDto;
+import ru.practicum.shareit.booking.dto.BookingQueryDto;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.service.CheckEntity;
-
+/*
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
@@ -85,4 +90,17 @@ public class ItemMapper {
                 request
         );
     }
+
+ */
+
+@Mapper
+public interface ItemMapper {
+
+    CommentDto toCommentDto(Comment comment);
+
+    ItemDto toItemDto(Item item);
+
+    ItemDto toItemExtDto(Item item);
+
+    Item toItem(ItemDto itemDto, Long ownerId);
 }

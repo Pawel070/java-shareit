@@ -3,16 +3,16 @@ package ru.practicum.shareit.item.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.Setter;
 import ru.practicum.shareit.user.model.User;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

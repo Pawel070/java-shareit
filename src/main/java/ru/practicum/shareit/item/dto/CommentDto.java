@@ -2,17 +2,16 @@ package ru.practicum.shareit.item.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
-import lombok.Data;
-
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.item.model.Item;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class CommentDto {
 

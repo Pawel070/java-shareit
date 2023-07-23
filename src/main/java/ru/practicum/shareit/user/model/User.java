@@ -3,12 +3,10 @@ package ru.practicum.shareit.user.model;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

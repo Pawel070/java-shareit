@@ -22,7 +22,7 @@ public interface ItemService {
 
     void deleteItemsByOwner(Long ownderId);
 
-    List<ItemDto> getItemsBySearchQuery(String text);
+    List<ItemDto> searchItemsByText(String text, Integer from, Integer size);
 
     List<CommentDto> getCommentsByItemId(Long itemId);
 

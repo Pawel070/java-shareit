@@ -71,12 +71,12 @@ public class BookingMapper {
 @Mapper//(componentModel = "spring")
 public interface BookingMapper {
 
-    @Mapping//(target = "itemId", source = "item.id")
+    //@Mapping(target = "itemId", source = "item.id")
     BookingDto toBookingDto(Booking booking);
 
-    @Mapping//(target = "itemId", source = "item.id")
+    //@Mapping(target = "itemId", source = "item.id")
     BookingInfoDto toBookingInfoDto(Booking booking);
 
-    @Mapping//(target = "item.id", source = "itemId")
+    //@Mapping(target = "item.id", source = "itemId")
     Booking toBooking(BookingQueryDto bookingInputDto, Long bookerId);
 }
