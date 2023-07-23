@@ -1,7 +1,8 @@
 package ru.practicum.shareit.item.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
 import lombok.*;
 
 @Getter

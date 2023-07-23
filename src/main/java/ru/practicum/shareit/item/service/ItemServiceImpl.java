@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import static java.util.stream.Collectors.toList;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;

@@ -2,10 +2,10 @@ package ru.practicum.shareit.item;
 
 import static ru.practicum.shareit.service.MyConstants.USER_ID;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +42,6 @@ public class ItemController {
         return itemService.create(itemDto, id);
     }
 
-    @ResponseBody
     @PostMapping("/{itemId}/comment")//6
     public CommentDto createComment(@Valid @RequestBody CommentDto commentDto, @RequestHeader(USER_ID) Long userId,
                                     @PathVariable Long itemId) {
@@ -75,7 +74,7 @@ public class ItemController {
         return itemService.getItemsBySearchQuery(text);
     }
 
-@GetMapping("/search")
+    @GetMapping("/search")
     public Collection<ItemDto> searchItemsByText(@RequestParam(value = "text", required = false) String text,
                                                  @RequestParam(name = "from", defaultValue = "0") int from,
                                                  @RequestParam(name = "size", defaultValue = "10") int size) {

@@ -2,9 +2,9 @@ package ru.practicum.shareit.booking;
 
 import static ru.practicum.shareit.service.MyConstants.USER_ID;
 
+import javax.validation.Valid;
 import java.util.List;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
