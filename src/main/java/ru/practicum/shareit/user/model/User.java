@@ -1,8 +1,7 @@
 package ru.practicum.shareit.user.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @Getter

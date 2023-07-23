@@ -28,4 +28,6 @@ public interface ItemService {
 
     Item findItemById(Long id);
 
+    List<ItemDto> getItemsBySearchQuery(String text);
+
 }

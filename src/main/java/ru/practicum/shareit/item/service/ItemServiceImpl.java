@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import lombok.RequiredArgsConstructor;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,14 +28,14 @@ import ru.practicum.shareit.service.CheckEntity;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
     private final ItemMapper mapper;
     private final CheckEntity checker;
     private final ItemRepository repository;
     private final CommentRepository commentRepository;
-
+/*
     @Autowired
     public ItemServiceImpl(ItemRepository repository,
                            CheckEntity checkerService,
@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
         this.commentRepository = commentRepository;
         mapper = itemMapper;
     }
-
+*/
     @Override
     public ItemDto create(ItemDto itemDto, Long id) {
         log.info("ItemServiceImpl: Получен POST-запрос на создание вещи");
@@ -96,6 +96,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto update(ItemDto itemDto, Long id, Long itemId) {
         log.info("ItemServiceImpl: Получен PUT-запрос на обновление вещи с УИН {}", itemId);
         checker.isExistUser(id);
@@ -129,23 +130,23 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl: Получен DELETE-запрос на удаление всех вещеепользователя с УИН {}", id);
         repository.deleteById(id);
     }
-/*
+
     @Override
     public List<ItemDto> getItemsBySearchQuery(String text) {
         log.info("ItemServiceImpl: Получен GET-запрос на получение вещей по тексту={}", text);
         String lowerCase = text.toLowerCase(Locale.ROOT);
-        return repository.getItemsBySearchQuery(lowerCase).stream()
+        return repository.searchItemsByText(lowerCase).stream()
                 .map(mapper::toItemDto)
                 .collect(toList());
     }
-*/
+
         @Override
     public List<ItemDto> searchItemsByText(String text, Integer from, Integer size) {
         if (text == null || text.isBlank()) {
             return new ArrayList<>();
         }
         Pageable pageable = PageRequest.of(from / size, size, Sort.unsorted());
-        List<Item> resultItems = repository.searchItemsByText(text, pageable);
+        List<Item> resultItems = repository.searchItemsByText(text);
         return resultItems.stream().map(mapper::toItemDto)
                 .filter(ItemDto::getAvailable).collect(Collectors.toList());
     }

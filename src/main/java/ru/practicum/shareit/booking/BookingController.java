@@ -2,15 +2,12 @@ package ru.practicum.shareit.booking;
 
 import static ru.practicum.shareit.service.MyConstants.USER_ID;
 
-import javax.validation.Valid;
-
 import java.util.List;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingQueryDto;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -18,14 +15,16 @@ import ru.practicum.shareit.booking.service.BookingService;
 @Slf4j
 @RestController
 @RequestMapping(path = "/bookings")
+@RequiredArgsConstructor
 public class BookingController {
-    private final BookingService service;
 
+    private final BookingService service;
+/*
     @Autowired
     public BookingController(BookingService bookingService) {
         service = bookingService;
     }
-
+*/
     @ResponseBody
     @PostMapping
     public BookingDto create(@Valid @RequestBody BookingQueryDto bookingQueryDto,
