@@ -2,18 +2,15 @@ package ru.practicum.shareit.booking.service;
 
 
 import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
@@ -22,30 +19,39 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.expections.ValidationException;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.service.CheckEntity;
+import ru.practicum.shareit.user.service.UserService;
 
 @Slf4j
 @Service
 public class BookingServiceImpl implements BookingService {
 
-    private final BookingRepository repository;
-    private final BookingMapper mapper;
-    private final CheckEntity checker;
+    private BookingRepository repository;
+    private BookingMapper mapper;
+    private CheckEntity checker;
+    private UserService userService;
+    private ItemService itemService;
 
     @Autowired
     @Lazy
-    public BookingServiceImpl(BookingRepository bookingRepository, BookingMapper bookingMapper,
+    public BookingServiceImpl(BookingRepository bookingRepository,
+                              BookingMapper bookingMapper,
+                              UserService userService,
+                              ItemService itemService,
                               CheckEntity checkEntity) {
         repository = bookingRepository;
         mapper = bookingMapper;
         checker = checkEntity;
+        this.userService = userService;
+        this.itemService = itemService;
     }
 
     @Override
     public BookingDto create(BookingQueryDto bookingQueryDto, Long bookerId) {
         log.info("BookingServiceImpl: isExistUser - create");
-        checker.isExistUser(bookerId);
-        if (!checker.isCheckAvailableItem(bookingQueryDto.getItemId())) {
+        userService.isExistUser(bookerId);
+        if (!itemService.isCheckAvailableItem(bookingQueryDto.getItemId())) {
             throw new ValidationException("BookingServiceImpl: Вещь с УИН " + bookingQueryDto.getItemId() + " не может быть забронирована.");
         }
         Booking booking = mapper.toBooking(bookingQueryDto, bookerId);
@@ -58,7 +64,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto update(Long bookingId, Long userId, Boolean approved) {
         log.info("BookingServiceImpl: isExistUser - update");
-        checker.isExistUser(userId);
+        userService.isExistUser(userId);
         Booking booking = repository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Такого бронирования УИН " + bookingId + " нет."));
         if (booking.getEnd().isBefore(LocalDateTime.now())) {
@@ -72,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
                 booking.setStatus(Status.CANCELED);
                 log.info("BookingServiceImpl: Пользователь с УИН  {} отменил бронирование УИН {}", userId, bookingId);
             }
-        } else if (checker.isCheckItemOwner(booking.getItem().getId(), userId) &&
+        } else if (itemService.isCheckItemOwner(booking.getItem().getId(), userId) &&
                 booking.getStatus() != Status.CANCELED) {
             if (booking.getStatus() != Status.WAITING) {
                 throw new ValidationException("BookingServiceImpl: Бронирование подтверждено.");
@@ -98,10 +104,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto getBookingById(Long bookingId, Long userId) {
         log.info("BookingServiceImpl: isExistUser - getBookingById");
-        checker.isExistUser(userId);
+        userService.isExistUser(userId);
         Booking booking = repository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Такого бронирования УИН " + bookingId + " нет."));
-        if (booking.getBooker().getId().equals(userId) || checker.isCheckItemOwner(booking.getItem().getId(), userId)) {
+        if (booking.getBooker().getId().equals(userId) || itemService.isCheckItemOwner(booking.getItem().getId(), userId)) {
             return mapper.toBookingDto(booking);
         } else {
             throw new NotFoundException("BookingServiceImpl: Данные бронирования доступны владельцу и бронирующему.");
@@ -111,7 +117,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getBookings(String state, Long userId) {
         log.info("BookingServiceImpl: isExistUser - getBookings");
-        checker.isExistUser(userId);
+        userService.isExistUser(userId);
         List<Booking> bookings;
         Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
         switch (state) {
