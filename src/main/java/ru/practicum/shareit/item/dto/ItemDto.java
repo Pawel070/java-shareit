@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
+import ru.practicum.shareit.user.model.User;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ import ru.practicum.shareit.booking.dto.BookingInfoDto;
 @Builder
 public class ItemDto {
 
-    private Long id;
+    private long id;
 
     @NotBlank(message = "Название предмета отсутствует.")
     private String name;
@@ -30,11 +31,13 @@ public class ItemDto {
     @NotNull(message = "Статус доступности аренды не может быть нулевым")
     private Boolean available;
 
-    private Long request;
+    private User owner;
 
-    private BookingInfoDto lastBooking;
+    private long requestId;
 
-    private BookingInfoDto nextBooking;
+//    private BookingInfoDto lastBooking;
 
-    private List<CommentDto> comments;
+//    private BookingInfoDto nextBooking;
+
+ //   private List<CommentDto> comments;
 }

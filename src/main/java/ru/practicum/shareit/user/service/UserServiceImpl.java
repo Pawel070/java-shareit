@@ -104,4 +104,16 @@ public class UserServiceImpl implements UserService {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("UserServiceImpl: Пользователь с УИН " + id + " не существует."));
     }
 
+     @Override
+   public boolean isExistUser(Long userId) {
+        log.info("CheckEntity: Проверка наличия пользователя с УИН {}", userId);
+        return getUser(userId) != null;
+    }
+/*
+     @Override
+   public User findUserById(Long userId) {
+        log.info("CheckEntity: Проверка наличия пользователя с УИН {}", userId);
+        return findUserById(userId);
+    }
+*/
 }

@@ -11,19 +11,18 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-@Builder
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+//    @Column(name = "id", nullable = false)
     private Long id; // УИН пользователя
 
-    @Column(name = "name", nullable = false)
+//    @Column(name = "name", nullable = false)
     private String name; // имя или логин пользователя
 
     @Email
-    @Column(name = "email", nullable = false, unique = true)
+//    @Column(name = "email", nullable = false, unique = true)
     private String email; // адрес электронной почты
 
 }
