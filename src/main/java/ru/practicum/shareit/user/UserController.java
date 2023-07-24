@@ -35,7 +35,7 @@ public class UserController {
         return userService.getUser(userId);
     }
 
-    @ResponseBody
+ //   @ResponseBody
     @PostMapping
     public UserDto create(@RequestBody UserDto userDto) {
         log.info("UserController: Получен POST-запрос на добавление пользователя {} ", userDto);
