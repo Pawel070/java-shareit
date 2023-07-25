@@ -2,14 +2,14 @@ package ru.practicum.shareit.user.service;
 
 import static java.util.stream.Collectors.toList;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
-
-import ru.practicum.shareit.expections.ConstraintViolationException;
+import ru.practicum.shareit.expections.MethodArgumentNotValidException;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.expections.UserAlreadyExistsException;
 import ru.practicum.shareit.user.UserMapper;
@@ -40,9 +40,26 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException("Пользователь с УИН " + id + " не существует.")));
     }
 
+    @Transactional
     @Override
     public UserDto create(UserDto userDto) {
-        log.info("UserServiceImpl: Получен POST-запрос '/users'");
+        log.info("UserServiceImpl: Получен POST-запрос '/users' {} ", userDto);
+        User user = mapper.toUser(userDto);
+        try {
+            UserDto userDto1 = mapper.toUserDto(repository.save(user));
+            log.info("UserServiceImpl: Пользователь {}  с УИД : {} создан", mapper.toUser(userDto1), userDto1.getId());
+            return userDto1;
+        } catch (ConstraintViolationException e) {
+            throw new MethodArgumentNotValidException("Mail " + userDto.getEmail() + " already used by another user");
+        }
+    }
+
+
+
+/*
+    @Override
+    public UserDto create(UserDto userDto) {
+        log.info("UserServiceImpl: Получен POST-запрос '/users' {} ", userDto);
         User user = mapper.toUser(userDto);
         if (userDto.getId() != null) {
             throw new IllegalArgumentException("УИН должен быть равен null.");
@@ -61,10 +78,10 @@ public class UserServiceImpl implements UserService {
         }
         log.info("UserServiceImpl: Предварительно создан пользователь с УИН : {}", user.getId());
         UserDto userDto1 = mapper.toUserDto(repository.save(mapper.toUser(userDto)));
-        log.info("UserServiceImpl: Пользователь с УИД : {} создан", userDto1.getId());
+        log.info("UserServiceImpl: Пользователь {}  с УИД : {} создан", userDto1, userDto1.getId());
         return userDto1;
     }
-
+*/
     @Override
     public UserDto update(UserDto userDto, Long id) {
         log.info("UserServiceImpl: Получен PUT-запрос на обновление пользователя с УИН {}", id);

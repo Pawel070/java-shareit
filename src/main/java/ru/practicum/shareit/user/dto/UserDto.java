@@ -10,13 +10,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+//@AllArgsConstructor
 @Builder
 public class UserDto {
 
     private Long id;
 
-    @NotBlank(message = "Имя или логон пользователя не указан.")
+//    @NotBlank(message = "Имя или логон пользователя не указан.")
     private String name;
 
     @Email(message = "Электронная почта пользователя имеет неправильный формат.")
