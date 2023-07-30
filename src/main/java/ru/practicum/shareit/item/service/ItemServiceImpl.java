@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static ru.practicum.shareit.service.MyConstants.SORT_ASC;
 import static ru.practicum.shareit.service.MyConstants.SORT_DESC;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -234,11 +235,8 @@ public class ItemServiceImpl implements ItemService {
     public boolean isCheckItemOwner(Long itemId, Long userId) {
         log.info("ItemServiceImpl: Проверка является ли пользователь {} владельцем вещи с УИН {}", userId, itemId);
         boolean boo = false;
-        for (ItemInfoDto i : getItemsByOwner(userId)) {
-            if (i.getId() == (itemId)) {
-                boo = true;
-                break;
-            }
+        if (userId.equals(findItemById(itemId).getOwner().getId())) {
+           boo = true;
         }
         return boo;
     }
