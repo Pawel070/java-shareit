@@ -120,8 +120,8 @@ public class ItemServiceImpl implements ItemService {
         Item oldItem = repository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl: У пользователя нет такой вещи."));
         if (oldItem.getOwner().getId().equals(owner.getId())) {
-            ItemDto.setId(itemId);
-            Item item = mapper.updatedItem(ItemDto, oldItem);
+            itemDto.setId(itemId);
+            Item item = mapper.updatedItem(itemDto, oldItem);
             item.setOwner(owner);
             repository.save(item);
             log.info("Вещь с УИН {} изменена пользователем с УИН {}", itemId, userId);
