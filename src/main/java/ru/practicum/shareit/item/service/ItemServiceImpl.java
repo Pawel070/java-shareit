@@ -133,18 +133,6 @@ public class ItemServiceImpl implements ItemService {
                                 .collect(toList())))
                 .collect(toList());
         return collect;
-
-
-
- /*
-        userService.isExistUser(id);
-        return repository.findByOwner_Id(id).stream()
-                .map(mapper::toItemDto)
-                .sorted(Comparator.comparing(ItemDto::getId))
-                .collect(toList());
-
-
-  */
     }
 
     @Override
@@ -245,8 +233,14 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public boolean isCheckItemOwner(Long itemId, Long userId) {
         log.info("ItemServiceImpl: Проверка является ли пользователь {} владельцем вещи с УИН {}", userId, itemId);
-        return getItemsByOwner(userId).stream()
-                .anyMatch(i -> i.getId() == (itemId));
+        boolean boo = false;
+        for (ItemInfoDto i : getItemsByOwner(userId)) {
+            if (i.getId() == (itemId)) {
+                boo = true;
+                break;
+            }
+        }
+        return boo;
     }
 
 }
