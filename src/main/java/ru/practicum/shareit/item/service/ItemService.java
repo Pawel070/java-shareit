@@ -13,7 +13,7 @@ public interface ItemService {
 
     CommentDto createComment(CommentDto commentDto, Long itemId, Long userId);
 
-    List<ItemDto> getItemsByOwner(Long id);
+    List<ItemInfoDto> getItemsByOwner(Long id);
 
     ItemInfoDto getItemById(Long id, Long userId);
 

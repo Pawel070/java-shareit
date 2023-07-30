@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 
 import static ru.practicum.shareit.service.MyConstants.SORT;
+import static ru.practicum.shareit.service.State.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -127,10 +128,9 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingModelDto> getBookings(String state, Long userId) {
         State stateS = getState(state);
-        log.info("BookingServiceImpl: isExistUser - getBookings {} ", stateS);
+        log.info("BookingServiceImpl: isExistUser - getBookings {} статус ", stateS);
         userService.isExistUser(userId);
         List<Booking> bookings = new ArrayList<>();
-        Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
         switch (stateS) {
             case ALL:
                 bookings = repository.findAllByBooker_IdOrderByStartDesc(userId);
@@ -151,11 +151,12 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 bookings = repository.findAllByBooker_IdAndStatus(userId, Status.REJECTED);
                 break;
-
         }
-        return bookings.isEmpty() ? Collections.emptyList() : bookings.stream()
+        List<BookingModelDto> bookingModelDtos = bookings.isEmpty() ? Collections.emptyList() : bookings.stream()
                 .map(mapper::toBookingModelDto)
                 .collect(Collectors.toList());
+        log.info("==> {} в статусе {} ",bookingModelDtos, stateS);
+        return bookingModelDtos;
     }
 
     @Override
@@ -186,9 +187,11 @@ public class BookingServiceImpl implements BookingService {
                 bookings = repository.findAllByItem_Owner_IdAndStatus(userId, Status.REJECTED);
                 break;
         }
-        return bookings.stream()
+        List<BookingModelDto> collect = bookings.stream()
                 .map(mapper::toBookingModelDto)
                 .collect(Collectors.toList());
+        log.info("==> {} в статусе {} ",collect, stateS);
+        return collect;
     }
 
     @Override

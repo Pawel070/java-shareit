@@ -6,19 +6,16 @@ import static ru.practicum.shareit.service.MyConstants.SORT_DESC;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingRepository;
 import ru.practicum.shareit.expections.NotFoundException;
@@ -38,6 +35,7 @@ import ru.practicum.shareit.user.service.UserService;
 @Service
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
+
     private ItemMapper mapper;
     private BookingMapper bookingMapper;
     private ItemRepository repository;
@@ -75,13 +73,78 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItemsByOwner(Long id) {
+    public List<ItemInfoDto> getItemsByOwner(Long id) {
+        Map<Long, Booking> lastBookings = new HashMap<>();
+        Map<Long, Booking> nextBookings = new HashMap<>();
+        Map<Long, List<Comment>> comments = new HashMap<>();
+        LocalDateTime now = LocalDateTime.now();
         log.info("ItemServiceImpl: Получен GET-запрос на получение списка вещей владельца с УИН {}", id);
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("Пльзаватель с УИН " + id + " не существует.");
+        }
+        List<Item> items = repository.findByOwner_Id(id);
+        List<Long> itemsId = items
+                .stream()
+                .map(Item::getId)
+                .collect(Collectors.toList());
+        List<Booking> allLastBookings = bookingRepository
+                .findFirstByItem_IdInAndItem_Owner_IdAndStartIsBefore(
+                        itemsId,
+                        id,
+                        now,
+                        SORT_DESC);
+        List<Booking> allNextBookings = bookingRepository
+                .findFirstByItem_IdInAndItem_Owner_IdAndStartIsAfterAndStatusIsNotAndStatusIsNot(
+                        itemsId,
+                        id,
+                        now,
+                        Status.CANCELED,
+                        Status.REJECTED,
+                        SORT_ASC);
+        itemsId.forEach(signature -> {
+            allLastBookings.stream()
+                    .filter(booking -> booking.getItem().getId().equals(signature))
+                    .findFirst()
+                    .ifPresent(booking -> {
+                        lastBookings.put(signature, booking);
+                    });
+            allNextBookings.stream()
+                    .filter(booking -> {
+                        return booking.getItem().getId().equals(signature);
+                    })
+                    .findFirst()
+                    .ifPresent((Booking booking) -> {
+                        nextBookings.put(signature, booking);
+                    });
+            List<Comment> allComments = commentRepository.findAllByItemsId(itemsId);
+            List<Comment> valueOfComments = allComments.stream()
+                    .filter(comment -> Objects.equals(comment.getAuthor().getId(), signature) && signature != null)
+                    .collect(toList());
+            comments.put(signature, valueOfComments);
+        });
+        List<ItemInfoDto> collect = items.stream()
+                .map(item -> mapper.toItemInfoDto(
+                        item,
+                        bookingMapper.toBookingInfoDto(lastBookings.get(item.getId())),
+                        bookingMapper.toBookingInfoDto(nextBookings.get(item.getId())),
+                        comments.get(item.getId())
+                                .stream()
+                                .map(mapper::toCommentDto)
+                                .collect(toList())))
+                .collect(toList());
+        return collect;
+
+
+
+ /*
         userService.isExistUser(id);
         return repository.findByOwner_Id(id).stream()
                 .map(mapper::toItemDto)
                 .sorted(Comparator.comparing(ItemDto::getId))
                 .collect(toList());
+
+
+  */
     }
 
     @Override
@@ -93,7 +156,7 @@ public class ItemServiceImpl implements ItemService {
         List<CommentDto> comments = commentRepository.findAllByItem_Id(item.getId())
                 .stream()
                 .map(mapper::toCommentDto)
-                .collect(Collectors.toList());
+                .collect(toList());
         BookingInfoDto lastBooking = bookingMapper.toBookingInfoDto(bookingRepository
                 .findFirstByItem_IdAndItem_Owner_IdAndStartIsBefore(
                         id,

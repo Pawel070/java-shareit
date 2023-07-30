@@ -44,7 +44,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByOwner(@RequestHeader(USER_ID) Long id) {
+    public List<ItemInfoDto> getItemsByOwner(@RequestHeader(USER_ID) Long id) {
         log.info("ItemController: Получен GET-запрос на получение всех вещей владельца с УИН {}", id);
         return itemService.getItemsByOwner(id);
     }
