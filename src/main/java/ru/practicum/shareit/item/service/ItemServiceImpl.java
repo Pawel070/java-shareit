@@ -113,7 +113,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto update(ItemDto ItemDto, Long userId, Long itemId) {
+    public ItemDto update(ItemDto itemDto, Long userId, Long itemId) {
         log.info("ItemServiceImpl: Получен PUT-запрос на обновление вещи с УИН {}", itemId);
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl: УИН пользователя неверный."));
