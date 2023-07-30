@@ -11,13 +11,10 @@ import ru.practicum.shareit.user.model.User;
 
 @Getter
 @Setter
-//@AllArgsConstructor
-//@NoArgsConstructor(access = AccessLevel.PRIVATE)
-//@Builder
 @Entity
 @Table(name = "bookings")
 @ToString
-@EqualsAndHashCode
+//@EqualsAndHashCode
 public class Booking {
 
     @Id

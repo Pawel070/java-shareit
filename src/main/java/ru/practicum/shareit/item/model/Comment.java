@@ -3,9 +3,11 @@ package ru.practicum.shareit.item.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+
 import java.time.LocalDateTime;
 
 import lombok.*;
+
 import ru.practicum.shareit.user.model.User;
 
 @Getter

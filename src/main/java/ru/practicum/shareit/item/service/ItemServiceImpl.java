@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toList;
 import static ru.practicum.shareit.service.MyConstants.SORT_ASC;
 import static ru.practicum.shareit.service.MyConstants.SORT_DESC;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,17 +13,21 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingRepository;
 import ru.practicum.shareit.expections.NotFoundException;
+import ru.practicum.shareit.expections.ValidationException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
@@ -44,21 +47,6 @@ public class ItemServiceImpl implements ItemService {
     private ItemRequestRepository itemRequestRepository;
     private BookingRepository bookingRepository;
 
-    /*   @Autowired
-       public ItemServiceImpl(ItemRepository repository,
-                              CheckEntity checkerService,
-                              CommentRepository commentRepository,
-                              UserService userService,
-                              ItemRequestRepository itemRequestRepository,
-                              ItemMapper itemMapper) {
-           this.repository = repository;
-           this.checker = checkerService;
-           this.commentRepository = commentRepository;
-           this.userService = userService;
-           this.mapper = itemMapper;
-           this.itemRequestRepository = itemRequestRepository;
-       }
-   */
     @Override
     public ItemDto create(ItemDto itemDto, Long id) {
         log.info("ItemServiceImpl: Получен POST-запрос на создание вещи");
@@ -74,21 +62,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public CommentDto createComment(CommentDto commentDto, Long itemId, Long userId) {
         log.info("ItemServiceImpl: Получен POST-запрос на создание отзыва пользователем с УИН {}", userId);
-
-        /*
-        userService.isExistUser(userId);
-        Comment comment = new Comment();
-        Booking booking = checker.getUserBookingBookedItem(itemId, userId);
-        if (booking != null) {
-            comment.setCreated(LocalDateTime.now());
-            comment.setItem(booking.getItem());
-            comment.setAuthor(booking.getBooker());
-            comment.setText(commentDto.getText());
+        Item item = repository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Вещь с УИН " + itemId + " не существует."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пльзаватель с УИН " + userId + " не существует."));
+        if (bookingRepository.isItemWasUsedByUser(itemId, userId, LocalDateTime.now())) {
+            Comment comment = new Comment(commentDto.getId(), commentDto.getText(), item, user, LocalDateTime.now());
+            return mapper.toCommentDto(commentRepository.save(comment));
         } else {
             throw new ValidationException("Данный пользователь вещь не бронировал!");
-        }*/
-        return null;
-      //          mapper.toCommentDto(commentRepository.save(comment));
+        }
     }
 
     @Override
@@ -104,18 +87,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemInfoDto getItemById(Long id, Long userId) {
         log.info("ItemServiceImpl: Получен GET-запрос на получение вещи с УИН {}", id);
-
-        /*
-        ItemDto itemDto;
-        Item item = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("ItemServiceImpl: Вещь с УИН " + id + " не существует."));
-        if (userId.equals(item.getId())) {
-            itemDto = mapper.toItemExtDto(item);
-        } else {
-            itemDto = mapper.toItemDto(item);
-        }
-         */
-
         Item item = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl: Вещь с УИН " + id + " не существует."));
         LocalDateTime now = LocalDateTime.now();
@@ -139,29 +110,6 @@ public class ItemServiceImpl implements ItemService {
                         SORT_ASC));
         return mapper.toItemInfoDto(item, lastBooking, nextBooking, comments);
     }
-/*
-    @Override
-    @Transactional
-    public ItemDto update(ItemDto itemDto, Long id, Long itemId) {
-        log.info("ItemServiceImpl: Получен PUT-запрос на обновление вещи с УИН {}", itemId);
-        userService.isExistUser(id);
-        Item item = repository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("ItemServiceImpl: У пользователя нет такой вещи."));
-        if (!item.getId().equals(id)) {
-            throw new NotFoundException("ItemServiceImpl: У пользователя нет такой вещи.");
-        }
-        if (itemDto.getName() != null) {
-            item.setName(itemDto.getName());
-        }
-        if (itemDto.getDescription() != null) {
-            item.setDescription(itemDto.getDescription());
-        }
-        if (itemDto.getAvailable() != null) {
-            item.setAvailable(itemDto.getAvailable());
-        }
-        return mapper.toItemDto(repository.save(item));
-    }
-*/
 
     @Override
     @Transactional
@@ -183,7 +131,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-
     @Override
     public void delete(Long itemId, Long id) {
         log.info("ItemServiceImpl: Получен DELETE-запрос на удаление вещи с УИН {}", itemId);
@@ -197,17 +144,6 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl: Получен DELETE-запрос на удаление всех вещеепользователя с УИН {}", id);
         repository.deleteById(id);
     }
-
-    /*
-        @Override
-        public List<ItemDto> getItemsBySearchQuery(String text) {
-            log.info("ItemServiceImpl: Получен GET-запрос на получение вещей по тексту={}", text);
-            String lowerCase = text.toLowerCase(Locale.ROOT);
-            return repository.getItemsBySearchQuery(lowerCase).stream()
-                    .map(mapper::toItemDto)
-                    .collect(toList());
-        }
-    */
 
     @Override
     public List<ItemDto> getAvailableItems(Long userId, String text) {
@@ -242,13 +178,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl: Удаление запасов пользователя с УИН {}", userId);
         deleteItemsByOwner(userId);
     }
-/*
-    @Override
-    public boolean isCheckAvailableItem(Long itemId) {
-        log.info("ItemServiceImpl: Проверка добавления запасов вещи с УИН {}", itemId);
-        return findItemById(itemId).getAvailable();
-    }
-*/
+
     @Override
     public boolean isCheckItemOwner(Long itemId, Long userId) {
         log.info("ItemServiceImpl: Проверка является ли пользователь {} владельцем вещи с УИН {}", userId, itemId);
@@ -256,11 +186,4 @@ public class ItemServiceImpl implements ItemService {
                 .anyMatch(i -> i.getId() == (itemId));
     }
 
-/*
-    @Override
-    public List<CommentDto> getCommentsByItemId(Long itemId) {
-        log.info("ItemServiceImpl: Проверка наличия комментариев по вещи УИН {}", itemId);
-        return getCommentsByItemId(itemId);
-    }
-*/
 }

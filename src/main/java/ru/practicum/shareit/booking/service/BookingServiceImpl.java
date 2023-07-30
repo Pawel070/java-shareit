@@ -11,8 +11,10 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
@@ -40,29 +42,9 @@ public class BookingServiceImpl implements BookingService {
     private ItemRepository itemRepository;
     private UserRepository userRepository;
     private BookingMapper mapper;
-    //    private CheckEntity checker;
     private UserService userService;
     private ItemService itemService;
 
-    /*
-        @Autowired
-        @Lazy
-        public BookingServiceImpl(BookingRepository bookingRepository,
-                                  ItemRepository itemRepository,
-                                  BookingMapper bookingMapper,
-                                  UserRepository userRepository,
-                                  UserService userService,
-                                  ItemService itemService,
-                                  CheckEntity checkEntity) {
-            this.itemRepository = itemRepository;
-            this.repository = bookingRepository;
-            this.userRepository = userRepository;
-            this.mapper = bookingMapper;
-            this.checker = checkEntity;
-            this.userService = userService;
-            this.itemService = itemService;
-        }
-    */
     @Override
     public BookingModelDto create(BookingDto bookingDto, Long bookerId) {
         log.info("BookingServiceImpl: isExistUser - create {} - {} ", bookingDto, bookerId);
@@ -100,7 +82,6 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getEnd().isBefore(LocalDateTime.now())) {
             throw new ValidationException("BookingServiceImpl: Закончилось время бронирования.");
         }
-
         if (booking.getBooker().getId().equals(userId)) {
             if (accepted) {
                 throw new NotFoundException("BookingServiceImpl: Бронирование подтверждает владелец.");
@@ -127,7 +108,6 @@ public class BookingServiceImpl implements BookingService {
                 throw new ValidationException("BookingServiceImpl: Бронирование подтверждает владелец.");
             }
         }
-
         return mapper.toBookingModelDto(repository.save(booking));
     }
 
@@ -205,8 +185,6 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 bookings = repository.findAllByItem_Owner_IdAndStatus(userId, Status.REJECTED);
                 break;
-//           default:
-//                throw new ServerError("BookingServiceImpl: Неизвестный статус бронирования: " + state);
         }
         return bookings.stream()
                 .map(mapper::toBookingModelDto)
@@ -256,6 +234,5 @@ public class BookingServiceImpl implements BookingService {
         }
         return stateS;
     }
-
 
 }

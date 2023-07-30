@@ -56,3 +56,6 @@ out/
 checkstyle.xml
 shareit.iml
 banner.txt
+!/db/shareit.mv.db
+!/db/shareit.trace.db
+!/db/

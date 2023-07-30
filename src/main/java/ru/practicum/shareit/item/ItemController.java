@@ -3,11 +3,14 @@ package ru.practicum.shareit.item;
 import static ru.practicum.shareit.service.MyConstants.USER_ID;
 
 import javax.validation.Valid;
+
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.*;
+
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
@@ -21,11 +24,6 @@ public class ItemController {
 
     private final ItemService itemService;
 
- //   @Autowired
- //   public ItemController(ItemService itemService) {
- //       this.itemService = itemService;
- //   }
-
     @GetMapping("/{itemId}")
     public ItemInfoDto getItemById(@RequestHeader(USER_ID) Long ownerId, @PathVariable Long itemId) {
         log.info("ItemController: Получен GET-запрос на получение вещи с УИН {}", itemId);
@@ -38,7 +36,6 @@ public class ItemController {
         return itemService.create(itemDto, id);
     }
 
- //   @ResponseBody
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@Valid @RequestBody CommentDto commentDto, @RequestHeader(USER_ID) Long userId,
                                     @PathVariable Long itemId) {
@@ -52,9 +49,8 @@ public class ItemController {
         return itemService.getItemsByOwner(id);
     }
 
-//    @ResponseBody
     @PatchMapping("/{itemId}")
-        public ItemDto updateItem(@PathVariable("itemId") Long itemId,
+    public ItemDto updateItem(@PathVariable("itemId") Long itemId,
                               @RequestBody ItemDto itemDto,
                               @RequestHeader(USER_ID) Long id) {
         log.info("ItemController: Получен PATCH-запрос {} на обновление вещи с УИН пользователя, --> {} --> {} ", itemId, id, itemDto);
@@ -74,19 +70,4 @@ public class ItemController {
         return itemService.getAvailableItems(userId, text);
     }
 }
-/*
-    @GetMapping("/search")
-    public List<ItemDto> getItemsBySearchQuery(@RequestParam String text) {
-        log.info("ItemController: Получен GET-запрос на поиск вещи : {}", text);
-        return itemService.getItemsBySearchQuery(text);
-    }
-
-
-    @GetMapping("/search")
-    public Collection<ItemDto> searchItemsByText(@RequestParam(value = "text", required = false) String text,
-                                                 @RequestParam(name = "from", defaultValue = "0") int from,
-                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
-        return itemService.searchItemsByText(text, from, size);
-    }
-*/
 

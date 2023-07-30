@@ -23,8 +23,6 @@ public interface ItemService {
 
     void deleteItemsByOwner(Long ownderId);
 
- //   List<ItemDto> searchItemsByText(String text, Integer from, Integer size);
-
     List<ItemDto> getAvailableItems(Long userId, String text);
 
     List<CommentDto> getCommentsByItemId(Long itemId);
@@ -33,9 +31,6 @@ public interface ItemService {
 
     void deleteItemsByUser(Long userId);
 
-//    boolean isCheckAvailableItem(Long itemId);
-
     boolean isCheckItemOwner(Long itemId, Long userId);
 
- //   List<ItemDto> getItemsBySearchQuery(String text);
 }

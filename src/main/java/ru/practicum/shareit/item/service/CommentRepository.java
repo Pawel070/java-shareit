@@ -13,7 +13,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findAllByItem_Id(Long itemId, Sort sort);
 
-        List<Comment> findAllByItem_Id(Long itemId);
+    List<Comment> findAllByItem_Id(Long itemId);
 
     @Query("SELECT c FROM Comment c WHERE c.item.id IN :itemsId ORDER BY c.id ASC ")
     List<Comment> findAllByItemsId(@Param("itemsId") List<Long> itemsId);

@@ -7,8 +7,10 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -26,18 +28,14 @@ public class BookingController {
         service = bookingService;
     }
 
-//    @ResponseBody
     @PostMapping
     public BookingModelDto create(
-            //@Valid @RequestBody BookingDto bookingDto,
-             //                     @RequestHeader(USER_ID) Long booker) {
             @RequestHeader(USER_ID) Long booker,
             @Valid @RequestBody BookingDto bookingDto) {
         log.info("BookingController: Получен POST-запрос на бронирование от пользователя с УИН {} --> {} ", booker, bookingDto);
         return service.create(bookingDto, booker);
     }
 
-//    @ResponseBody
     @PatchMapping("/{bookingId}")
     public BookingModelDto update(@PathVariable Long bookingId,
                                   @RequestHeader(USER_ID) Long userId,

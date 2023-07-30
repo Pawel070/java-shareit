@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -26,23 +27,9 @@ public interface ItemMapper {
 
     ItemDto toItemExtDto(Item item);
 
-
-    // @Mapping(source = "request.id", target = "request")
     ItemDto mapToItemDtoResponse(Item item);
 
     Item mapToItemFromItemDto(ItemDto itemDto);
-/*
-    @Mapping(source = "booker.id", target = "booker")
-    BookingShortDto mapToBookingShortDto(Booking booking);
-
-    Comment mapToCommentFromCommentDto(CommentDto commentDto);
-
-    @Mapping(source = "author.name", target = "authorName")
-    CommentDtoResponse mapToCommentDtoResponseFromComment(Comment comment);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Item mapToItemFromItemDtoUpdate(ItemDtoUpdate itemDtoUpdate, @MappingTarget Item item);
-    */
 
     default Item updatedItem(ItemDto itemDto, Item item) {
         return Item.builder()

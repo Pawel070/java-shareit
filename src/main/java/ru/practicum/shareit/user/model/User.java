@@ -5,6 +5,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import lombok.*;
+
 import org.hibernate.Hibernate;
 
 @Getter
@@ -30,7 +31,7 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email; // адрес электронной почты
 
-        @Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;

@@ -3,21 +3,17 @@ package ru.practicum.shareit.booking.dto;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 
 import lombok.*;
-import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 
-//@Getter
-//@Setter
-//@ToString
-//@AllArgsConstructor
-@Data
-//@Builder
+import ru.practicum.shareit.booking.model.Status;
+
+@Getter
+@Setter
+@ToString
+@Builder
 public class BookingDto {
 
     private Long id;
