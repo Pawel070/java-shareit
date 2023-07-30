@@ -5,13 +5,16 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
+@Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findByOwnerId(Long ownerId);
+    List<Item> findByOwner_Id(Long userId);
 
-//   Item findById(Long id);
+
+//  Item findById(Long id);
 /*
     @Query(" SELECT i FROM Item i WHERE lower(i.name) LIKE lower(concat('%', :search, '%')) OR lower(i.description) " +
             "LIKE lower(concat('%', :search, '%')) AND i.available = TRUE")

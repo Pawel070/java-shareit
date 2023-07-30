@@ -1,13 +1,15 @@
 package ru.practicum.shareit.expections;
 
+import java.rmi.ServerError;
+import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
@@ -48,6 +50,18 @@ public class ErrorHandler {
     public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
         log.debug("handleMethodArgumentNotValidException Искомый объект не найден. Возврат код 400 {}", exception.getMessage());
         return new ErrorResponse("http:400 Искомый объект не найден при первичной проверке.", exception.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
+    public ErrorResponse handleServerError(final ServerError exception) {
+        log.debug("Ошибка на сервере. Возврат код 500 {}", exception.getMessage());
+        return new ErrorResponse("http:500 Ошибка на сервере.", exception.getMessage());
+    }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
+    public ErrorResponse unsupportedState(final UnsupportedState exception) {
+        return new ErrorResponse(exception.getMessage());
     }
 
 }

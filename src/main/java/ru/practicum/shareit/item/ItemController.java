@@ -3,31 +3,31 @@ package ru.practicum.shareit.item;
 import static ru.practicum.shareit.service.MyConstants.USER_ID;
 
 import javax.validation.Valid;
-import java.util.Collection;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 @Slf4j
-//@RestController
+@RestController
 @RequestMapping("/items")
+@RequiredArgsConstructor
 public class ItemController {
 
     private final ItemService itemService;
 
-    @Autowired
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
+ //   @Autowired
+ //   public ItemController(ItemService itemService) {
+ //       this.itemService = itemService;
+ //   }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@RequestHeader(USER_ID) Long ownerId, @PathVariable Long itemId) {
+    public ItemInfoDto getItemById(@RequestHeader(USER_ID) Long ownerId, @PathVariable Long itemId) {
         log.info("ItemController: Получен GET-запрос на получение вещи с УИН {}", itemId);
         return itemService.getItemById(itemId, ownerId);
     }
@@ -38,7 +38,7 @@ public class ItemController {
         return itemService.create(itemDto, id);
     }
 
-    @ResponseBody
+ //   @ResponseBody
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@Valid @RequestBody CommentDto commentDto, @RequestHeader(USER_ID) Long userId,
                                     @PathVariable Long itemId) {
@@ -52,11 +52,12 @@ public class ItemController {
         return itemService.getItemsByOwner(id);
     }
 
-    @ResponseBody
+//    @ResponseBody
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestBody ItemDto itemDto, @PathVariable Long itemId,
-                          @RequestHeader(USER_ID) Long id) {
-        log.info("ItemController: Получен PATCH-запрос на обновление вещи с УИН {}", itemId);
+        public ItemDto updateItem(@PathVariable("itemId") Long itemId,
+                              @RequestBody ItemDto itemDto,
+                              @RequestHeader(USER_ID) Long id) {
+        log.info("ItemController: Получен PATCH-запрос {} на обновление вещи с УИН пользователя, --> {} --> {} ", itemId, id, itemDto);
         return itemService.update(itemDto, id, itemId);
     }
 

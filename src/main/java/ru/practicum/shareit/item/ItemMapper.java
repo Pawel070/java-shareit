@@ -1,22 +1,17 @@
 package ru.practicum.shareit.item;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import java.util.List;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
-
-import ru.practicum.shareit.booking.dto.BookingDto;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
-import ru.practicum.shareit.booking.dto.BookingQueryDto;
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemInfoDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.service.CheckEntity;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 
 @Mapper(componentModel = "spring")
@@ -49,6 +44,31 @@ public interface ItemMapper {
     Item mapToItemFromItemDtoUpdate(ItemDtoUpdate itemDtoUpdate, @MappingTarget Item item);
     */
 
+    default Item updatedItem(ItemDto itemDto, Item item) {
+        return Item.builder()
+                .id(itemDto.getId())
+                .name(itemDto.getName() == null ? item.getName() : itemDto.getName())
+                .description(itemDto.getDescription() == null ? item.getDescription() : itemDto.getDescription())
+                .available(itemDto.getAvailable() == null ? item.getAvailable() : itemDto.getAvailable())
+                .build();
+    }
+
+    default ItemInfoDto toItemInfoDto(Item item, BookingInfoDto lastBooking,
+                                      BookingInfoDto nextBooking, List<CommentDto> comments) {
+        return ItemInfoDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .owner(toUserDto(item.getOwner()))
+                .requestId(item.getRequest() == null ? null : item.getRequest().getId())
+                .lastBooking(lastBooking)
+                .nextBooking(nextBooking)
+                .comments(comments)
+                .build();
+    }
+
+    UserDto toUserDto(User owner);
 
 }
 

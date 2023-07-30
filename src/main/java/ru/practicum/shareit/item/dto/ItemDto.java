@@ -6,10 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import jdk.jfr.BooleanFlag;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -17,6 +14,7 @@ import ru.practicum.shareit.user.model.User;
 @Setter
 @AllArgsConstructor
 @Builder
+@ToString
 public class ItemDto {
 
     private long id;

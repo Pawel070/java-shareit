@@ -4,20 +4,20 @@ import java.util.List;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
-import ru.practicum.shareit.booking.dto.BookingQueryDto;
+import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.model.Booking;
 
 public interface BookingService {
 
-    BookingDto create(BookingQueryDto bookingDto, Long bookerId);
+    BookingModelDto create(BookingDto bookingDto, Long bookerId);
 
-    BookingDto update(Long bookingId, Long userId, Boolean approved);
+    BookingModelDto update(Long bookingId, Long userId, Boolean approved);
 
-    BookingDto getBookingById(Long bookingId, Long userId);
+    BookingModelDto getBookingById(Long bookingId, Long userId);
 
-    List<BookingDto> getBookings(String state, Long userId);
+    List<BookingModelDto> getBookings(String state, Long userId);
 
-    List<BookingDto> getBookingsOwner(String state, Long userId);
+    List<BookingModelDto> getBookingsOwner(String state, Long userId);
 
     BookingInfoDto getLastBooking(Long itemId);
 

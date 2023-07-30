@@ -4,6 +4,7 @@ import java.util.List;
 
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.item.model.Item;
 
 public interface ItemService {
@@ -14,7 +15,7 @@ public interface ItemService {
 
     List<ItemDto> getItemsByOwner(Long id);
 
-    ItemDto getItemById(Long id, Long userId);
+    ItemInfoDto getItemById(Long id, Long userId);
 
     ItemDto update(ItemDto itemDto, Long ownerId, Long itemId);
 
@@ -32,7 +33,7 @@ public interface ItemService {
 
     void deleteItemsByUser(Long userId);
 
-    boolean isCheckAvailableItem(Long itemId);
+//    boolean isCheckAvailableItem(Long itemId);
 
     boolean isCheckItemOwner(Long itemId, Long userId);
 

@@ -1,11 +1,14 @@
 package ru.practicum.shareit.booking;
 
 import org.mapstruct.Mapper;
-import org.springframework.web.bind.annotation.Mapping;
+import org.mapstruct.Mapping;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
+import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.dto.BookingQueryDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.dto.UserDto;
 
 /*
 @Component
@@ -41,7 +44,51 @@ public class BookingMapper {
         return bookingDto;
     }
 
-    public BookingInfoDto toBookingInfoDto(Booking booking) {
+    public Booking toBooking(BookingQueryDto bookingInputDto, Long bookerId) {
+        return new Booking(
+                null,
+                bookingInputDto.getStart(),
+                bookingInputDto.getEnd(),
+                itemService.findItemById(bookingInputDto.getItemId()),
+                userService.findUserById(bookerId),
+                Status.WAITING
+        );
+    }
+
+ */
+@Mapper(componentModel = "spring")
+public interface BookingMapper {
+
+    //@Mapping(target = "itemId", source = "item.id")
+//    BookingDto toBookingDto(Booking booking);
+
+
+    //@Mapping(target = "item.id", source = "itemId")
+    //   Booking toBooking(BookingQueryDto bookingInputDto, Long bookerId);
+
+    Booking toBooking(BookingDto bookingDto);
+
+    @Mapping(target = "bookerId", source = "booker.id")
+    BookingInfoDto toBookingInfoDto(Booking booking);
+
+    default BookingModelDto toBookingModelDto(Booking booking) {
+        return BookingModelDto.builder()
+                .id(booking.getId())
+                .start(booking.getStart())
+                .end(booking.getEnd())
+                .item(ItemDto.builder()
+                        .id(booking.getItem().getId())
+                        .name(booking.getItem().getName())
+                        .build())
+                .booker(UserDto.builder()
+                        .id(booking.getBooker().getId())
+                        .build())
+                .status(booking.getStatus())
+                .build();
+    }
+
+/*
+    BookingInfoDto toBookingInfoDto(Booking booking) {
         BookingInfoDto bookingInfoDto;
         if (booking != null) {
             bookingInfoDto = new BookingInfoDto(
@@ -55,28 +102,5 @@ public class BookingMapper {
         }
         return bookingInfoDto;
     }
-
-    public Booking toBooking(BookingQueryDto bookingInputDto, Long bookerId) {
-        return new Booking(
-                null,
-                bookingInputDto.getStart(),
-                bookingInputDto.getEnd(),
-                itemService.findItemById(bookingInputDto.getItemId()),
-                userService.findUserById(bookerId),
-                Status.WAITING
-        );
-    }
-
- */
-@Mapper//(componentModel = "spring")
-public interface BookingMapper {
-
-    //@Mapping(target = "itemId", source = "item.id")
-    BookingDto toBookingDto(Booking booking);
-
-    //@Mapping(target = "itemId", source = "item.id")
-    BookingInfoDto toBookingInfoDto(Booking booking);
-
-    //@Mapping(target = "item.id", source = "itemId")
-    Booking toBooking(BookingQueryDto bookingInputDto, Long bookerId);
+    */
 }

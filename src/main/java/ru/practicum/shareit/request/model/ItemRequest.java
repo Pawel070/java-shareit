@@ -13,21 +13,22 @@ import ru.practicum.shareit.user.model.User;
 @Setter
 @RequiredArgsConstructor
 @ToString
-//@EqualsAndHashCode
+@EqualsAndHashCode
+@AllArgsConstructor
 public class ItemRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; // УИН запроса
 
-//    @Column(name = "description")
+    @Column(name = "description")
     private String description; // что просим
 
-@ManyToOne(fetch = FetchType.LAZY)
-@JoinColumn(name = "user_id")
-    private User requestor; // кто отправил запрос
+    @ManyToOne
+    @JoinColumn(name = "requester_id")
+    private User requester; // кто отправил запрос
 
-//    @Column(name = "creation_date")
+    @Column(name = "creation_date")
     private LocalDateTime created; // дата и времени нового запроса
 
 }

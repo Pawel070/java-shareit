@@ -5,20 +5,19 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@Builder
+//@Getter
+//@Setter
+//@ToString
+//@AllArgsConstructor
+@Data
+//@Builder
 public class BookingDto {
 
     private Long id;
@@ -32,12 +31,11 @@ public class BookingDto {
     private LocalDateTime end;
 
     @NotNull(message = "Время бронирования не может быть нулевым.")
-    private Item item;
+    private Long itemId;
 
-    private User booker;
+    private Long bookerId;
 
     private Status status;
 
-    public BookingDto(Long id, LocalDateTime start, LocalDateTime end, ItemDto itemDto, UserDto userDto, Status status) {
-    }
+
 }

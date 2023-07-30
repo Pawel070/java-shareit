@@ -15,7 +15,6 @@ import ru.practicum.shareit.item.model.Item;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class CommentDto {
 
     private Long id;
@@ -24,8 +23,8 @@ public class CommentDto {
     @NotBlank
     private String text;
 
-    @JsonIgnore
-    private Item item;
+//    @JsonIgnore
+//    private Item item;
 
     private String authorName;
 
