@@ -47,6 +47,7 @@ build/
 
 ### VS Code ###
 .vscode/
+onto
 .db
 *.db
 db/*
