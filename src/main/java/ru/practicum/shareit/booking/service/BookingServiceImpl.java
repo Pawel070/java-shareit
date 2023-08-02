@@ -233,7 +233,7 @@ public class BookingServiceImpl implements BookingService {
         try {
             stateS = State.valueOf(state);
         } catch (IllegalArgumentException exception) {
-            throw new UnsupportedState("Unknown state: " + state);
+            throw new UnsupportedState("Неизвестный статус: " + state);
         }
         return stateS;
     }
