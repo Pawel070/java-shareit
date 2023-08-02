@@ -1,13 +1,16 @@
 package ru.practicum.shareit.request;
 
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
+
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 
@@ -19,7 +22,7 @@ class ItemRequestInfoDtoTest {
     @Autowired
     private JacksonTester<ItemRequestInfoDto> json;
 
-    LocalDateTime created = LocalDateTime.of(2023, 4, 10, 10, 10, 10);
+    LocalDateTime created = LocalDateTime.of(2023, 4, 07, 10, 10, 10);
 
     private final ItemDto itemDto = new ItemDto(
             1L,
@@ -36,7 +39,7 @@ class ItemRequestInfoDtoTest {
             null);
 
     @Test
-    void itemRequestResponseDto() throws Exception {
+    void itemRequestInfoDto() throws Exception {
         List<ItemDto> items = new ArrayList<>();
         items.add(itemDto);
         ItemRequestInfoDto.setItems(items);

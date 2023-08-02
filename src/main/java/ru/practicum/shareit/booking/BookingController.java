@@ -56,7 +56,7 @@ public class BookingController {
             @RequestParam(value = "state", defaultValue = "ALL", required = false) String state,
             @RequestParam(value = "from", defaultValue = "0", required = false) int from,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-                if (from < 0 || size < 1) {throw new ServerError("Ошибка в параметрах \"size\" или \"from\"");}
+        service.isCheckFromSize(from, size);
         log.info("BookingController getBookings: Получен GET-запрос с параметром STATE = {} from = {} size = {} " +
                 "списка бронирований пользователя с УИН {}", state, from, size, userId);
         return service.getAllBookingByUser(userId, state, PageRequest.of(from / size, size));
@@ -68,7 +68,7 @@ public class BookingController {
             @RequestParam(value = "state", defaultValue = "ALL", required = false) String state,
             @RequestParam(value = "from", defaultValue = "0", required = false) int from,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-                if (from < 0 || size < 1) {throw new ServerError("Ошибка в параметрах \"size\" или \"from\"");}
+        service.isCheckFromSize(from, size);
         log.info("BookingController getBookingsOwner: Получен GET-запрос с параметром STATE = {} from = {} size = {} на получение списка " +
                 "бронирований вещей пользователя с УИН {}", state, from, size, userId);
         return service.getAllBookingByOwner(userId, state, PageRequest.of(from / size, size));

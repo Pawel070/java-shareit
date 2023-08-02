@@ -24,7 +24,6 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; // УИН запроса
 
-    @NotBlank(message = "Пустой запрос - глупый запрос")
     @Column(name = "description")
     private String description; // что просим
 

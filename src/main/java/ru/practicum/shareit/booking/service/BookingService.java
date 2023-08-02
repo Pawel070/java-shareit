@@ -26,4 +26,5 @@ public interface BookingService {
 
     Booking getBookingWithUserBookedItem(Long itemId, Long userId);
 
+    void isCheckFromSize(Long from, Long size);
 }

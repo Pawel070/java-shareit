@@ -41,7 +41,7 @@ class BookingModelDtoTest {
             Status.WAITING);
 
     @Test
-    void BookingModelDto() throws Exception {
+    void bookingModelDto() throws Exception {
         var res = json.write(bookingModelDto);
 
         assertThat(res).hasJsonPath("$.id");

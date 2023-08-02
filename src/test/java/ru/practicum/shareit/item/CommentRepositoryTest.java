@@ -30,10 +30,10 @@ class CommentRepositoryTest {
     @Autowired
     private ItemRepository itemRepository;
 
-    Comment comment10;
-    Comment comment11;
-    Comment comment20;
-    Comment comment21;
+    Comment commentary01;
+    Comment commentary02;
+    Comment commentary03;
+    Comment commentary04;
     User user1;
     User user2;
     Item item1;
@@ -49,14 +49,14 @@ class CommentRepositoryTest {
         item2 = new Item(2L, "item2", "desc2", true, user2, null);
         itemRepository.save(item1);
         itemRepository.save(item2);
-        comment10 = new Comment(1L, "text10", item1, user2, LocalDateTime.now());
-        comment11 = new Comment(2L, "text11", item1, user2, LocalDateTime.now());
-        comment20 = new Comment(3L, "text20", item2, user1, LocalDateTime.now());
-        comment21 = new Comment(4L, "text21", item2, user1, LocalDateTime.now());
-        commentRepository.save(comment10);
-        commentRepository.save(comment11);
-        commentRepository.save(comment20);
-        commentRepository.save(comment21);
+        commentary01 = new Comment(1L, "text10", item1, user2, LocalDateTime.now());
+        commentary02 = new Comment(2L, "text11", item1, user2, LocalDateTime.now());
+        commentary03 = new Comment(3L, "text20", item2, user1, LocalDateTime.now());
+        commentary04 = new Comment(4L, "text21", item2, user1, LocalDateTime.now());
+        commentRepository.save(commentary01);
+        commentRepository.save(commentary02);
+        commentRepository.save(commentary03);
+        commentRepository.save(commentary04);
     }
 
     @Test
@@ -65,35 +65,35 @@ class CommentRepositoryTest {
 
         assertEquals(res.size(), 2);
 
-        assertEquals(res.get(0).getId(), comment10.getId());
-        assertEquals(res.get(0).getText(), comment10.getText());
-        assertEquals(res.get(0).getItem().getId(), comment10.getItem().getId());
-        assertEquals(res.get(0).getItem().getName(), comment10.getItem().getName());
-        assertEquals(res.get(0).getItem().getDescription(), comment10.getItem().getDescription());
-        assertEquals(res.get(0).getItem().getAvailable(), comment10.getItem().getAvailable());
-        assertEquals(res.get(0).getItem().getOwner().getId(), comment10.getItem().getOwner().getId());
-        assertEquals(res.get(0).getItem().getOwner().getName(), comment10.getItem().getOwner().getName());
-        assertEquals(res.get(0).getItem().getOwner().getEmail(), comment10.getItem().getOwner().getEmail());
-        assertEquals(res.get(0).getItem().getRequest(), comment10.getItem().getRequest());
-        assertEquals(res.get(0).getAuthor().getId(), comment10.getAuthor().getId());
-        assertEquals(res.get(0).getAuthor().getName(), comment10.getAuthor().getName());
-        assertEquals(res.get(0).getAuthor().getEmail(), comment10.getAuthor().getEmail());
-        assertEquals(res.get(0).getCreated().toString(), comment10.getCreated().toString());
+        assertEquals(res.get(0).getId(), commentary01.getId());
+        assertEquals(res.get(0).getText(), commentary01.getText());
+        assertEquals(res.get(0).getItem().getId(), commentary01.getItem().getId());
+        assertEquals(res.get(0).getItem().getName(), commentary01.getItem().getName());
+        assertEquals(res.get(0).getItem().getDescription(), commentary01.getItem().getDescription());
+        assertEquals(res.get(0).getItem().getAvailable(), commentary01.getItem().getAvailable());
+        assertEquals(res.get(0).getItem().getOwner().getId(), commentary01.getItem().getOwner().getId());
+        assertEquals(res.get(0).getItem().getOwner().getName(), commentary01.getItem().getOwner().getName());
+        assertEquals(res.get(0).getItem().getOwner().getEmail(), commentary01.getItem().getOwner().getEmail());
+        assertEquals(res.get(0).getItem().getRequest(), commentary01.getItem().getRequest());
+        assertEquals(res.get(0).getAuthor().getId(), commentary01.getAuthor().getId());
+        assertEquals(res.get(0).getAuthor().getName(), commentary01.getAuthor().getName());
+        assertEquals(res.get(0).getAuthor().getEmail(), commentary01.getAuthor().getEmail());
+        assertEquals(res.get(0).getCreated().toString(), commentary01.getCreated().toString());
 
-        assertEquals(res.get(1).getId(), comment11.getId());
-        assertEquals(res.get(1).getText(), comment11.getText());
-        assertEquals(res.get(1).getItem().getId(), comment11.getItem().getId());
-        assertEquals(res.get(1).getItem().getName(), comment11.getItem().getName());
-        assertEquals(res.get(1).getItem().getDescription(), comment11.getItem().getDescription());
-        assertEquals(res.get(1).getItem().getAvailable(), comment11.getItem().getAvailable());
-        assertEquals(res.get(1).getItem().getOwner().getId(), comment11.getItem().getOwner().getId());
-        assertEquals(res.get(1).getItem().getOwner().getName(), comment11.getItem().getOwner().getName());
-        assertEquals(res.get(1).getItem().getOwner().getEmail(), comment11.getItem().getOwner().getEmail());
-        assertEquals(res.get(1).getItem().getRequest(), comment11.getItem().getRequest());
-        assertEquals(res.get(1).getAuthor().getId(), comment11.getAuthor().getId());
-        assertEquals(res.get(1).getAuthor().getName(), comment11.getAuthor().getName());
-        assertEquals(res.get(1).getAuthor().getEmail(), comment11.getAuthor().getEmail());
-        assertEquals(res.get(1).getCreated().toString(), comment11.getCreated().toString());
+        assertEquals(res.get(1).getId(), commentary02.getId());
+        assertEquals(res.get(1).getText(), commentary02.getText());
+        assertEquals(res.get(1).getItem().getId(), commentary02.getItem().getId());
+        assertEquals(res.get(1).getItem().getName(), commentary02.getItem().getName());
+        assertEquals(res.get(1).getItem().getDescription(), commentary02.getItem().getDescription());
+        assertEquals(res.get(1).getItem().getAvailable(), commentary02.getItem().getAvailable());
+        assertEquals(res.get(1).getItem().getOwner().getId(), commentary02.getItem().getOwner().getId());
+        assertEquals(res.get(1).getItem().getOwner().getName(), commentary02.getItem().getOwner().getName());
+        assertEquals(res.get(1).getItem().getOwner().getEmail(), commentary02.getItem().getOwner().getEmail());
+        assertEquals(res.get(1).getItem().getRequest(), commentary02.getItem().getRequest());
+        assertEquals(res.get(1).getAuthor().getId(), commentary02.getAuthor().getId());
+        assertEquals(res.get(1).getAuthor().getName(), commentary02.getAuthor().getName());
+        assertEquals(res.get(1).getAuthor().getEmail(), commentary02.getAuthor().getEmail());
+        assertEquals(res.get(1).getCreated().toString(), commentary02.getCreated().toString());
     }
 
     @Test
@@ -104,34 +104,34 @@ class CommentRepositoryTest {
 
         assertEquals(res.size(), 2);
 
-        assertEquals(res.get(0).getId(), comment20.getId());
-        assertEquals(res.get(0).getText(), comment20.getText());
-        assertEquals(res.get(0).getItem().getId(), comment20.getItem().getId());
-        assertEquals(res.get(0).getItem().getName(), comment20.getItem().getName());
-        assertEquals(res.get(0).getItem().getDescription(), comment20.getItem().getDescription());
-        assertEquals(res.get(0).getItem().getAvailable(), comment20.getItem().getAvailable());
-        assertEquals(res.get(0).getItem().getOwner().getId(), comment20.getItem().getOwner().getId());
-        assertEquals(res.get(0).getItem().getOwner().getName(), comment20.getItem().getOwner().getName());
-        assertEquals(res.get(0).getItem().getOwner().getEmail(), comment20.getItem().getOwner().getEmail());
-        assertEquals(res.get(0).getItem().getRequest(), comment20.getItem().getRequest());
-        assertEquals(res.get(0).getAuthor().getId(), comment20.getAuthor().getId());
-        assertEquals(res.get(0).getAuthor().getName(), comment20.getAuthor().getName());
-        assertEquals(res.get(0).getAuthor().getEmail(), comment20.getAuthor().getEmail());
-        assertEquals(res.get(0).getCreated().toString(), comment20.getCreated().toString());
+        assertEquals(res.get(0).getId(), commentary03.getId());
+        assertEquals(res.get(0).getText(), commentary03.getText());
+        assertEquals(res.get(0).getItem().getId(), commentary03.getItem().getId());
+        assertEquals(res.get(0).getItem().getName(), commentary03.getItem().getName());
+        assertEquals(res.get(0).getItem().getDescription(), commentary03.getItem().getDescription());
+        assertEquals(res.get(0).getItem().getAvailable(), commentary03.getItem().getAvailable());
+        assertEquals(res.get(0).getItem().getOwner().getId(), commentary03.getItem().getOwner().getId());
+        assertEquals(res.get(0).getItem().getOwner().getName(), commentary03.getItem().getOwner().getName());
+        assertEquals(res.get(0).getItem().getOwner().getEmail(), commentary03.getItem().getOwner().getEmail());
+        assertEquals(res.get(0).getItem().getRequest(), commentary03.getItem().getRequest());
+        assertEquals(res.get(0).getAuthor().getId(), commentary03.getAuthor().getId());
+        assertEquals(res.get(0).getAuthor().getName(), commentary03.getAuthor().getName());
+        assertEquals(res.get(0).getAuthor().getEmail(), commentary03.getAuthor().getEmail());
+        assertEquals(res.get(0).getCreated().toString(), commentary03.getCreated().toString());
 
-        assertEquals(res.get(1).getId(), comment21.getId());
-        assertEquals(res.get(1).getText(), comment21.getText());
-        assertEquals(res.get(1).getItem().getId(), comment21.getItem().getId());
-        assertEquals(res.get(1).getItem().getName(), comment21.getItem().getName());
-        assertEquals(res.get(1).getItem().getDescription(), comment21.getItem().getDescription());
-        assertEquals(res.get(1).getItem().getAvailable(), comment21.getItem().getAvailable());
-        assertEquals(res.get(1).getItem().getOwner().getId(), comment21.getItem().getOwner().getId());
-        assertEquals(res.get(1).getItem().getOwner().getName(), comment21.getItem().getOwner().getName());
-        assertEquals(res.get(1).getItem().getOwner().getEmail(), comment21.getItem().getOwner().getEmail());
-        assertEquals(res.get(1).getItem().getRequest(), comment21.getItem().getRequest());
-        assertEquals(res.get(1).getAuthor().getId(), comment21.getAuthor().getId());
-        assertEquals(res.get(1).getAuthor().getName(), comment21.getAuthor().getName());
-        assertEquals(res.get(1).getAuthor().getEmail(), comment21.getAuthor().getEmail());
-        assertEquals(res.get(1).getCreated().toString(), comment21.getCreated().toString());
+        assertEquals(res.get(1).getId(), commentary04.getId());
+        assertEquals(res.get(1).getText(), commentary04.getText());
+        assertEquals(res.get(1).getItem().getId(), commentary04.getItem().getId());
+        assertEquals(res.get(1).getItem().getName(), commentary04.getItem().getName());
+        assertEquals(res.get(1).getItem().getDescription(), commentary04.getItem().getDescription());
+        assertEquals(res.get(1).getItem().getAvailable(), commentary04.getItem().getAvailable());
+        assertEquals(res.get(1).getItem().getOwner().getId(), commentary04.getItem().getOwner().getId());
+        assertEquals(res.get(1).getItem().getOwner().getName(), commentary04.getItem().getOwner().getName());
+        assertEquals(res.get(1).getItem().getOwner().getEmail(), commentary04.getItem().getOwner().getEmail());
+        assertEquals(res.get(1).getItem().getRequest(), commentary04.getItem().getRequest());
+        assertEquals(res.get(1).getAuthor().getId(), commentary04.getAuthor().getId());
+        assertEquals(res.get(1).getAuthor().getName(), commentary04.getAuthor().getName());
+        assertEquals(res.get(1).getAuthor().getEmail(), commentary04.getAuthor().getEmail());
+        assertEquals(res.get(1).getCreated().toString(), commentary04.getCreated().toString());
     }
 }

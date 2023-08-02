@@ -49,6 +49,7 @@ public class ItemController {
             @RequestHeader(USER_ID) Long id,
             @RequestParam(value = "from", defaultValue = "0", required = false) int from,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+            itemService.isCheckFromSize(from, size);
         log.info("ItemController: Получен GET-запрос на получение всех вещей владельца с УИН {} с from {} и size {}", id, from, size);
         return itemService.getItemsByOwner(id,  PageRequest.of(from / size, size));
     }
@@ -73,6 +74,7 @@ public class ItemController {
             @RequestParam String text,
             @RequestParam(value = "from", defaultValue = "0", required = false) int from,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+            itemService.isCheckFromSize(from, size);
         log.info("ItemController: Получен GET-запрос на поиск вещи : {} с from {} и size {} от {} ", text, from, size, userId);
         return itemService.getAvailableItems(userId, text, PageRequest.of(from / size, size));
     }

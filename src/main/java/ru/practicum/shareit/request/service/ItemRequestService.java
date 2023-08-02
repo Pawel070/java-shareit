@@ -16,4 +16,6 @@ public interface ItemRequestService {
 
     ItemRequestInfoDto getItemRequestById(Long requestId, Long userId);
 
+    void isCheckFromSize(Long from, Long size);
+
 }

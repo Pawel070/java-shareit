@@ -18,7 +18,7 @@ import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
 @JsonTest
-class AnswerItemDtoTest {
+class ItemInfoDtoTest {
 
     @Autowired
     private JacksonTester<ItemInfoDto> json;
@@ -34,14 +34,14 @@ class AnswerItemDtoTest {
             "name",
             "description",
             true,
-            new UserDto(1L, "userName", "mail@ya.ru"),
+            new UserDto(1L, "userName", "mail@mail.ru"),
             null,
             new BookingInfoDto(1L, 2L, start1, end1),
             new BookingInfoDto(2L, 3L, start2, end2),
             List.of(commentDto));
 
     @Test
-    void AnswerItemDto() throws Exception {
+    void itemInfoDto() throws Exception {
         var res = json.write(answerItemDto);
 
         assertThat(res).hasJsonPath("$.id");

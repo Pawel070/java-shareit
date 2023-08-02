@@ -41,6 +41,7 @@ public class ItemRequestController {
             @RequestHeader(USER_ID) Long userId,
             @RequestParam(value = "from", defaultValue = "0", required = false) int from,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        itemRequestService.isCheckFromSize(from, size);
         log.info("ItemRequestController: Получен GET - запрос : Получить список запросов from {} и size {} пользователя с УИД {} ", from, size, userId);
         return itemRequestService.getItemRequests(userId, PageRequest.of(from / size, size));
     }

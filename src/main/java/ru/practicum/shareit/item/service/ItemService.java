@@ -14,7 +14,7 @@ public interface ItemService {
 
     CommentDto createComment(CommentDto commentDto, Long itemId, Long userId);
 
-    List<ItemInfoDto>  getItemsByOwner(Long id, Pageable pageable);
+    List<ItemInfoDto> getItemsByOwner(Long id, Pageable pageable);
 
     ItemInfoDto getItemById(Long id, Long userId);
 
@@ -33,5 +33,7 @@ public interface ItemService {
     void deleteItemsByUser(Long userId);
 
     boolean isCheckItemOwner(Long itemId, Long userId);
+
+    void isCheckFromSize(Long from, Long size);
 
 }

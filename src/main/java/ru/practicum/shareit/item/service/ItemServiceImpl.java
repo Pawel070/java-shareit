@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toList;
 import static ru.practicum.shareit.service.MyConstants.SORT_ASC;
 import static ru.practicum.shareit.service.MyConstants.SORT_DESC;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -252,6 +250,12 @@ public class ItemServiceImpl implements ItemService {
             boo = true;
         }
         return boo;
+    }
+
+    @Override
+    public void isCheckFromSize(Long from, Long size){
+        log.info("ItemServiceImpl isCheckFromSize: Проверка from {} и size {}", from, size);
+        if (from < 0 || size < 1) { throw new ru.practicum.shareit.exceptions.EntityNotAvailable("Ошибочный параметр \"size\" или \"from\""); }
     }
 
 }

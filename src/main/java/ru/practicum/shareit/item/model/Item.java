@@ -28,16 +28,12 @@ public class Item {
     @Column(name = "id", nullable = false)
     private Long id; // УИН вещи
 
-    @NotBlank
     @Column(name = "name", nullable = false)
     private String name; // название
 
-   @NotEmpty(message = "Описание товара не может быть пустым")
    @Column(name = "description", nullable = false)
     private String description; // описание
 
-    @BooleanFlag
-    @NotNull(message = "Cтатус элемента пустой.")
     @Column(name = "is_available", nullable = false)
     private Boolean available; // статус доступности аренды
 

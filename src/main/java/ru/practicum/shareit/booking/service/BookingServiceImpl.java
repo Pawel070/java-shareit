@@ -134,7 +134,6 @@ public class BookingServiceImpl implements BookingService {
         switch (stateS) {
             case ALL:
                 bookings = repository.findAllByBooker_IdOrderByStartDesc(userId, pageable);
-
                 break;
             case PAST:
                 bookings = repository.findAllByBooker_IdAndEndIsBefore(userId, LocalDateTime.now(), SORT);
@@ -170,7 +169,6 @@ public class BookingServiceImpl implements BookingService {
         switch (stateS) {
             case ALL:
                 bookings = repository.findAllByItem_Owner_IdOrderByStartDesc(userId, pageable);
-
                 break;
             case PAST:
                 bookings = repository.findAllByItem_Owner_IdAndEndIsBefore(userId, LocalDateTime.now(), SORT);
@@ -238,6 +236,11 @@ public class BookingServiceImpl implements BookingService {
             throw new UnsupportedState("Unknown state: " + state);
         }
         return stateS;
+    }
+    @Override
+    public void isCheckFromSize(Long from, Long size){
+        log.info("ItemServiceImpl isCheckFromSize: Проверка from {} и size {}", from, size);
+        if (from < 0 || size < 1) { throw new ru.practicum.shareit.exceptions.EntityNotAvailable("Ошибочный параметр \"size\" или \"from\""); }
     }
 
 }

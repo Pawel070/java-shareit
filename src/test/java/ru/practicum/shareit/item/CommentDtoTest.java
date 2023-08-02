@@ -21,7 +21,7 @@ class CommentDtoTest {
     private final CommentDto commentDto = new CommentDto(1L, "text", "author", LocalDateTime.now());
 
     @Test
-    void ItemInfoDto() throws Exception {
+    void commentDto() throws Exception {
         var res = json.write(commentDto);
 
         assertThat(res).hasJsonPath("$.id");
