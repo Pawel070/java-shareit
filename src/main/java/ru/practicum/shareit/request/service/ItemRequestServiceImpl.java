@@ -1,6 +1,5 @@
 package ru.practicum.shareit.request.service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +15,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -28,6 +28,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private ItemRepository itemRepository;
     private UserRepository userRepository;
     private ItemMapper mapper;
+    private EntityCheck entityCheck;
 
     @Override
     public ItemRequestInfoDto createItemRequest(Long id, ItemRequestDto itemRequestDto) {
@@ -39,9 +40,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestInfoDto> getUsersItemRequests(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new NotFoundException("ItemRequestServiceImpl createItemRequest : Пользователь с УИН " + id + " не существует.");
-        }
+        entityCheck.isCheckUserId(id);
         List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(id);
         return requests.stream()
                 .map(req -> mapper.toItemRequestInfoDto(req, itemRepository.findAllByRequest_IdOrderByIdDesc(req.getId())))
@@ -50,9 +49,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestInfoDto> getItemRequests(Long id, Pageable pageable) {
-        if (!userRepository.existsById(id)) {
-            throw new NotFoundException("ItemRequestServiceImpl createItemRequest : Пользователь с УИН " + id + " не существует.");
-        }
+        entityCheck.isCheckUserId(id);
         List<ItemRequest> requests = itemRequestRepository.findRequestsWithoutOwner(id, pageable);
         return requests.stream()
                 .map(request -> mapper.toItemRequestInfoDto(request,
@@ -62,20 +59,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestInfoDto getItemRequestById(Long requestId, Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException("ItemRequestServiceImpl createItemRequest : Пользователь с УИН " + id + " не существует.");
-        }
+        entityCheck.isCheckUserId(id);
         ItemRequest itemRequest = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("ItemRequestServiceImpl createItemRequest : Запрос на вещь с УИН" + requestId + " не существует."));
         return mapper.toItemRequestInfoDto(itemRequest, itemRepository.findAllByRequest_IdOrderByIdDesc(itemRequest.getId()));
-    }
-
-    @Override
-    public void isCheckFromSize(Long from, Long size) {
-        log.info("ItemServiceImpl isCheckFromSize: Проверка from {} и size {}", from, size);
-        if (from < 0 || size < 1) {
-            throw new ru.practicum.shareit.exceptions.EntityNotAvailable("Ошибочный параметр \"size\" или \"from\"");
-        }
     }
 
 }

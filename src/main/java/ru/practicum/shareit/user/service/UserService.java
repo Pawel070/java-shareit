@@ -19,6 +19,4 @@ public interface UserService {
 
     User findUserById(Long id);
 
-    boolean isExistUser(Long userId);
-
 }

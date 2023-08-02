@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
+import ru.practicum.shareit.service.EntityCheckImpl;
 
 @Slf4j
 @RestController
@@ -21,7 +22,8 @@ import ru.practicum.shareit.request.service.ItemRequestService;
 @RequiredArgsConstructor
 public class ItemRequestController {
 
-    private final ItemRequestService itemRequestService;
+    private ItemRequestService itemRequestService;
+    private EntityCheckImpl emplyTesting;
 
     @PostMapping
     public ItemRequestInfoDto createItemRequest(@RequestHeader(USER_ID) Long userId,
@@ -41,14 +43,14 @@ public class ItemRequestController {
             @RequestHeader(USER_ID) Long userId,
             @RequestParam(value = "from", defaultValue = "0", required = false) int from,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
-        itemRequestService.isCheckFromSize(from, size);
+        emplyTesting.isCheckFromSize(from, size);
         log.info("ItemRequestController: Получен GET - запрос : Получить список запросов from {} и size {} пользователя с УИД {} ", from, size, userId);
         return itemRequestService.getItemRequests(userId, PageRequest.of(from / size, size));
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestInfoDto getItemRequest(@PathVariable("requestId") Long requestId,
-                                               @RequestHeader(USER_ID) Long userId) {
+                                             @RequestHeader(USER_ID) Long userId) {
         log.info("ItemRequestController: Получен GET - запрос : Получить запрос {} по УИН {} пользователя.", requestId, userId);
         return itemRequestService.getItemRequestById(requestId, userId);
     }

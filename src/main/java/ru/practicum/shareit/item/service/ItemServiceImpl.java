@@ -29,6 +29,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
@@ -48,6 +49,7 @@ public class ItemServiceImpl implements ItemService {
     private UserService userService;
     private ItemRequestRepository itemRequestRepository;
     private BookingRepository bookingRepository;
+    private EntityCheck entityCheck;
 
     @Override
     public ItemDto create(ItemDto itemDto, Long id) {
@@ -91,9 +93,7 @@ public class ItemServiceImpl implements ItemService {
         Map<Long, List<Comment>> comments = new HashMap<>();
         LocalDateTime now = LocalDateTime.now();
         log.info("ItemServiceImpl: Получен GET-запрос на получение списка вещей владельца с УИН {}", id);
-        if (!userRepository.existsById(id)) {
-            throw new NotFoundException("ItemServiceImpl getItemsByOwner: Пльзаватель с УИН " + id + " не существует.");
-        }
+        entityCheck.isCheckUserId(id);
         List<Item> items = repository.findByOwner_Id(id, pageable);
         List<Long> itemsId = items
                 .stream()
@@ -250,12 +250,6 @@ public class ItemServiceImpl implements ItemService {
             boo = true;
         }
         return boo;
-    }
-
-    @Override
-    public void isCheckFromSize(Long from, Long size){
-        log.info("ItemServiceImpl isCheckFromSize: Проверка from {} и size {}", from, size);
-        if (from < 0 || size < 1) { throw new ru.practicum.shareit.exceptions.EntityNotAvailable("Ошибочный параметр \"size\" или \"from\""); }
     }
 
 }

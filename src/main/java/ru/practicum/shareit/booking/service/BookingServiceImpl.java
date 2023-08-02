@@ -10,11 +10,9 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
@@ -28,6 +26,7 @@ import ru.practicum.shareit.expections.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.service.State;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
@@ -44,6 +43,7 @@ public class BookingServiceImpl implements BookingService {
     private BookingMapper mapper;
     private UserService userService;
     private ItemService itemService;
+    private EntityCheck entityCheck;
 
     @Override
     public BookingModelDto create(BookingDto bookingDto, Long bookerId) {
@@ -76,7 +76,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingModelDto update(Long bookingId, Long userId, Boolean accepted) {
         log.info("BookingServiceImpl: isExistUser - update");
-        userService.isExistUser(userId);
+        entityCheck.isCheckUserId(userId);
         Booking booking = repository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Такого бронирования УИН " + bookingId + " нет."));
         if (booking.getEnd().isBefore(LocalDateTime.now())) {
@@ -114,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingModelDto getBookingById(Long bookingId, Long userId) {
         log.info("BookingServiceImpl: isExistUser - getBookingById");
-        userService.isExistUser(userId);
+        entityCheck.isCheckUserId(userId);
         Booking booking = repository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Такого бронирования УИН " + bookingId + " нет."));
         if (booking.getBooker().getId().equals(userId) || itemService.isCheckItemOwner(booking.getItem().getId(), userId)) {
@@ -129,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
 
         State stateS = getState(ofProcess);
         log.info("BookingServiceImpl: isExistUser - getBookings {} статус ", stateS);
-        userService.isExistUser(userId);
+        entityCheck.isCheckUserId(userId);
         List<Booking> bookings = new ArrayList<>();
         switch (stateS) {
             case ALL:
@@ -155,7 +155,7 @@ public class BookingServiceImpl implements BookingService {
         List<BookingModelDto> bookingModelDtos = bookings.isEmpty() ? Collections.emptyList() : bookings.stream()
                 .map(mapper::toBookingModelDto)
                 .collect(Collectors.toList());
-        log.info("==> {} в статусе {} ",bookingModelDtos, stateS);
+        log.info("==> {} в статусе {} ", bookingModelDtos, stateS);
         return bookingModelDtos;
     }
 
@@ -163,7 +163,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingModelDto> getAllBookingByOwner(Long userId, String ofProcess, Pageable pageable) {
         State stateS = getState(ofProcess);
         log.info("BookingServiceImpl: isExistUser - getBookingsOwner {} ", stateS);
-        userService.isExistUser(userId);
+        entityCheck.isCheckUserId(userId);
         List<Booking> bookings = new ArrayList<>();
         Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
         switch (stateS) {
@@ -190,7 +190,7 @@ public class BookingServiceImpl implements BookingService {
         List<BookingModelDto> collect = bookings.stream()
                 .map(mapper::toBookingModelDto)
                 .collect(Collectors.toList());
-        log.info("==> {} в статусе {} ",collect, stateS);
+        log.info("==> {} в статусе {} ", collect, stateS);
         return collect;
     }
 
@@ -236,11 +236,6 @@ public class BookingServiceImpl implements BookingService {
             throw new UnsupportedState("Unknown state: " + state);
         }
         return stateS;
-    }
-    @Override
-    public void isCheckFromSize(Long from, Long size){
-        log.info("ItemServiceImpl isCheckFromSize: Проверка from {} и size {}", from, size);
-        if (from < 0 || size < 1) { throw new ru.practicum.shareit.exceptions.EntityNotAvailable("Ошибочный параметр \"size\" или \"from\""); }
     }
 
 }
