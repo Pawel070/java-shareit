@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @Builder
 public class BookingModelDto {
     private Long id;

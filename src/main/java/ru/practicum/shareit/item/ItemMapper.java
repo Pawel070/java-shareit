@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,6 +13,9 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -21,8 +26,18 @@ public interface ItemMapper {
     @Mapping(target = "authorName", source = "author.name")
     CommentDto toCommentDto(Comment comment);
 
-    Item toItem(ItemDto itemDto);
+    default Item toItem(ItemDto itemDto, User owner, ItemRequest request) {
+        return Item.builder()
+                .id(itemDto.getId())
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .owner(owner)
+                .request(request)
+                .build();
+    }
 
+    @Mapping(target = "requestId", source = "request.id")
     ItemDto toItemDto(Item item);
 
     ItemDto toItemExtDto(Item item);
@@ -56,6 +71,25 @@ public interface ItemMapper {
     }
 
     UserDto toUserDto(User owner);
+
+    ItemRequest toItemRequest(ItemRequestDto itemRequestDto);
+
+    default ItemRequestInfoDto toItemRequestInfoDto(ItemRequest itemRequest, List<Item> items) {
+        return ItemRequestInfoDto.builder()
+                .id(itemRequest.getId())
+                .description(itemRequest.getDescription())
+                .created(itemRequest.getCreated())
+                .items(items.stream().map(this::toItemDto).collect(Collectors.toList()))
+                .build();
+    }
+
+    default ItemRequest toItemRequest(ItemRequestDto request, User requester) {
+        return ItemRequest.builder()
+                .description(request.getDescription())
+                .requester(requester)
+                .created(LocalDateTime.now())
+                .build();
+    }
 
 }
 

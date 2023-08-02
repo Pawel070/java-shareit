@@ -7,13 +7,13 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.expections.ServerError;
 
 @Slf4j
 @RestController
@@ -51,18 +51,27 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingModelDto> getBookings(@RequestParam(defaultValue = "ALL", required = false) String state,
-                                             @RequestHeader(USER_ID) Long userId) {
-        log.info("BookingController getBookings: Получен GET-запрос с параметром STATE = {} списка бронирований " +
-                "пользователя с УИН {}", state, userId);
-        return service.getBookings(state, userId);
+    public List<BookingModelDto> getBookingsOwner(
+            @RequestHeader(USER_ID) Long userId,
+            @RequestParam(value = "state", defaultValue = "ALL", required = false) String state,
+            @RequestParam(value = "from", defaultValue = "0", required = false) int from,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+                if (from < 0 || size < 1) {throw new ServerError("Ошибка в параметрах \"size\" или \"from\"");}
+        log.info("BookingController getBookings: Получен GET-запрос с параметром STATE = {} from = {} size = {} " +
+                "списка бронирований пользователя с УИН {}", state, from, size, userId);
+        return service.getAllBookingByUser(userId, state, PageRequest.of(from / size, size));
     }
 
     @GetMapping("/owner")
-    public List<BookingModelDto> getBookingsOwner(@RequestParam(defaultValue = "ALL", required = false) String state,
-                                                  @RequestHeader(USER_ID) Long userId) {
-        log.info("BookingController getBookingsOwner: Получен GET-запрос с параметром STATE = {} на получение списка " +
-                "бронирований вещей пользователя с УИН {}", state, userId);
-        return service.getBookingsOwner(state, userId);
+    public List<BookingModelDto> getAllBookingByOwner(
+            @RequestHeader(USER_ID) Long userId,
+            @RequestParam(value = "state", defaultValue = "ALL", required = false) String state,
+            @RequestParam(value = "from", defaultValue = "0", required = false) int from,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+                if (from < 0 || size < 1) {throw new ServerError("Ошибка в параметрах \"size\" или \"from\"");}
+        log.info("BookingController getBookingsOwner: Получен GET-запрос с параметром STATE = {} from = {} size = {} на получение списка " +
+                "бронирований вещей пользователя с УИН {}", state, from, size, userId);
+        return service.getAllBookingByOwner(userId, state, PageRequest.of(from / size, size));
     }
+
 }

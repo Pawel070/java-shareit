@@ -1,25 +1,20 @@
 package ru.practicum.shareit.request.dto;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.*;
+import ru.practicum.shareit.item.dto.ItemDto;
 
 @Getter
 @Setter
+@ToString
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class ItemRequestDto {
-
+public class ItemRequestInfoDto {
     private Long id;
-
-    @NotBlank(message = "Нет описания запрашиваемой вещи.")
     private String description;
-
-    private Long requesterId;
-
     private LocalDateTime created;
+    private List<ItemDto> items;
 
 }
-

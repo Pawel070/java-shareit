@@ -1,9 +1,9 @@
 package ru.practicum.shareit.expections;
 
 import java.rmi.ServerError;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,6 +36,13 @@ public class ErrorHandler {
         return new ErrorResponse(exception.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT) // 409
+    public Map<String, String> conflictException(final ru.practicum.shareit.exceptions.ConflictException exception) {
+        return Map.of("409", exception.getMessage());
+    }
+
+
     @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
@@ -64,5 +71,12 @@ public class ErrorHandler {
     public ErrorResponse unsupportedState(final UnsupportedState exception) {
         return new ErrorResponse(exception.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> entityNotAvailable(final ru.practicum.shareit.exceptions.EntityNotAvailable exception) {
+        return Map.of("400", exception.getMessage());
+    }
+
 
 }

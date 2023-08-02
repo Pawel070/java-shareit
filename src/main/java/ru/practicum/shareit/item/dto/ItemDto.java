@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.model.User;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @ToString
 public class ItemDto {

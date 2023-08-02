@@ -5,11 +5,13 @@ import javax.validation.constraints.NotEmpty;
 
 import java.time.LocalDateTime;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommentDto {
 
     private Long id;

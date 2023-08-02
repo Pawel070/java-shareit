@@ -13,6 +13,8 @@ import ru.practicum.shareit.booking.model.Status;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class BookingDto {
 

@@ -14,6 +14,8 @@ import ru.practicum.shareit.user.model.User;
 @Entity
 @Table(name = "bookings")
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 //@EqualsAndHashCode
 public class Booking {
 

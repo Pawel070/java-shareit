@@ -6,10 +6,9 @@ import javax.validation.constraints.NotBlank;
 
 import lombok.*;
 
-import org.hibernate.Hibernate;
-
 @Getter
 @Setter
+@EqualsAndHashCode(of = "email")
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -30,18 +29,5 @@ public class User {
     @NotBlank(message = "Электронная почта пользователя отсутствует")
     @Column(name = "email", nullable = false, unique = true)
     private String email; // адрес электронной почты
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        User user = (User) o;
-        return email.equals(user.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -44,9 +45,12 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemInfoDto> getItemsByOwner(@RequestHeader(USER_ID) Long id) {
-        log.info("ItemController: Получен GET-запрос на получение всех вещей владельца с УИН {}", id);
-        return itemService.getItemsByOwner(id);
+    public List<ItemInfoDto> getItemsByOwner(
+            @RequestHeader(USER_ID) Long id,
+            @RequestParam(value = "from", defaultValue = "0", required = false) int from,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        log.info("ItemController: Получен GET-запрос на получение всех вещей владельца с УИН {} с from {} и size {}", id, from, size);
+        return itemService.getItemsByOwner(id,  PageRequest.of(from / size, size));
     }
 
     @PatchMapping("/{itemId}")
@@ -64,10 +68,14 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> getUsersAvailableItems(@RequestHeader(USER_ID) Long userId,
-                                                @RequestParam String text) {
-        log.info("ItemController: Получен GET-запрос на поиск вещи : {}", text);
-        return itemService.getAvailableItems(userId, text);
+    public List<ItemDto> getUsersAvailableItems(
+            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestParam String text,
+            @RequestParam(value = "from", defaultValue = "0", required = false) int from,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+        log.info("ItemController: Получен GET-запрос на поиск вещи : {} с from {} и size {} от {} ", text, from, size, userId);
+        return itemService.getAvailableItems(userId, text, PageRequest.of(from / size, size));
     }
+
 }
 

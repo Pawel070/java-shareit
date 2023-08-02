@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
             log.info("UserServiceImpl: Пользователь {}  с УИД : {} создан", mapper.toUser(userDto1), userDto1.getId());
             return userDto1;
         } catch (ConstraintViolationException e) {
-            throw new MethodArgumentNotValidException("Mail " + userDto.getEmail() + " already used by another user");
+            throw new MethodArgumentNotValidException("Mail " + userDto.getEmail() + " уже используется другим пользователем.");
         }
     }
 

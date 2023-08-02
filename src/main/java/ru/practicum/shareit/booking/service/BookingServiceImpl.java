@@ -1,8 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
-
 import static ru.practicum.shareit.service.MyConstants.SORT;
-import static ru.practicum.shareit.service.State.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -126,14 +125,16 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingModelDto> getBookings(String state, Long userId) {
-        State stateS = getState(state);
+    public List<BookingModelDto> getAllBookingByUser(Long userId, String ofProcess, Pageable pageable) {
+
+        State stateS = getState(ofProcess);
         log.info("BookingServiceImpl: isExistUser - getBookings {} статус ", stateS);
         userService.isExistUser(userId);
         List<Booking> bookings = new ArrayList<>();
         switch (stateS) {
             case ALL:
-                bookings = repository.findAllByBooker_IdOrderByStartDesc(userId);
+                bookings = repository.findAllByBooker_IdOrderByStartDesc(userId, pageable);
+
                 break;
             case PAST:
                 bookings = repository.findAllByBooker_IdAndEndIsBefore(userId, LocalDateTime.now(), SORT);
@@ -160,15 +161,16 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingModelDto> getBookingsOwner(String state, Long userId) {
-        State stateS = getState(state);
+    public List<BookingModelDto> getAllBookingByOwner(Long userId, String ofProcess, Pageable pageable) {
+        State stateS = getState(ofProcess);
         log.info("BookingServiceImpl: isExistUser - getBookingsOwner {} ", stateS);
         userService.isExistUser(userId);
         List<Booking> bookings = new ArrayList<>();
         Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
         switch (stateS) {
             case ALL:
-                bookings = repository.findAllByItem_Owner_IdOrderByStartDesc(userId);
+                bookings = repository.findAllByItem_Owner_IdOrderByStartDesc(userId, pageable);
+
                 break;
             case PAST:
                 bookings = repository.findAllByItem_Owner_IdAndEndIsBefore(userId, LocalDateTime.now(), SORT);
