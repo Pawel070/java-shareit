@@ -24,8 +24,8 @@ import ru.practicum.shareit.service.EntityCheckImpl;
 @RequiredArgsConstructor
 public class ItemController {
 
-    private ItemService itemService;
-    private EntityCheckImpl emplyTesting;
+    private final ItemService itemService;
+    private final EntityCheckImpl emplyTesting;
 
     @GetMapping("/{itemId}")
     public ItemInfoDto getItemById(@RequestHeader(USER_ID) Long ownerId, @PathVariable Long itemId) {

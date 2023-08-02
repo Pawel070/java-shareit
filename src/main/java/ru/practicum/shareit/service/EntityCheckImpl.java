@@ -15,7 +15,13 @@ public class EntityCheckImpl implements EntityCheck {
 
     @Override
     public void isCheckFromSize(int from, int size) {
-        log.info("Проверка from {} и size {} вызов из > {} ", from, size, "1");
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        String messageClass = "";
+        if (stackTraceElements.length >= 3) {
+            StackTraceElement element = stackTraceElements[2];
+            messageClass = element.getClassName() + ":" + element.getMethodName();
+        }
+        log.info("Проверка from {} и size {} вызов из > {} ", from, size, messageClass);
         if (from < 0 || size < 1) {
             throw new ru.practicum.shareit.exceptions.EntityNotAvailable("Ошибочный параметр \"size\" или \"from\"");
         }
@@ -23,7 +29,13 @@ public class EntityCheckImpl implements EntityCheck {
 
     @Override
     public void isCheckUserId(Long id) {
-        log.info("Проверка наличия пользователя с УИН  {} вызов из > {} ", id, "1"); // this.getClass().getSimpleName()
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        String messageClass = "";
+        if (stackTraceElements.length >= 3) {
+            StackTraceElement element = stackTraceElements[2];
+            messageClass = element.getClassName() + ":" + element.getMethodName();
+        }
+        log.info("Проверка наличия пользователя с УИН  {} вызов из > {} ", id, messageClass);
         if (repository.findById(id) == null) {
             throw new NotFoundException("UserServiceImpl isCheckUserId: Пользователь с УИД " + id + " не существует.");
         }

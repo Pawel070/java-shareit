@@ -21,13 +21,8 @@ import ru.practicum.shareit.service.EntityCheckImpl;
 @RequiredArgsConstructor
 public class BookingController {
 
-    private BookingService service;
-    private EntityCheckImpl emplyTesting;
-
-    @Autowired
-    public BookingController(BookingService bookingService) {
-        service = bookingService;
-    }
+    private final BookingService service;
+    private final EntityCheckImpl emplyTesting;
 
     @PostMapping
     public BookingModelDto create(

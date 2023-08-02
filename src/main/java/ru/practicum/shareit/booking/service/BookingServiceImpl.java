@@ -37,13 +37,13 @@ import ru.practicum.shareit.user.service.UserService;
 @AllArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
-    private BookingRepository repository;
-    private ItemRepository itemRepository;
-    private UserRepository userRepository;
-    private BookingMapper mapper;
-    private UserService userService;
-    private ItemService itemService;
-    private EntityCheck entityCheck;
+    private final BookingRepository repository;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final BookingMapper mapper;
+    private final UserService userService;
+    private final ItemService itemService;
+    private final EntityCheck entityCheck;
 
     @Override
     public BookingModelDto create(BookingDto bookingDto, Long bookerId) {

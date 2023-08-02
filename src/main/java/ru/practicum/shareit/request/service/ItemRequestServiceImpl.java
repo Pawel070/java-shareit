@@ -24,11 +24,11 @@ import ru.practicum.shareit.user.model.User;
 @RequiredArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
 
-    private ItemRequestRepository itemRequestRepository;
-    private ItemRepository itemRepository;
-    private UserRepository userRepository;
-    private ItemMapper mapper;
-    private EntityCheck entityCheck;
+    private final ItemRequestRepository itemRequestRepository;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final ItemMapper mapper;
+    private final EntityCheck entityCheck;
 
     @Override
     public ItemRequestInfoDto createItemRequest(Long id, ItemRequestDto itemRequestDto) {

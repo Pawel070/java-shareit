@@ -22,8 +22,8 @@ import ru.practicum.shareit.service.EntityCheckImpl;
 @RequiredArgsConstructor
 public class ItemRequestController {
 
-    private ItemRequestService itemRequestService;
-    private EntityCheckImpl emplyTesting;
+    private final ItemRequestService itemRequestService;
+    private final EntityCheckImpl emplyTesting;
 
     @PostMapping
     public ItemRequestInfoDto createItemRequest(@RequestHeader(USER_ID) Long userId,

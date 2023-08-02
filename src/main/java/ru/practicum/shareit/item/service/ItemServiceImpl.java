@@ -40,16 +40,16 @@ import ru.practicum.shareit.user.service.UserService;
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private ItemMapper mapper;
-    private BookingMapper bookingMapper;
-    private UserMapper userMapper;
-    private ItemRepository repository;
-    private UserRepository userRepository;
-    private CommentRepository commentRepository;
-    private UserService userService;
-    private ItemRequestRepository itemRequestRepository;
-    private BookingRepository bookingRepository;
-    private EntityCheck entityCheck;
+    private final ItemMapper mapper;
+    private final BookingMapper bookingMapper;
+    private final UserMapper userMapper;
+    private final ItemRepository repository;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final UserService userService;
+    private final ItemRequestRepository itemRequestRepository;
+    private final BookingRepository bookingRepository;
+    private final EntityCheck entityCheck;
 
     @Override
     public ItemDto create(ItemDto itemDto, Long id) {
@@ -61,11 +61,6 @@ public class ItemServiceImpl implements ItemService {
         } catch (NotFoundException exception) {
             throw new NotFoundException("ItemServiceImpl create: Запроса с id " + itemDto.getRequestId() + " не существует.");
         }
- /*       if (itemDto.getRequestId() != 0) {
-            request = itemRequestRepository.findById(itemDto.getRequestId())
-                    .orElseThrow(() -> new NotFoundException(
-                            "ItemServiceImpl create: Запрос вещи с УИН" + itemDto.getRequestId() + " не существует."));
-        }*/
         Item item = mapper.toItem(itemDto, owner, request);
         return mapper.toItemDto(repository.save(item));
     }

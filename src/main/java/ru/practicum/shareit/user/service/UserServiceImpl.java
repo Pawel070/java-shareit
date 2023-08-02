@@ -3,12 +3,15 @@ package ru.practicum.shareit.user.service;
 import static java.util.stream.Collectors.toList;
 
 import javax.transaction.Transactional;
+
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.expections.MethodArgumentNotValidException;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.expections.UserAlreadyExistsException;
@@ -22,8 +25,8 @@ import ru.practicum.shareit.user.model.User;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository repository;
-    private UserMapper mapper;
+    private final UserRepository repository;
+    private final UserMapper mapper;
 
     @Override
     public List<UserDto> getUsers() {
@@ -54,33 +57,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
-    /*
-        @Override
-        public UserDto create(UserDto userDto) {
-            log.info("UserServiceImpl: Получен POST-запрос '/users' {} ", userDto);
-            User user = mapper.toUser(userDto);
-            if (userDto.getId() != null) {
-                throw new IllegalArgumentException("УИН должен быть равен null.");
-            }
-            if (userDto.getName() == null || userDto.getName().isBlank()) {
-                log.info("UserServiceImpl: Имя пользователя не может быть пустым.");
-                throw new ConstraintViolationException("Имя пользователя не может быть пустым.");
-            }
-            if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-                log.info("UserServiceImpl: Email пользователя не может быть пустым.");
-                throw new ConstraintViolationException("Email пользователя не может быть пустым.");
-            }
-            if (!userDto.getEmail().contains("@")) {
-                log.info("UserServiceImpl: Email пользователя некорректен.");
-                throw new ConstraintViolationException("Email пользователя некорректен.");
-            }
-            log.info("UserServiceImpl: Предварительно создан пользователь с УИН : {}", user.getId());
-            UserDto userDto1 = mapper.toUserDto(repository.save(mapper.toUser(userDto)));
-            log.info("UserServiceImpl: Пользователь {}  с УИД : {} создан", userDto1, userDto1.getId());
-            return userDto1;
-        }
-    */
+    @Transactional
     @Override
     public UserDto update(UserDto userDto, Long id) {
         log.info("UserServiceImpl: Получен PUT-запрос на обновление пользователя с УИН {}", id);
@@ -116,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(Long id) {
-        log.info("UserServiceImpl: Поиск пользователя с УИН {} вызов из > {} ", id, this.getClass().getSimpleName());
+        log.info("UserServiceImpl: Поиск пользователя с УИН {} ", id);
         return repository.findById(id).orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + id + " не существует."));
     }
 
