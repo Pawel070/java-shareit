@@ -44,7 +44,7 @@ class ItemControllerTest {
     User owner;
     UserDto ownerDto;
     ItemDto itemDto;
-    ItemInfoDto ItemInfoDto;
+    ItemInfoDto itemInfoDto;
 
     @BeforeEach
     void beforeEach() {
