@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingRepository;
@@ -56,7 +58,7 @@ class ItemServiceImplIntegrationTest {
         itemDto.setDescription("desc");
         itemDto.setAvailable(true);
 
-        ItemDto savedItem = itemService.create(savedUser.getId(), itemDto);
+        ItemDto savedItem = itemService.create(itemDto, savedUser.getId());
 
         assertNotNull(itemDto);
         assertEquals(itemDto.getName(), savedItem.getName());
@@ -78,7 +80,7 @@ class ItemServiceImplIntegrationTest {
         itemDto.setAvailable(true);
         itemDto.setRequestId(1L);
 
-        assertThrows(NotFoundException.class, () -> itemService.create(savedUser.getId(), itemDto));
+        assertThrows(NotFoundException.class, () -> itemService.create(itemDto, savedUser.getId()));
     }
 
     @Test
@@ -98,7 +100,7 @@ class ItemServiceImplIntegrationTest {
         ItemDto newItemDto = new ItemDto();
         newItemDto.setName("newItem");
 
-        ItemDto updatedItemDto = itemService.update(oldItem.getId(), newItemDto, user.getId());
+        ItemDto updatedItemDto = itemService.update(newItemDto, user.getId(), oldItem.getId());
 
         assertEquals(updatedItemDto.getName(), newItemDto.getName());
         assertEquals(updatedItemDto.getDescription(), oldItem.getDescription());
@@ -122,7 +124,7 @@ class ItemServiceImplIntegrationTest {
         ItemDto itemDto = new ItemDto();
         itemDto.setDescription("update");
 
-        assertThrows(NotFoundException.class, () -> itemService.update(oldItem.getId(), itemDto, 99L));
+        assertThrows(NotFoundException.class, () -> itemService.update(itemDto, 99L, oldItem.getId()));
     }
 
     @Test
@@ -142,7 +144,7 @@ class ItemServiceImplIntegrationTest {
         ItemDto itemDto = new ItemDto();
         itemDto.setDescription("update");
 
-        assertThrows(NotFoundException.class, () -> itemService.update(99L, itemDto, savedUser.getId()));
+        assertThrows(NotFoundException.class, () -> itemService.update(itemDto, savedUser.getId(), 99L));
     }
 
     @Test
@@ -183,12 +185,12 @@ class ItemServiceImplIntegrationTest {
 
         ItemInfoDto itemInfoDto = itemService.getItemById(item.getId(), owner.getId());
 
-        assertNotNull(ItemInfoDto);
-        assertEquals(ItemInfoDto.getName(), item.getName());
-        assertEquals(ItemInfoDto.getDescription(), item.getDescription());
-        assertEquals(ItemInfoDto.getAvailable(), item.getAvailable());
-        assertEquals(ItemInfoDto.getLastBooking().getStart(), lastBooking.getStart());
-        assertEquals(ItemInfoDto.getNextBooking().getStart(), nextBooking.getStart());
+        assertNotNull(itemInfoDto);
+        assertEquals(itemInfoDto.getName(), item.getName());
+        assertEquals(itemInfoDto.getDescription(), item.getDescription());
+        assertEquals(itemInfoDto.getAvailable(), item.getAvailable());
+        assertEquals(itemInfoDto.getLastBooking().getStart(), lastBooking.getStart());
+        assertEquals(itemInfoDto.getNextBooking().getStart(), nextBooking.getStart());
     }
 
     @Test
@@ -218,7 +220,8 @@ class ItemServiceImplIntegrationTest {
         comment.setItem(savedItem1);
         commentRepository.save(comment);
 
-        List<ItemInfoDto> items = itemService.getItemById(user.getId(), 0, 10);
+        Pageable pageable =  PageRequest.of(0, 10);
+        List<ItemInfoDto> items = itemService.getItemsByOwner(user.getId(), pageable);
 
         assertNotNull(items);
         assertEquals(items.size(), 2);
@@ -226,30 +229,6 @@ class ItemServiceImplIntegrationTest {
         assertEquals(items.get(0).getComments().get(0).getText(), comment.getText());
         assertEquals(items.get(1).getName(), item2.getName());
         assertEquals(items.get(1).getComments().size(), 0);
-    }
-
-    @Test
-    void getItemsByUser_wrongDataForPagination() {
-        User user = new User();
-        user.setName("Alex");
-        user.setEmail("alex@ya.ru");
-        User savedUser = userRepository.save(user);
-
-        Item item1 = new Item();
-        item1.setName("item1");
-        item1.setDescription("desc1");
-        item1.setAvailable(true);
-        item1.setOwner(savedUser);
-        itemRepository.save(item1);
-
-        Item item2 = new Item();
-        item2.setName("item2");
-        item2.setDescription("desc2");
-        item2.setAvailable(true);
-        item2.setOwner(savedUser);
-        itemRepository.save(item2);
-
-        assertThrows(EntityNotAvailable.class, () -> itemService.getItemById(user.getId(), -1, 0));
     }
 
     @Test
@@ -280,7 +259,8 @@ class ItemServiceImplIntegrationTest {
         item3.setOwner(savedUser);
         itemRepository.save(item3);
 
-        List<ItemDto> items = itemService.getAvailableItems(user.getId(), "sea", 0, 10);
+        Pageable pageable =  PageRequest.of(0, 10);
+        List<ItemDto> items = itemService.getAvailableItems(user.getId(), "sea", pageable);
 
         assertNotNull(items);
         assertEquals(items.size(), 1);
@@ -320,7 +300,7 @@ class ItemServiceImplIntegrationTest {
         commentDto.setText("comment");
         commentDto.setAuthorName(savedUser.getName());
 
-        CommentDto savedComment = itemService.createComment(item.getId(), savedUser.getId(), commentDto);
+        CommentDto savedComment = itemService.createComment(commentDto, item.getId(), savedUser.getId());
 
         assertNotNull(savedComment);
         assertEquals(savedComment.getText(), commentDto.getText());
@@ -351,7 +331,7 @@ class ItemServiceImplIntegrationTest {
         commentDto.setAuthorName(savedUser.getName());
 
         assertThrows(NotFoundException.class,
-                () -> itemService.createComment(item.getId(), 99L, commentDto));
+                () -> itemService.createComment(commentDto, item.getId(), 99L));
     }
 
 }

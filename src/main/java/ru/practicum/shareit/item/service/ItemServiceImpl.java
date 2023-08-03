@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static ru.practicum.shareit.service.MyConstants.SORT_ASC;
 import static ru.practicum.shareit.service.MyConstants.SORT_DESC;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -55,14 +56,15 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(ItemDto itemDto, Long id) {
         log.info("ItemServiceImpl: Получен POST-запрос на создание вещи");
         User owner = userMapper.toUser(userService.getUser(id));
-        ItemRequest request;
-        try {
-            request = itemRequestRepository.findById(itemDto.getRequestId());
-        } catch (NotFoundException exception) {
-            throw new NotFoundException("ItemServiceImpl create: Запроса с id " + itemDto.getRequestId() + " не существует.");
+        ItemRequest request = null;
+        if (itemDto.getRequestId() != 0) {
+            request = itemRequestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException(
+                            "ItemServiceImpl create: Запроса с id " + itemDto.getRequestId() + " не существует."));
         }
         Item item = mapper.toItem(itemDto, owner, request);
         return mapper.toItemDto(repository.save(item));
+
     }
 
 

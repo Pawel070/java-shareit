@@ -42,6 +42,9 @@ import static ru.practicum.shareit.service.MyConstants.USER_ID;
 @AutoConfigureMockMvc
 class ItemRequestControllerTest {
 
+    ItemRequestInfoDto itemRequestInfoDto;
+    ItemRequestDto itemRequestDto;
+
     @MockBean
     ItemRequestService itemRequestService;
 
@@ -52,10 +55,6 @@ class ItemRequestControllerTest {
     ObjectMapper mapper;
 
     User user;
-
-    ItemRequestInfoDto itemRequestInfoDto;
-
-    ItemRequestDto itemRequestDto;
 
     @BeforeEach
     void beforeEach() {
@@ -84,9 +83,9 @@ class ItemRequestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(ItemRequestInfoDto.getId()), Long.class))
-                .andExpect(jsonPath("$.description", is(ItemRequestInfoDto.getDescription())))
-                .andExpect(jsonPath("$.created", is(ItemRequestInfoDto.getCreated().toString())));
+                .andExpect(jsonPath("$.id", is(itemRequestInfoDto.getId()), Long.class))
+                .andExpect(jsonPath("$.description", is(itemRequestInfoDto.getDescription())))
+                .andExpect(jsonPath("$.created", is(itemRequestInfoDto.getCreated().toString())));
     }
 
     @Test
@@ -127,8 +126,7 @@ class ItemRequestControllerTest {
 
     @Test
     void getAllRequest() throws Exception {
-        when(itemRequestService.getItemRequests(anyLong(),anyInt(),anyInt()))
-                .thenReturn(List.of(itemRequestInfoDto));
+        when(itemRequestService.getItemRequests(anyLong(), any())).thenReturn(List.of(itemRequestInfoDto));
 
         mockMvc.perform(get("/requests/all")
                         .header(USER_ID, 1))
@@ -138,4 +136,45 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$[0].id", is(itemRequestDto.getId()), Long.class))
                 .andExpect(jsonPath("$[0].description", is(itemRequestDto.getDescription()), String.class));
     }
+
+    @Test
+    void getAllRequest_withPagination() throws Exception {
+        when(itemRequestService.getItemRequests(anyLong(), any()))
+                .thenReturn(List.of(itemRequestInfoDto));
+
+        mockMvc.perform(get("/requests/all")
+                        .header(USER_ID, 1)
+                        .param("from", "1")
+                        .param("size", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(content().json(mapper.writeValueAsString(List.of(itemRequestInfoDto))))
+                .andExpect(jsonPath("$[0].id", is(itemRequestDto.getId()), Long.class))
+                .andExpect(jsonPath("$[0].description", is(itemRequestDto.getDescription()), String.class));
+    }
+
+    @Test
+    void getAllRequest_withWrongFrom() throws Exception {
+        when(itemRequestService.getItemRequests(anyLong(), any()))
+                .thenReturn(List.of(itemRequestInfoDto));
+
+        mockMvc.perform(get("/requests/all")
+                        .header(USER_ID, 1)
+                        .param("from", "-5")
+                        .param("size", "5"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getAllRequest_withWrongSize() throws Exception {
+        when(itemRequestService.getItemRequests(anyLong(), any()))
+                .thenReturn(List.of(itemRequestInfoDto));
+
+        mockMvc.perform(get("/requests/all")
+                        .header(USER_ID, 1)
+                        .param("from", "0")
+                        .param("size", "0"))
+                .andExpect(status().isBadRequest());
+    }
+
 }

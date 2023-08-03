@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import ru.practicum.shareit.exceptions.EntityNotAvailable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -30,6 +32,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
+import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -38,6 +41,9 @@ import ru.practicum.shareit.user.model.User;
 class ItemRequestServiceImplTest {
 
     ItemRequestService itemRequestService;
+    final EntityCheck entityCheck;
+    ItemRequest itemRequest;
+    ItemRequestDto itemRequestDto;
 
     @Autowired
     ItemMapper mapper;
@@ -53,15 +59,14 @@ class ItemRequestServiceImplTest {
 
     User user;
     Item item;
-    ItemRequest itemRequest;
-    ItemRequestDto itemRequestDto;
     List<Item> listItems;
     List<ItemRequest> listRequests;
     List<ItemRequestDto> listRequestsDto;
+    Pageable pageable;
 
     @BeforeEach
     void beforeEach() {
-        itemRequestService = new ItemRequestServiceImpl(itemRequestRepository, itemRepository, userRepository, mapper);
+        itemRequestService = new ItemRequestServiceImpl(itemRequestRepository, itemRepository, userRepository, mapper, entityCheck);
         user = new User(1L, "name", "user@ya.ru");
         itemRequest = new ItemRequest(
                 1L,
@@ -77,7 +82,7 @@ class ItemRequestServiceImplTest {
         listItems = List.of(item);
         listRequests = List.of(itemRequest);
         listRequestsDto = List.of(itemRequestDto);
-
+        pageable = PageRequest.of(0, 10);
     }
 
     @Test
@@ -107,7 +112,7 @@ class ItemRequestServiceImplTest {
     void getUsersItemRequests() {
         when(userRepository.existsById(anyLong())).thenReturn(true);
         when(itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(anyLong())).thenReturn(listRequests);
-        when(itemRepository.findAllByRequesterId(anyLong())).thenReturn(listItems);
+        when(itemRepository.findAllByRequest_IdOrderByIdDesc(anyLong())).thenReturn(listItems);
 
         List<ItemRequestInfoDto> res = itemRequestService.getUsersItemRequests(1L);
 
@@ -131,9 +136,9 @@ class ItemRequestServiceImplTest {
     void getItemRequests() {
         when(userRepository.existsById(anyLong())).thenReturn(true);
         when(itemRequestRepository.findRequestsWithoutOwner(anyLong(), any())).thenReturn(listRequests);
-        when(itemRepository.findAllByRequesterId(anyLong())).thenReturn(listItems);
+        when(itemRepository.findAllByRequest_IdOrderByIdDesc(anyLong())).thenReturn(listItems);
 
-        List<ItemRequestInfoDto> res = itemRequestService.getItemRequests(1L, 5, 10);
+        List<ItemRequestInfoDto> res = itemRequestService.getItemRequests(1L, pageable);
 
         assertNotNull(res);
         assertEquals(1, res.size());
@@ -144,30 +149,18 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
-    void getItemRequests_WithWrongSize() {
-        assertThrows(EntityNotAvailable.class,
-                () -> itemRequestService.getItemRequests(1L, 0, 10));
-    }
-
-    @Test
-    void getItemRequests_WithWrongFrom() {
-        assertThrows(EntityNotAvailable.class,
-                () -> itemRequestService.getItemRequests(1L, 5, -1));
-    }
-
-    @Test
     void getItemRequests_WithWrongUserId() {
         when(userRepository.existsById(anyLong())).thenReturn(false);
 
         assertThrows(NotFoundException.class,
-                () -> itemRequestService.getItemRequests(999L, 5, 10));
+                () -> itemRequestService.getItemRequests(999L, pageable));
     }
 
     @Test
     void getItemRequestById() {
         when(userRepository.existsById(anyLong())).thenReturn(true);
         when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(itemRequest));
-        when(itemRepository.findAllByRequesterId(anyLong())).thenReturn(listItems);
+        when(itemRepository.findAllByRequest_IdOrderByIdDesc(anyLong())).thenReturn(listItems);
 
         ItemRequestInfoDto res = itemRequestService.getItemRequestById(itemRequest.getId(), user.getId());
 

@@ -1,20 +1,17 @@
 package ru.practicum.shareit.request;
 
-import java.time.LocalDateTime;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
-
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
 class ItemRequestInfoDtoTest {
@@ -30,7 +27,7 @@ class ItemRequestInfoDtoTest {
             "description1",
             true,
             null,
-            null);
+            0);
 
     private final ItemRequestInfoDto itemRequestInfoDto = new ItemRequestInfoDto(
             2L,
@@ -42,9 +39,9 @@ class ItemRequestInfoDtoTest {
     void itemRequestInfoDto() throws Exception {
         List<ItemDto> items = new ArrayList<>();
         items.add(itemDto);
-        ItemRequestInfoDto.setItems(items);
+        itemRequestInfoDto.setItems(items);
 
-        var res = json.write(ItemRequestInfoDto);
+        var res = json.write(itemRequestInfoDto);
 
         assertThat(res).hasJsonPath("$.id");
         assertThat(res).hasJsonPath("$.description");

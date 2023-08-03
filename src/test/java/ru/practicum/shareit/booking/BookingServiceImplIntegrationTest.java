@@ -10,6 +10,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -62,7 +64,7 @@ class BookingServiceImplIntegrationTest {
         bookingDto.setStart(LocalDateTime.now().plusHours(1));
         bookingDto.setEnd(LocalDateTime.now().plusHours(2));
 
-        BookingModelDto result = bookingService.create(booker.getId(), bookingDto);
+        BookingModelDto result = bookingService.create(bookingDto, booker.getId());
 
         assertNotNull(result);
         assertNotNull(result.getId());
@@ -98,7 +100,7 @@ class BookingServiceImplIntegrationTest {
         bookingDto.setStart(LocalDateTime.now().plusHours(1));
         bookingDto.setEnd(LocalDateTime.now().plusHours(2));
 
-        assertThrows(EntityNotAvailable.class, () -> bookingService.create(booker.getId(), bookingDto));
+        assertThrows(EntityNotAvailable.class, () -> bookingService.create(bookingDto, booker.getId()));
     }
 
     @Test
@@ -125,7 +127,7 @@ class BookingServiceImplIntegrationTest {
         bookingDto.setStart(LocalDateTime.now().plusHours(2));
         bookingDto.setEnd(LocalDateTime.now().plusHours(1));
 
-        assertThrows(EntityNotAvailable.class, () -> bookingService.create(booker.getId(), bookingDto));
+        assertThrows(EntityNotAvailable.class, () -> bookingService.create(bookingDto, booker.getId()));
     }
 
     @Test
@@ -147,7 +149,7 @@ class BookingServiceImplIntegrationTest {
         bookingDto.setStart(LocalDateTime.now().plusHours(1));
         bookingDto.setEnd(LocalDateTime.now().plusHours(2));
 
-        assertThrows(EntityNotFoundException.class, () -> bookingService.create(owner.getId(), bookingDto));
+        assertThrows(EntityNotFoundException.class, () -> bookingService.create(bookingDto, owner.getId()));
     }
 
     @Test
@@ -391,6 +393,7 @@ class BookingServiceImplIntegrationTest {
     @Test
     void getAllBookingByUser() {
         LocalDateTime now = LocalDateTime.now();
+        Pageable pageable =  PageRequest.of(0, 10);
 
         User booker = new User();
         booker.setName("booker");
@@ -439,7 +442,7 @@ class BookingServiceImplIntegrationTest {
         Booking sBooking3 = bookingRepository.save(booking3);
 
         List<BookingModelDto> actualBookingsUser = bookingService
-                .getAllBookingByUser(savedBooker.getId(), "ALL", 0, 10);
+                .getAllBookingByUser(savedBooker.getId(), "ALL", pageable);
 
         assertNotNull(actualBookingsUser);
         assertEquals(actualBookingsUser.size(), 2);
@@ -450,6 +453,7 @@ class BookingServiceImplIntegrationTest {
     @Test
     void getAllBookingByOwner() {
         LocalDateTime now = LocalDateTime.now();
+        Pageable pageable =  PageRequest.of(0, 10);
 
         User booker = new User();
         booker.setName("booker");
@@ -505,7 +509,7 @@ class BookingServiceImplIntegrationTest {
         bookingRepository.save(booking3);
 
         List<BookingModelDto> actualBookingsUser = bookingService
-                .getAllBookingByOwner(savedOwner.getId(), "ALL", 0, 10);
+                .getAllBookingByOwner(savedOwner.getId(), "ALL", pageable);
 
         assertNotNull(actualBookingsUser);
         assertEquals(actualBookingsUser.size(), 2);

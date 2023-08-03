@@ -30,7 +30,6 @@ import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.service.State;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
 @Slf4j
 @Service
@@ -41,7 +40,6 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingMapper mapper;
-    private final UserService userService;
     private final ItemService itemService;
     private final EntityCheck entityCheck;
 

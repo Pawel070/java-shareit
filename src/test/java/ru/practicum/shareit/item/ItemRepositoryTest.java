@@ -148,7 +148,7 @@ class ItemRepositoryTest {
 
     @Test
     void findAllByRequesterId() {
-        List<Item> res = itemRepository.findAllByRequesterId(user1.getId());
+        List<Item> res = itemRepository.findAllByRequest_IdOrderByIdDesc(user1.getId());
 
         assertEquals(res.size(), 1);
 

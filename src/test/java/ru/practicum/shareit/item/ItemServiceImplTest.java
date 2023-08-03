@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingRepository;
@@ -37,6 +39,8 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.service.EntityCheck;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -47,9 +51,8 @@ import ru.practicum.shareit.user.service.UserService;
 class ItemServiceImplTest {
 
     ItemService itemService;
-
-    @Autowired
-    UserService userService;
+    final UserMapper userMapper;
+    final EntityCheck entityCheck;
 
     @MockBean
     BookingRepository bookingRepository;
@@ -67,11 +70,15 @@ class ItemServiceImplTest {
     ItemRequestRepository itemRequestRepository;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     ItemMapper mapper;
 
     @Autowired
     BookingMapper bookingMapper;
 
+    Pageable pageable;
     User user1;
     User user2;
     UserDto userDto1;
@@ -84,8 +91,11 @@ class ItemServiceImplTest {
 
     @BeforeEach
     void beforeEach() {
-        itemService = new ItemServiceImpl(userService, bookingRepository, commentRepository,
-                itemRepository, userRepository, itemRequestRepository, mapper);
+
+        itemService = new ItemServiceImpl(mapper, bookingMapper,
+                userMapper, itemRepository, userRepository,
+                commentRepository, userService, itemRequestRepository,
+                bookingRepository, entityCheck);
         user1 = new User(1L, "user1", "mail1@mail.ru");
         user2 = new User(2L, "user2", "mail2@mail.ru");
         userDto1 = new UserDto(1L, "user1", "mail1@mail.ru");
@@ -97,6 +107,7 @@ class ItemServiceImplTest {
                 item1, user2, APPROVED);
         booking2 = new Booking(2L, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2),
                 item1, user2, APPROVED);
+        pageable = PageRequest.of(0, 10);
     }
 
     @Test
@@ -105,7 +116,7 @@ class ItemServiceImplTest {
         when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(request1));
         when(itemRepository.save(any())).thenReturn(item1);
 
-        ItemDto res = itemService.create(user1.getId(), itemDto1);
+        ItemDto res = itemService.create(itemDto1, user1.getId());
 
         assertNotNull(res);
         assertEquals(ItemDto.class, res.getClass());
@@ -123,7 +134,7 @@ class ItemServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
         when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> itemService.create(user1.getId(), itemDto1));
+        assertThrows(NotFoundException.class, () -> itemService.create(itemDto1, user1.getId()));
     }
 
     @Test
@@ -132,9 +143,9 @@ class ItemServiceImplTest {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
         when(itemRepository.save(any())).thenReturn(item1);
 
-        ItemDto newItemDto = new ItemDto(null, "upd", "upd", false, user1, request1.getId());
+        ItemDto newItemDto = new ItemDto(0, "upd", "upd", false, user1, request1.getId());
 
-        ItemDto res = itemService.update(itemDto1.getId(), newItemDto, user1.getId());
+        ItemDto res = itemService.update(newItemDto, user1.getId(), itemDto1.getId());
 
         assertNotNull(res);
         assertEquals(ItemDto.class, res.getClass());
@@ -150,10 +161,10 @@ class ItemServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
 
-        ItemDto newItemDto = new ItemDto(null, "upd", "upd", false, user1, request1.getId());
+        ItemDto newItemDto = new ItemDto(0, "upd", "upd", false, user1, request1.getId());
 
         assertThrows(NotFoundException.class,
-                () -> itemService.update(itemDto1.getId(), newItemDto, user1.getId()));
+                () -> itemService.update(newItemDto, user1.getId(), itemDto1.getId()));
     }
 
     @Test
@@ -190,7 +201,7 @@ class ItemServiceImplTest {
         when(bookingRepository.findFirstByItem_IdInAndItem_Owner_IdAndStartIsAfterAndStatusIsNotAndStatusIsNot(
                 any(), anyLong(), any(), any(), any(), any())).thenReturn(List.of(booking2));
 
-        List<ItemInfoDto> res = itemService.getItemById(user1.getId(), 0, 10);
+        List<ItemInfoDto> res = itemService.getItemsByOwner(user1.getId(), pageable);
 
         assertEquals(res.size(), 2);
 
@@ -221,14 +232,14 @@ class ItemServiceImplTest {
     void getItemsByUser_wrongUser() {
         when(userRepository.existsById(anyLong())).thenReturn(false);
 
-        assertThrows(NotFoundException.class, () -> itemService.getItemById(99L, 0, 10));
+        assertThrows(NotFoundException.class, () -> itemService.getItemsByOwner(99L, pageable));
     }
 
     @Test
     void getAvailableItems() {
         when(itemRepository.searchAvailableItems(anyString(), any())).thenReturn(List.of(item1, item2));
 
-        List<ItemDto> res = itemService.getAvailableItems(user1.getId(), "item", 0, 10);
+        List<ItemDto> res = itemService.getAvailableItems(user1.getId(), "item", pageable);
 
         assertEquals(res.size(), 2);
 
@@ -251,7 +262,7 @@ class ItemServiceImplTest {
 
     @Test
     void getAvailableItems_withBlankText() {
-        List<ItemDto> res = itemService.getAvailableItems(user1.getId(), "       ", 0, 10);
+        List<ItemDto> res = itemService.getAvailableItems(user1.getId(), "       ", pageable);
 
         assertEquals(res.size(), 0);
     }
@@ -259,7 +270,7 @@ class ItemServiceImplTest {
     @Test
     void getAvailableItems_withWrongDataForCalcPageNumber() {
         assertThrows(EntityNotAvailable.class,
-                () -> itemService.getAvailableItems(user1.getId(), "text", 0, 0));
+                () -> itemService.getAvailableItems(user1.getId(), "text", pageable));
     }
 
     @Test
@@ -271,7 +282,7 @@ class ItemServiceImplTest {
         when(bookingRepository.isItemWasUsedByUser(anyLong(), anyLong(), any())).thenReturn(true);
         when(commentRepository.save(any())).thenReturn(comment);
 
-        CommentDto res = itemService.createComment(item1.getId(), user1.getId(), commentDto);
+        CommentDto res = itemService.createComment(commentDto, item1.getId(), user1.getId());
 
         assertNotNull(res);
         assertEquals(CommentDto.class, res.getClass());
@@ -290,7 +301,7 @@ class ItemServiceImplTest {
         when(bookingRepository.isItemWasUsedByUser(anyLong(), anyLong(), any())).thenReturn(false);
 
         assertThrows(EntityNotAvailable.class,
-                () -> itemService.createComment(item1.getId(), user1.getId(), commentDto));
+                () -> itemService.createComment(commentDto, item1.getId(), user1.getId()));
     }
 
 }

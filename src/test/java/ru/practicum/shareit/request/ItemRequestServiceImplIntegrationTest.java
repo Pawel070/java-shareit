@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.item.service.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
@@ -94,7 +96,8 @@ class ItemRequestServiceImplIntegrationTest {
         requestDto2.setDescription("desc2");
         itemRequestService.createItemRequest(savedUser2.getId(), requestDto2);
 
-        List<ItemRequestInfoDto> res = itemRequestService.getItemRequests(savedUser.getId(), 10, 0);
+        Pageable pageable = PageRequest.of(0, 10);
+        List<ItemRequestInfoDto> res = itemRequestService.getItemRequests(savedUser.getId(), pageable);
 
         assertNotNull(res);
         assertEquals(res.size(), 1);

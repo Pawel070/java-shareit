@@ -23,7 +23,7 @@ class ItemDtoTest {
             "description",
             false,
             new User(1L, "userName", "mail@mail.ru"),
-            null);
+            0);
 
     @Test
     void itemDto() throws Exception {
