@@ -4,17 +4,19 @@ import static java.util.stream.Collectors.toList;
 import static ru.practicum.shareit.service.MyConstants.SORT_ASC;
 import static ru.practicum.shareit.service.MyConstants.SORT_DESC;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.model.Booking;

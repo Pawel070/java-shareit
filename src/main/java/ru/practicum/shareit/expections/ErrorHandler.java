@@ -1,9 +1,9 @@
 package ru.practicum.shareit.expections;
 
-import java.rmi.ServerError;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
