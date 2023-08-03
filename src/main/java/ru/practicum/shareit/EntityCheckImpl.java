@@ -1,15 +1,15 @@
-package ru.practicum.shareit.service;
+package ru.practicum.shareit;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
+
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.user.UserRepository;
 
 @Slf4j
 @Service
-@Repository
 @AllArgsConstructor
 public class EntityCheckImpl implements EntityCheck {
 

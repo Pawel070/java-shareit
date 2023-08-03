@@ -21,7 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import ru.practicum.shareit.exceptions.ConflictException;
-import ru.practicum.shareit.service.EntityCheck;
+import ru.practicum.shareit.EntityCheck;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;

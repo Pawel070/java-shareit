@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.service.EntityCheckImpl;
+import ru.practicum.shareit.EntityCheckImpl;
 
 @Slf4j
 @RestController

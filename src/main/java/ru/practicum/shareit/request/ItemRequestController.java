@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
-import ru.practicum.shareit.service.EntityCheckImpl;
+import ru.practicum.shareit.EntityCheckImpl;
 
 @Slf4j
 @RestController
