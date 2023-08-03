@@ -52,6 +52,7 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final EntityCheck entityCheck;
 
+    @Transactional
     @Override
     public ItemDto create(ItemDto itemDto, Long id) {
         log.info("ItemServiceImpl: Получен POST-запрос на создание вещи");
@@ -68,6 +69,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
 
+    @Transactional
     @Override
     public CommentDto createComment(CommentDto commentDto, Long itemId, Long userId) {
         log.info("ItemServiceImpl: Получен POST-запрос на создание отзыва пользователем с УИН {}", userId);
@@ -191,6 +193,7 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+    @Transactional
     @Override
     public void delete(Long itemId, Long id) {
         log.info("ItemServiceImpl delete: Получен DELETE-запрос на удаление вещи с УИН {}", itemId);
@@ -199,6 +202,7 @@ public class ItemServiceImpl implements ItemService {
         repository.deleteById(itemId);
     }
 
+    @Transactional
     @Override
     public void deleteItemsByOwner(Long id) {
         log.info("ItemServiceImpl deleteItemsByOwner: Получен DELETE-запрос на удаление всех вещеепользователя с УИН {}", id);
@@ -233,6 +237,7 @@ public class ItemServiceImpl implements ItemService {
                 new NotFoundException("ItemServiceImpl findItemById: Не существует вещь с УИН " + id));
     }
 
+    @Transactional
     @Override
     public void deleteItemsByUser(Long userId) {
         log.info("ItemServiceImpl: Удаление запасов пользователя с УИН {}", userId);

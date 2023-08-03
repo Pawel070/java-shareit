@@ -1,13 +1,16 @@
 package ru.practicum.shareit.request.service;
 
+import javax.transaction.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.service.ItemRepository;
@@ -20,7 +23,6 @@ import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
 
@@ -30,6 +32,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemMapper mapper;
     private final EntityCheck entityCheck;
 
+    @Transactional
     @Override
     public ItemRequestInfoDto createItemRequest(Long id, ItemRequestDto itemRequestDto) {
         User user = userRepository.findById(id)

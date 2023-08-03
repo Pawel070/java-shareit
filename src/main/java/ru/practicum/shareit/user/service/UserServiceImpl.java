@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService {
         return dto;
     }
 
+    @Transactional
     @Override
     public void delete(Long userId) {
         log.info("UserServiceImpl: Получен DELETE-запрос на удаление пользователя с УИН {}", userId);

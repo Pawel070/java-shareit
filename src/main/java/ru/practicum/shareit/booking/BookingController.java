@@ -48,9 +48,9 @@ public class BookingController {
     @GetMapping
     public List<BookingModelDto> getBookingsOwner(
             @RequestHeader(USER_ID) Long userId,
-            @RequestParam(value = "state", defaultValue = "ALL", required = false) String state,
-            @RequestParam(value = "from", defaultValue = "0", required = false) int from,
-            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+            @RequestParam(value = "state", defaultValue = "ALL") String state,
+            @RequestParam(value = "from", defaultValue = "0") int from,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         emplyTesting.isCheckFromSize(from, size);
         log.info("BookingController getBookings: Получен GET-запрос с параметром STATE = {} from = {} size = {} " +
                 "списка бронирований пользователя с УИН {}", state, from, size, userId);
@@ -60,9 +60,9 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingModelDto> getAllBookingByOwner(
             @RequestHeader(USER_ID) Long userId,
-            @RequestParam(value = "state", defaultValue = "ALL", required = false) String state,
-            @RequestParam(value = "from", defaultValue = "0", required = false) int from,
-            @RequestParam(value = "size", defaultValue = "10", required = false) int size) {
+            @RequestParam(value = "state", defaultValue = "ALL") String state,
+            @RequestParam(value = "from", defaultValue = "0") int from,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         emplyTesting.isCheckFromSize(from, size);
         log.info("BookingController getBookingsOwner: Получен GET-запрос с параметром STATE = {} from = {} size = {} на получение списка " +
                 "бронирований вещей пользователя с УИН {}", state, from, size, userId);

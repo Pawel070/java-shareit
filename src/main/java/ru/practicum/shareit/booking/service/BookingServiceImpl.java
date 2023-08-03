@@ -2,7 +2,10 @@ package ru.practicum.shareit.booking.service;
 
 import static ru.practicum.shareit.service.MyConstants.SORT;
 
+import javax.transaction.Transactional;
+
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,9 +13,11 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
@@ -43,6 +48,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemService itemService;
     private final EntityCheck entityCheck;
 
+    @Transactional
     @Override
     public BookingModelDto create(BookingDto bookingDto, Long bookerId) {
         log.info("BookingServiceImpl: isExistUser - create {} - {} ", bookingDto, bookerId);
@@ -71,6 +77,7 @@ public class BookingServiceImpl implements BookingService {
         return mapper.toBookingModelDto(repository.save(booking));
     }
 
+    @Transactional
     @Override
     public BookingModelDto update(Long bookingId, Long userId, Boolean accepted) {
         log.info("BookingServiceImpl: isExistUser - update");

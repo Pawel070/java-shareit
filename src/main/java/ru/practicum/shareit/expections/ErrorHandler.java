@@ -61,7 +61,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
-    public ErrorResponse handleServerError(final ServerError exception) {
+    public ErrorResponse handleServerError(final Exception exception) {
         log.debug("Ошибка на сервере. Возврат код 500 {}", exception.getMessage());
         return new ErrorResponse("http:500 Ошибка на сервере.", exception.getMessage());
     }
