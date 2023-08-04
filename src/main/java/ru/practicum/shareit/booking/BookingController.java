@@ -7,10 +7,11 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.EntityCheck;
+
+import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -22,9 +23,7 @@ import ru.practicum.shareit.booking.service.BookingService;
 public class BookingController {
 
     private final BookingService service;
-
-    @Autowired
-    EntityCheck entityCheck;
+    private final EntityCheck entityCheck;
 
     @PostMapping
     public BookingModelDto create(

@@ -32,7 +32,7 @@ import ru.practicum.shareit.expections.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.EntityCheck;
+import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.service.State;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
@@ -47,9 +47,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final BookingMapper mapper;
     private final ItemService itemService;
-
-    @Autowired
-    EntityCheck entityCheck;
+    private final EntityCheck entityCheck;
 
     @Transactional
     @Override

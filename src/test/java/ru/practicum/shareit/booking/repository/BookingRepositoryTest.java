@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

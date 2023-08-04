@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
-import ru.practicum.shareit.EntityCheck;
+import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
@@ -53,9 +52,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final ItemRequestRepository itemRequestRepository;
     private final BookingRepository bookingRepository;
-
-    @Autowired
-    EntityCheck entityCheck;
+    private final EntityCheck entityCheck;
 
     @Transactional
     @Override

@@ -32,7 +32,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
-import ru.practicum.shareit.EntityCheck;
+import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -41,9 +41,11 @@ import ru.practicum.shareit.user.model.User;
 class ItemRequestServiceImplTest {
 
     ItemRequestService itemRequestService;
-    final EntityCheck entityCheck;
     ItemRequest itemRequest;
     ItemRequestDto itemRequestDto;
+
+    @Autowired
+    EntityCheck entityCheck;
 
     @Autowired
     ItemMapper mapper;
@@ -66,7 +68,7 @@ class ItemRequestServiceImplTest {
 
     @BeforeEach
     void beforeEach() {
-        itemRequestService = new ItemRequestServiceImpl(itemRequestRepository, itemRepository, userRepository, mapper, entityCheck);
+        itemRequestService = new ItemRequestServiceImpl(itemRequestRepository, itemRepository, userRepository, mapper);
         user = new User(1L, "name", "user@ya.ru");
         itemRequest = new ItemRequest(
                 1L,

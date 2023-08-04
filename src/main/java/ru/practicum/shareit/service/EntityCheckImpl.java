@@ -1,19 +1,17 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
-
-import ru.practicum.shareit.expections.NotFoundException;
-import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class EntityCheckImpl implements EntityCheck {
 
-    private UserRepository repository;
+private final UserService userService;
 
     @Override
     public void isCheckFromSize(int from, int size) {
@@ -38,9 +36,7 @@ public class EntityCheckImpl implements EntityCheck {
             messageClass = element.getClassName() + ":" + element.getMethodName();
         }
         log.info("Проверка наличия пользователя с УИН  {} вызов из > {} ", id, messageClass);
-        if (!repository.existsById(id)) {
-            throw new NotFoundException("UserServiceImpl isCheckUserId: Пользователь с УИД " + id + " не существует.");
-        }
+        User user = userService.findUserById(id);
     }
 
 }

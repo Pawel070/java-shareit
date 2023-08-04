@@ -9,11 +9,10 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import ru.practicum.shareit.EntityCheck;
+import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
@@ -26,9 +25,7 @@ import ru.practicum.shareit.item.service.ItemService;
 public class ItemController {
 
     private final ItemService itemService;
-
-    @Autowired
-    EntityCheck entityCheck;
+    private final EntityCheck entityCheck;
 
     @GetMapping("/{itemId}")
     public ItemInfoDto getItemById(@RequestHeader(USER_ID) Long ownerId, @PathVariable Long itemId) {
