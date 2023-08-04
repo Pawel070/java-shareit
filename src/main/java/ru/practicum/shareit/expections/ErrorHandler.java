@@ -78,5 +78,4 @@ public class ErrorHandler {
         return Map.of("400", exception.getMessage());
     }
 
-
 }

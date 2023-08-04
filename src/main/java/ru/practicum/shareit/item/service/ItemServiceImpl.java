@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,9 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final ItemRequestRepository itemRequestRepository;
     private final BookingRepository bookingRepository;
-    private final EntityCheck entityCheck;
+
+    @Autowired
+    EntityCheck entityCheck;
 
     @Transactional
     @Override

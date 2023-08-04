@@ -9,14 +9,15 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import ru.practicum.shareit.EntityCheck;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.EntityCheckImpl;
 
 @Slf4j
 @RestController
@@ -25,7 +26,9 @@ import ru.practicum.shareit.EntityCheckImpl;
 public class ItemController {
 
     private final ItemService itemService;
-    private final EntityCheckImpl emplyTesting;
+
+    @Autowired
+    EntityCheck entityCheck;
 
     @GetMapping("/{itemId}")
     public ItemInfoDto getItemById(@RequestHeader(USER_ID) Long ownerId, @PathVariable Long itemId) {
@@ -51,7 +54,7 @@ public class ItemController {
             @RequestHeader(USER_ID) Long id,
             @RequestParam(value = "from", defaultValue = "0") int from,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        emplyTesting.isCheckFromSize(from, size);
+        entityCheck.isCheckFromSize(from, size);
         log.info("ItemController: Получен GET-запрос на получение всех вещей владельца с УИН {} с from {} и size {}", id, from, size);
         return itemService.getItemsByOwner(id, PageRequest.of(from / size, size));
     }
@@ -76,7 +79,7 @@ public class ItemController {
             @RequestParam String text,
             @RequestParam(value = "from", defaultValue = "0") int from,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        emplyTesting.isCheckFromSize(from, size);
+        entityCheck.isCheckFromSize(from, size);
         log.info("ItemController: Получен GET-запрос на поиск вещи : {} с from {} и size {} от {} ", text, from, size, userId);
         return itemService.getAvailableItems(userId, text, PageRequest.of(from / size, size));
     }

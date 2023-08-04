@@ -47,7 +47,6 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final BookingMapper mapper;
     private final ItemService itemService;
-//    private final EntityCheck entityCheck;
 
     @Autowired
     EntityCheck entityCheck;
@@ -135,12 +134,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingModelDto> getAllBookingByUser(Long userId, String ofProcess, Pageable pageable) {
-
-        State stateS = getState(ofProcess);
-        log.info("BookingServiceImpl: isExistUser - getBookings {} статус ", stateS);
+        State state = getState(ofProcess);
+        log.info("BookingServiceImpl: isExistUser - getBookings статус {} userId {} ", state, userId);
         entityCheck.isCheckUserId(userId);
         List<Booking> bookings = new ArrayList<>();
-        switch (stateS) {
+        switch (state) {
             case ALL:
                 bookings = repository.findAllByBooker_IdOrderByStartDesc(userId, pageable);
                 break;
@@ -149,7 +147,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
             case FUTURE:
                 bookings = repository.findAllByBooker_IdAndStartIsAfter(userId, LocalDateTime.now(), SORT);
-                break;
+               break;
             case CURRENT:
                 bookings = repository.findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(
                         userId, LocalDateTime.now(), LocalDateTime.now(), SORT);
@@ -159,23 +157,23 @@ public class BookingServiceImpl implements BookingService {
                 break;
             case REJECTED:
                 bookings = repository.findAllByBooker_IdAndStatus(userId, Status.REJECTED);
-                break;
+               break;
         }
-        List<BookingModelDto> bookingModelDtos = bookings.isEmpty() ? Collections.emptyList() : bookings.stream()
+       List<BookingModelDto> bookingModelDtos = bookings.isEmpty() ? Collections.emptyList() : bookings.stream()
                 .map(mapper::toBookingModelDto)
                 .collect(Collectors.toList());
-        log.info("==> {} в статусе {} ", bookingModelDtos, stateS);
+        log.info("==> {} в статусе {} ", bookingModelDtos, state);
         return bookingModelDtos;
     }
 
     @Override
     public List<BookingModelDto> getAllBookingByOwner(Long userId, String ofProcess, Pageable pageable) {
-        State stateS = getState(ofProcess);
-        log.info("BookingServiceImpl: isExistUser - getBookingsOwner {} ", stateS);
+        State state = getState(ofProcess);
+        log.info("BookingServiceImpl: isExistUser - getBookingsOwner {} ", state);
         entityCheck.isCheckUserId(userId);
         List<Booking> bookings = new ArrayList<>();
         Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
-        switch (stateS) {
+        switch (state) {
             case ALL:
                 bookings = repository.findAllByItem_Owner_IdOrderByStartDesc(userId, pageable);
                 break;
@@ -199,7 +197,7 @@ public class BookingServiceImpl implements BookingService {
         List<BookingModelDto> collect = bookings.stream()
                 .map(mapper::toBookingModelDto)
                 .collect(Collectors.toList());
-        log.info("==> {} в статусе {} ", collect, stateS);
+        log.info("==> {} в статусе {} ", collect, state);
         return collect;
     }
 
@@ -242,7 +240,7 @@ public class BookingServiceImpl implements BookingService {
         try {
             stateS = State.valueOf(state);
         } catch (IllegalArgumentException exception) {
-            throw new UnsupportedState("Неизвестный статус: " + state);
+            throw new UnsupportedState("Unknown state: " + state);
         }
         return stateS;
     }

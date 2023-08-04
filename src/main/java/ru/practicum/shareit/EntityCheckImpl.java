@@ -38,7 +38,7 @@ public class EntityCheckImpl implements EntityCheck {
             messageClass = element.getClassName() + ":" + element.getMethodName();
         }
         log.info("Проверка наличия пользователя с УИН  {} вызов из > {} ", id, messageClass);
-        if (repository.findById(id) == null) {
+        if (!repository.existsById(id)) {
             throw new NotFoundException("UserServiceImpl isCheckUserId: Пользователь с УИД " + id + " не существует.");
         }
     }
