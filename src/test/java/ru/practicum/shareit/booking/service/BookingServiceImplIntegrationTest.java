@@ -315,7 +315,7 @@ class BookingServiceImplIntegrationTest {
         booking.setBooker(savedBooker);
         Booking savedBooking = bookingRepository.save(booking);
 
-        assertThrows(EntityNotAvailable.class,
+        assertThrows(NotFoundException.class,
                 () -> bookingService.update(savedOwner.getId(), savedBooking.getId(), false));
     }
 

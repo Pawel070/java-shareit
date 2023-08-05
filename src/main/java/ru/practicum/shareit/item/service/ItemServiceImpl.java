@@ -6,24 +6,20 @@ import static ru.practicum.shareit.service.MyConstants.SORT_DESC;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingRepository;
 import ru.practicum.shareit.expections.NotFoundException;
-import ru.practicum.shareit.expections.ValidationException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -42,7 +38,7 @@ import ru.practicum.shareit.user.service.UserService;
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemMapper mapper;
+    private final ItemMapper mapper;//
     private final BookingMapper bookingMapper;
     private final UserMapper userMapper;
     private final ItemRepository repository;
@@ -81,7 +77,7 @@ public class ItemServiceImpl implements ItemService {
             Comment comment = new Comment(commentDto.getId(), commentDto.getText(), item, user, LocalDateTime.now());
             return mapper.toCommentDto(commentRepository.save(comment));
         } else {
-            throw new ValidationException("ItemServiceImpl createComment: Данный пользователь вещь не бронировал!");
+            throw new ru.practicum.shareit.exceptions.EntityNotAvailable("ItemServiceImpl createComment: Данный пользователь вещь не бронировал!");
         }
     }
 
@@ -92,7 +88,12 @@ public class ItemServiceImpl implements ItemService {
         Map<Long, List<Comment>> comments = new HashMap<>();
         LocalDateTime now = LocalDateTime.now();
         log.info("ItemServiceImpl: Получен GET-запрос на получение списка вещей владельца с УИН {}", id);
-        userService.isCheckUserId(id);
+                if (!userRepository.existsById(id)) {
+            throw new NotFoundException("ItemServiceImpl getItemById: Вещь с УИН " + id + " не существует.");
+        }
+
+ //       Item item1 = repository.findById(id)
+ //               .orElseThrow(() -> new NotFoundException("ItemServiceImpl getItemById: Вещь с УИН " + id + " не существует."));
         List<Item> items = repository.findByOwner_Id(id, pageable);
         List<Long> itemsId = items
                 .stream()

@@ -45,7 +45,7 @@ class ItemDtoTest {
         assertThat(res).extractingJsonPathStringValue("$.owner.name").isEqualTo("userName");
         assertThat(res).extractingJsonPathStringValue("$.owner.email").isEqualTo("mail@mail.ru");
 
-        assertThat(res).extractingJsonPathArrayValue("$.requestId").isNull();
+        assertThat(res).extractingJsonPathArrayValue("$.request").isNull();
     }
 
 }

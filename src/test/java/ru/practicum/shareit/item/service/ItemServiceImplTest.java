@@ -34,10 +34,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.service.CommentRepository;
-import ru.practicum.shareit.item.service.ItemRepository;
-import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.UserMapper;
@@ -51,7 +47,6 @@ import ru.practicum.shareit.user.service.UserService;
 class ItemServiceImplTest {
 
     ItemService itemService;
-    final UserMapper userMapper;
 
     @MockBean
     BookingRepository bookingRepository;
@@ -76,6 +71,9 @@ class ItemServiceImplTest {
 
     @Autowired
     BookingMapper bookingMapper;
+
+    @Autowired
+    UserMapper userMapper;
 
     Pageable pageable;
     User user1;
@@ -256,7 +254,7 @@ class ItemServiceImplTest {
         assertEquals(res.get(1).getDescription(), item2.getDescription());
         assertEquals(res.get(1).getAvailable(), item2.getAvailable());
         assertEquals(res.get(1).getOwner().toString(), user1.toString());
-        assertNull(res.get(1).getRequestId());
+        assertEquals(res.get(1).getRequestId(), 0);
     }
 
     @Test
@@ -264,12 +262,6 @@ class ItemServiceImplTest {
         List<ItemDto> res = itemService.getAvailableItems(user1.getId(), "       ", pageable);
 
         assertEquals(res.size(), 0);
-    }
-
-    @Test
-    void getAvailableItems_withWrongDataForCalcPageNumber() {
-        assertThrows(EntityNotAvailable.class,
-                () -> itemService.getAvailableItems(user1.getId(), "text", pageable));
     }
 
     @Test

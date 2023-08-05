@@ -1,17 +1,14 @@
 package ru.practicum.shareit.request.service;
 
 import javax.transaction.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.service.ItemRepository;
@@ -44,8 +41,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestInfoDto> getUsersItemRequests(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + id + " не существует."));
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН  " + id + " не существует.");
+        }
         List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(id);
         return requests.stream()
                 .map(req -> mapper.toItemRequestInfoDto(req, itemRepository.findAllByRequest_IdOrderByIdDesc(req.getId())))
@@ -54,8 +52,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestInfoDto> getItemRequests(Long id, Pageable pageable) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + id + " не существует."));
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН  " + id + " не существует.");
+        }
         List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdNot(id, pageable);
         return requests.stream()
                 .map(request -> mapper.toItemRequestInfoDto(request,
@@ -65,8 +64,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestInfoDto getItemRequestById(Long requestId, Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + id + " не существует."));
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН  " + id + " не существует.");
+        }
         ItemRequest itemRequest = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("ItemRequestServiceImpl createItemRequest : Запрос на вещь с УИН" + requestId + " не существует."));
         return mapper.toItemRequestInfoDto(itemRequest, itemRepository.findAllByRequest_IdOrderByIdDesc(itemRequest.getId()));

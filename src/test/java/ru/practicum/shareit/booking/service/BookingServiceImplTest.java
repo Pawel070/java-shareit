@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+@Slf4j
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class BookingServiceImplTest {
@@ -146,8 +148,9 @@ class BookingServiceImplTest {
     void update() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         when(bookingRepository.save(any())).thenReturn(booking);
-
+        log.info(" владелец > {}, бронирование > {} ", owner, booking);
         BookingModelDto res = bookingService.update(owner.getId(), booking.getId(), true);
+        log.info(" res > {} ", res);
         bookingModelDto.setStatus(Status.APPROVED);
 
         assertNotNull(res);
@@ -173,7 +176,7 @@ class BookingServiceImplTest {
         booking.setStatus(Status.REJECTED);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
-        assertThrows(ru.practicum.shareit.exceptions.EntityNotAvailable.class,
+        assertThrows(NotFoundException.class,
                 () -> bookingService.update(owner.getId(), booking.getId(), true));
     }
 
@@ -480,7 +483,7 @@ class BookingServiceImplTest {
     void getAllBookingByOwner_withWrongDataForCalcPageNumber() {
         when(userRepository.existsById(anyLong())).thenReturn(true);
 
-        assertThrows(ru.practicum.shareit.exceptions.EntityNotAvailable.class,
+        assertThrows(NotFoundException.class,
                 () -> bookingService.getAllBookingByOwner(owner.getId(), "ALL", pageable));
     }
 

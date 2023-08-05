@@ -3,7 +3,6 @@ package ru.practicum.shareit.booking.service;
 import static ru.practicum.shareit.service.MyConstants.SORT;
 
 import javax.transaction.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,11 +11,9 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
@@ -75,11 +72,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingModelDto update(Long bookingId, Long userId, Boolean accepted) {
         log.info("BookingServiceImpl: isExistUser - update");
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + userId + " не существует."));
         Booking booking = repository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Такого бронирования УИН " + bookingId + " нет."));
-
         Item item = booking.getItem();
         if (!userId.equals(item.getOwner().getId())) {
             throw new NotFoundException("BookingServiceImpl: Пользователь с УИН  " + userId + " не является владельцем вещи " + bookingId);
@@ -97,8 +91,19 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingModelDto getBookingById(Long bookingId, Long userId) {
         log.info("BookingServiceImpl: isExistUser - getBookingById");
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + userId + " не существует."));
+
+        Booking booking = repository.findById(bookingId)
+                .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Такого бронирования УИН " + bookingId + " нет."));
+        Item item = booking.getItem();
+        if (!userId.equals(item.getOwner().getId()) && !userId.equals(booking.getBooker().getId())) {
+            throw new NotFoundException("BookingServiceImpl: Данные бронирования доступны владельцу и бронирующему.");
+        }
+        return mapper.toBookingModelDto(booking);
+
+/*
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + userId + " не существует.");
+        }
         Booking booking = repository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Такого бронирования УИН " + bookingId + " нет."));
         Item item = booking.getItem();
@@ -106,15 +111,16 @@ public class BookingServiceImpl implements BookingService {
             return mapper.toBookingModelDto(booking);
         } else {
             throw new NotFoundException("BookingServiceImpl: Данные бронирования доступны владельцу и бронирующему.");
-        }
+        }*/
     }
 
     @Override
     public List<BookingModelDto> getAllBookingByUser(Long userId, String ofProcess, Pageable pageable) {
         State state = getState(ofProcess);
         log.info("BookingServiceImpl: isExistUser - getBookings статус {} userId {} ", state, userId);
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + userId + " не существует."));
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + userId + " не существует.");
+        }
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
             case ALL:
@@ -148,8 +154,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingModelDto> getAllBookingByOwner(Long userId, String ofProcess, Pageable pageable) {
         State state = getState(ofProcess);
         log.info("BookingServiceImpl: isExistUser - getBookingsOwner {} ", state);
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + userId + " не существует."));
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + userId + " не существует.");
+        }
         List<Booking> bookings = new ArrayList<>();
         Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
         switch (state) {
