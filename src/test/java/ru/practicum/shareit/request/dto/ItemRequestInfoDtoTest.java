@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.request.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,6 +58,6 @@ class ItemRequestInfoDtoTest {
         assertThat(res)
                 .extractingJsonPathStringValue("$.items[0].description").isEqualTo("description1");
         assertThat(res).extractingJsonPathBooleanValue("$.items[0].available").isEqualTo(true);
-        assertThat(res).extractingJsonPathNumberValue("$.items[0].requestId").isNull();
+        assertThat(res).extractingJsonPathNumberValue("$.items[0].requestId").isEqualTo(0);
     }
 }

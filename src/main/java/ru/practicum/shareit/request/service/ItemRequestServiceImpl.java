@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,9 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
@@ -29,7 +31,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
     private final ItemMapper mapper;
 
     @Transactional
@@ -43,7 +44,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestInfoDto> getUsersItemRequests(Long id) {
-        userService.isCheckUserId(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + id + " не существует."));
         List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(id);
         return requests.stream()
                 .map(req -> mapper.toItemRequestInfoDto(req, itemRepository.findAllByRequest_IdOrderByIdDesc(req.getId())))
@@ -52,8 +54,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestInfoDto> getItemRequests(Long id, Pageable pageable) {
-        userService.isCheckUserId(id);
-        List<ItemRequest> requests = itemRequestRepository.findRequestsWithoutOwner(id, pageable);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + id + " не существует."));
+        List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdNot(id, pageable);
         return requests.stream()
                 .map(request -> mapper.toItemRequestInfoDto(request,
                         itemRepository.findAllByRequest_IdOrderByIdDesc(request.getId())))
@@ -62,10 +65,25 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestInfoDto getItemRequestById(Long requestId, Long id) {
-        userService.isCheckUserId(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + id + " не существует."));
         ItemRequest itemRequest = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("ItemRequestServiceImpl createItemRequest : Запрос на вещь с УИН" + requestId + " не существует."));
         return mapper.toItemRequestInfoDto(itemRequest, itemRepository.findAllByRequest_IdOrderByIdDesc(itemRequest.getId()));
+    }
+
+    @Override
+    public void isCheckFromSize(int from, int size) {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        String messageClass = "";
+        if (stackTraceElements.length >= 3) {
+            StackTraceElement element = stackTraceElements[2];
+            messageClass = element.getClassName() + ":" + element.getMethodName();
+        }
+        log.info("Проверка from {} и size {} вызов из > {} ", from, size, messageClass);
+        if (from < 0 || size < 1) {
+            throw new ru.practicum.shareit.exceptions.EntityNotAvailable("Ошибочный параметр \"size\" или \"from\"");
+        }
     }
 
 }

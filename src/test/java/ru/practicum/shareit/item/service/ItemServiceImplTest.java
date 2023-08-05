@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,6 +28,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingRepository;
 import ru.practicum.shareit.exceptions.EntityNotAvailable;
 import ru.practicum.shareit.expections.NotFoundException;
+import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
@@ -93,7 +94,7 @@ class ItemServiceImplTest {
         itemService = new ItemServiceImpl(mapper, bookingMapper,
                 userMapper, itemRepository, userRepository,
                 commentRepository, userService, itemRequestRepository,
-                bookingRepository, entityCheck);
+                bookingRepository);
         user1 = new User(1L, "user1", "mail1@mail.ru");
         user2 = new User(2L, "user2", "mail2@mail.ru");
         userDto1 = new UserDto(1L, "user1", "mail1@mail.ru");

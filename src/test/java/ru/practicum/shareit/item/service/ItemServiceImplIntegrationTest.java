@@ -1,20 +1,16 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import javax.transaction.Transactional;
-
 import java.time.LocalDateTime;
-
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingRepository;
@@ -26,6 +22,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.CommentRepository;
 import ru.practicum.shareit.item.service.ItemRepository;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 

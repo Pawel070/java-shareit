@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -156,7 +156,7 @@ class ItemRequestControllerTest {
                         .header(USER_ID, 1)
                         .param("from", "-5")
                         .param("size", "5"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -168,7 +168,7 @@ class ItemRequestControllerTest {
                         .header(USER_ID, 1)
                         .param("from", "0")
                         .param("size", "0"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 
 }

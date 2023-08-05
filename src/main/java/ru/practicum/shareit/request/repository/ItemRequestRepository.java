@@ -14,18 +14,12 @@ import ru.practicum.shareit.request.model.ItemRequest;
 @Repository
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
 
-//    ItemRequest findById(long id);
-
     List<ItemRequest> findAllByRequesterId(long userId, Sort sort);
 
     List<ItemRequest> findAllByRequesterIdNot(long userId, Pageable page);
 
     List<ItemRequest> findAllByRequesterIdOrderByCreatedDesc(Long userId);
 
-    @Query("SELECT r " +
-            "FROM ItemRequest r " +
-            "WHERE r.requester.id <> :userId " +
-            "ORDER BY r.created DESC ")
-    List<ItemRequest> findRequestsWithoutOwner(@Param("userId") Long userId, Pageable pageable);
 }
+
 

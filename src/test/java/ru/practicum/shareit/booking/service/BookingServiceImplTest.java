@@ -5,27 +5,24 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.expections.UnsupportedState;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -35,13 +32,15 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class BookingServiceImplTest {
 
     BookingService bookingService;
-    final ItemService itemService;
+    ItemService itemService;
+    UserService userService;
     BookingModelDto bookingModelDto;
     BookingDto bookingDto;
     Pageable pageable;
@@ -71,7 +70,7 @@ class BookingServiceImplTest {
     @BeforeEach
     void beforeEach() {
         pageable = PageRequest.of(0, 10);
-        bookingService = new BookingServiceImpl(bookingRepository, itemRepository, userRepository, bookingMapper, itemService, entityCheck);
+        bookingService = new BookingServiceImpl(bookingRepository, itemRepository, userRepository, bookingMapper);
         user = new User(1L, "user", "user@mail.ru");
         owner = new User(2L, "owner", "owner@mail.ru");
         item = new Item(1L, "item", "desc", true, owner, null);
@@ -140,7 +139,7 @@ class BookingServiceImplTest {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
-        assertThrows(EntityNotFoundException.class, () -> bookingService.create(bookingDto, user.getId()));
+        assertThrows(NotFoundException.class, () -> bookingService.create(bookingDto, user.getId()));
     }
 
     @Test
@@ -165,7 +164,7 @@ class BookingServiceImplTest {
     void update_whenUserIsNotOwner() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
-        assertThrows(EntityNotFoundException.class,
+        assertThrows(NotFoundException.class,
                 () -> bookingService.update(99L, booking.getId(), true));
     }
 
@@ -214,7 +213,7 @@ class BookingServiceImplTest {
     void getBookingById_byAnotherUser() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
-        assertThrows(EntityNotFoundException.class, () -> bookingService.getBookingById(5L, booking.getId()));
+        assertThrows(NotFoundException.class, () -> bookingService.getBookingById(5L, booking.getId()));
     }
 
     @Test
@@ -343,7 +342,7 @@ class BookingServiceImplTest {
     void getAllBookingByUser_wrongUser() {
         when(userRepository.existsById(anyLong())).thenReturn(false);
 
-        assertThrows(EntityNotFoundException.class,
+        assertThrows(NotFoundException.class,
                 () -> bookingService.getAllBookingByUser(owner.getId(), "ALL", pageable));
     }
 
@@ -473,7 +472,7 @@ class BookingServiceImplTest {
     void getAllBookingByOwner_wrongUser() {
         when(userRepository.existsById(anyLong())).thenReturn(false);
 
-        assertThrows(EntityNotFoundException.class,
+        assertThrows(NotFoundException.class,
                 () -> bookingService.getAllBookingByOwner(owner.getId(), "ALL", pageable));
     }
 

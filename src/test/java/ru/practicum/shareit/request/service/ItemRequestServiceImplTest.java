@@ -1,6 +1,7 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.request.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -18,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -31,10 +31,9 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
-import ru.practicum.shareit.request.service.ItemRequestService;
-import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
+
 
 @SpringBootTest
 @RequiredArgsConstructor
@@ -135,7 +134,7 @@ class ItemRequestServiceImplTest {
     @Test
     void getItemRequests() {
         when(userRepository.existsById(anyLong())).thenReturn(true);
-        when(itemRequestRepository.findRequestsWithoutOwner(anyLong(), any())).thenReturn(listRequests);
+        when(itemRequestRepository.findAllByRequesterIdNot(anyLong(), any())).thenReturn(listRequests);
         when(itemRepository.findAllByRequest_IdOrderByIdDesc(anyLong())).thenReturn(listItems);
 
         List<ItemRequestInfoDto> res = itemRequestService.getItemRequests(1L, pageable);

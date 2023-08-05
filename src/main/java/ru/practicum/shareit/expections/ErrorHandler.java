@@ -73,7 +73,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
     public Map<String, String> entityNotAvailable(final ru.practicum.shareit.exceptions.EntityNotAvailable exception) {
         return Map.of("400", exception.getMessage());
     }

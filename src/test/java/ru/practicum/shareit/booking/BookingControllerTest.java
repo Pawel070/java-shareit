@@ -38,8 +38,6 @@ import ru.practicum.shareit.user.model.User;
 @AutoConfigureMockMvc
 class BookingControllerTest {
 
-    BookingModelDto bookingModelDto;
-    BookingDto bookingDto;
 
     @MockBean
     BookingService bookingService;
@@ -53,6 +51,8 @@ class BookingControllerTest {
     User user;
     User owner;
     Item item;
+    BookingModelDto bookingModelDto;
+    BookingDto bookingDto;
     UserDto userDto;
     ItemDto itemDto;
 

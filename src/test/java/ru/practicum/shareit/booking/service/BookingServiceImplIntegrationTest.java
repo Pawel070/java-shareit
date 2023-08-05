@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,9 +15,8 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.booking.service.BookingRepository;
-import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.EntityNotAvailable;
+import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
@@ -149,7 +147,7 @@ class BookingServiceImplIntegrationTest {
         bookingDto.setStart(LocalDateTime.now().plusHours(1));
         bookingDto.setEnd(LocalDateTime.now().plusHours(2));
 
-        assertThrows(EntityNotFoundException.class, () -> bookingService.create(bookingDto, owner.getId()));
+        assertThrows(NotFoundException.class, () -> bookingService.create(bookingDto, owner.getId()));
     }
 
     @Test
@@ -251,7 +249,7 @@ class BookingServiceImplIntegrationTest {
         booking.setBooker(savedBooker);
         bookingRepository.save(booking);
 
-        assertThrows(EntityNotFoundException.class,
+        assertThrows(NotFoundException.class,
                 () -> bookingService.update(savedOwner.getId(), 99L, false));
     }
 
@@ -284,7 +282,7 @@ class BookingServiceImplIntegrationTest {
         booking.setBooker(savedBooker);
         Booking savedBooking = bookingRepository.save(booking);
 
-        assertThrows(EntityNotFoundException.class,
+        assertThrows(NotFoundException.class,
                 () -> bookingService.update(savedBooker.getId(), savedBooking.getId(), false));
     }
 
@@ -385,7 +383,7 @@ class BookingServiceImplIntegrationTest {
         booking.setBooker(savedBooker);
         bookingRepository.save(booking);
 
-        assertThrows(EntityNotFoundException.class,
+        assertThrows(NotFoundException.class,
                 () -> bookingService.getBookingById(booking.getId(), 99L));
     }
 

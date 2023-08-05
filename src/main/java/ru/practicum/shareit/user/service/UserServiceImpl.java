@@ -5,11 +5,13 @@ import static java.util.stream.Collectors.toList;
 import javax.transaction.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.exception.ConstraintViolationException;
+
 import org.springframework.stereotype.Service;
 
 import ru.practicum.shareit.expections.NotFoundException;
@@ -59,28 +61,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(UserDto userDto, Long id) {
         log.info("UserServiceImpl: Получен PUT-запрос на обновление пользователя с УИН {}", id);
- //       UserDto userDto1 = getUser(id);
- //       if (userDto.getId() == null) {
-//            userDto.setId(id);
-//        }
-        User user = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("UserServiceImpl: Пользователь с УИН " + id + " не существует."));
-        if (userDto.getName() != null) {
-            user.setName(userDto.getName());
+        User oldUser = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with ID " + id + " does not exist"));
+        if (!isCheckUsersMail(userDto) || userDto.getEmail().equals(oldUser.getEmail())) {
+            userDto.setId(id);
+            User user = mapper.updatedUser(userDto, oldUser);
+            repository.save(user);
+            log.info("User ID {} was updated", userDto.getId());
+            return mapper.toUserDto(user);
+        } else {
+            throw new ru.practicum.shareit.exceptions.ConflictException("Mail " + userDto.getEmail() + " already used by another user");
         }
-        if (userDto.getEmail() != null && !userDto.getEmail().equals(user.getEmail())) {
-            if (repository.findByEmail(userDto.getEmail())
-                    .stream()
-                    .filter(us -> us.getEmail().equals(userDto.getEmail()))
-                    .allMatch(us -> us.getId().equals(userDto.getId()))) {
-                user.setEmail(userDto.getEmail());
-            } else {
-                throw new ru.practicum.shareit.exceptions.ConflictException("UserServiceImpl: Пользователь с E-mail=" + user.getEmail() + " уже существует.");
-            }
-        }
-        UserDto dto = mapper.toUserDto(repository.save(user));
-        log.info("UserServiceImpl: Получен PUT-запрос на обновление пользователя с УИН {}, старый {}, новый {}", id, user, dto);
-        return dto;
     }
 
     @Transactional
@@ -106,6 +97,13 @@ public class UserServiceImpl implements UserService {
         }
         log.info("Проверка наличия пользователя с УИН  {} вызов из > {} ", id, messageClass);
         User user = findUserById(id);
+    }
+
+    private boolean isCheckUsersMail(UserDto userDto) {
+        List<UserDto> repeats = getUsers().stream()
+                .filter(u -> u.getEmail().equals(userDto.getEmail()))
+                .collect(Collectors.toList());
+        return repeats.size() != 0;
     }
 
 }

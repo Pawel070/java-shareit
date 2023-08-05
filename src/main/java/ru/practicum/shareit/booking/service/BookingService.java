@@ -20,10 +20,6 @@ public interface BookingService {
 
     List<BookingModelDto> getAllBookingByOwner(Long userId, String state, Pageable pageable);
 
-    BookingInfoDto getLastBooking(Long itemId);
-
-    BookingInfoDto getNextBooking(Long itemId);
-
-    Booking getBookingWithUserBookedItem(Long itemId, Long userId);
+    void isCheckFromSize(int from, int size);
 
 }

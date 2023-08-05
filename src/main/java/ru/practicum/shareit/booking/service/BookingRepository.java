@@ -36,12 +36,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByItem_Owner_IdAndStatus(Long userId, Status status);
 
-    Booking findFirstByItem_IdAndEndBeforeOrderByEndDesc(Long itemId, LocalDateTime end);
-
-    Booking findFirstByItem_IdAndStartAfterOrderByStartAsc(Long itemId, LocalDateTime end);
-
-    Booking findFirstByItem_IdAndBooker_IdAndEndIsBeforeAndStatus(Long itemId, Long userId, LocalDateTime end, Status status);
-
     @Query("SELECT (COUNT(b) > 0) FROM Booking b WHERE b.item.id = :itemId AND b.booker.id = :userId AND b.end < :now")
     boolean isItemWasUsedByUser(@Param("itemId") Long itemId, @Param("userId") Long userId, @Param("now") LocalDateTime now);
 
