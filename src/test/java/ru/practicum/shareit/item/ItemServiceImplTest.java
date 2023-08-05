@@ -20,9 +20,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingRepository;
@@ -39,7 +39,6 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
-import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -52,7 +51,6 @@ class ItemServiceImplTest {
 
     ItemService itemService;
     final UserMapper userMapper;
-    final EntityCheck entityCheck;
 
     @MockBean
     BookingRepository bookingRepository;

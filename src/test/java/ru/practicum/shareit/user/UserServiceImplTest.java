@@ -21,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import ru.practicum.shareit.exceptions.ConflictException;
-import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
@@ -32,7 +31,6 @@ import ru.practicum.shareit.user.service.UserServiceImpl;
 class UserServiceImplTest {
 
     UserService userService;
-    final EntityCheck entityCheck;
 
     @Autowired
    UserMapper mapper;
@@ -46,8 +44,8 @@ class UserServiceImplTest {
     @BeforeEach
     void beforeEach() {
         userService = new UserServiceImpl(userRepository, mapper);
-        user = new User(1L, "user", "mail@ya.ru");
-        userDto = new UserDto(1L, "user", "mail@ya.ru");
+        user = new User(1L, "user", "mail@mail.ru");
+        userDto = new UserDto(1L, "user", "mail@mail.ru");
     }
 
     @Test
@@ -72,7 +70,7 @@ class UserServiceImplTest {
 
     @Test
     void updateUser() {
-        UserDto newUserDto = new UserDto(null, "user2", "mail2@ya.ru");
+        UserDto newUserDto = new UserDto(null, "user2", "mail2@mail.ru");
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(userRepository.findAll()).thenReturn(List.of(user));
         when(userRepository.save(any())).thenReturn(user);
@@ -107,7 +105,7 @@ class UserServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(userRepository.findAll()).thenReturn(List.of(user));
         when(userRepository.save(any())).thenReturn(user);
-        UserDto newUserDto = new UserDto(null, null, "mail2@ya.ru");
+        UserDto newUserDto = new UserDto(null, null, "mail2@mail.ru");
 
         UserDto res = userService.update(newUserDto, userDto.getId());
 
@@ -120,8 +118,8 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_MailWasUsedByAnotherUser() {
-        User user2 = new User(2L, "user2", "mail2@ya.ru");
-        UserDto newUserDto = new UserDto(null, null, "mail2@ya.ru");
+        User user2 = new User(2L, "user2", "mail2@mail.ru");
+        UserDto newUserDto = new UserDto(null, null, "mail2@mail.ru");
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(userRepository.findAll()).thenReturn(List.of(user2));
         when(userRepository.save(any())).thenReturn(user);

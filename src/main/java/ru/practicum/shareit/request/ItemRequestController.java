@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import ru.practicum.shareit.service.EntityCheck;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
@@ -23,7 +23,7 @@ import ru.practicum.shareit.request.service.ItemRequestService;
 public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
-    private final EntityCheck entityCheck;
+    private final ItemService itemService;
 
     @PostMapping
     public ItemRequestInfoDto createItemRequest(@RequestHeader(USER_ID) Long userId,
@@ -43,7 +43,7 @@ public class ItemRequestController {
             @RequestHeader(USER_ID) Long userId,
             @RequestParam(value = "from", defaultValue = "0") int from,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        entityCheck.isCheckFromSize(from, size);
+        itemService.isCheckFromSize(from, size);
         log.info("ItemRequestController: Получен GET - запрос : Получить список запросов from {} и size {} пользователя с УИД {} ", from, size, userId);
         return itemRequestService.getItemRequests(userId, PageRequest.of(from / size, size));
     }

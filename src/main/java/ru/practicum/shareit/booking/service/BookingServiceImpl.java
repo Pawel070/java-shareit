@@ -3,9 +3,7 @@ package ru.practicum.shareit.booking.service;
 import static ru.practicum.shareit.service.MyConstants.SORT;
 
 import javax.transaction.Transactional;
-
 import java.time.LocalDateTime;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,12 +11,9 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
@@ -32,10 +27,10 @@ import ru.practicum.shareit.expections.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.service.State;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 @Slf4j
 @Service
@@ -47,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final BookingMapper mapper;
     private final ItemService itemService;
-    private final EntityCheck entityCheck;
+    private final UserService userService;
 
     @Transactional
     @Override
@@ -82,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingModelDto update(Long bookingId, Long userId, Boolean accepted) {
         log.info("BookingServiceImpl: isExistUser - update");
-        entityCheck.isCheckUserId(userId);
+        userService.isCheckUserId(userId);
         Booking booking = repository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Такого бронирования УИН " + bookingId + " нет."));
         if (booking.getEnd().isBefore(LocalDateTime.now())) {
@@ -120,7 +115,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingModelDto getBookingById(Long bookingId, Long userId) {
         log.info("BookingServiceImpl: isExistUser - getBookingById");
-        entityCheck.isCheckUserId(userId);
+        userService.isCheckUserId(userId);
         Booking booking = repository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Такого бронирования УИН " + bookingId + " нет."));
         if (booking.getBooker().getId().equals(userId) || itemService.isCheckItemOwner(booking.getItem().getId(), userId)) {
@@ -134,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingModelDto> getAllBookingByUser(Long userId, String ofProcess, Pageable pageable) {
         State state = getState(ofProcess);
         log.info("BookingServiceImpl: isExistUser - getBookings статус {} userId {} ", state, userId);
-        entityCheck.isCheckUserId(userId);
+        userService.isCheckUserId(userId);
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
             case ALL:
@@ -168,7 +163,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingModelDto> getAllBookingByOwner(Long userId, String ofProcess, Pageable pageable) {
         State state = getState(ofProcess);
         log.info("BookingServiceImpl: isExistUser - getBookingsOwner {} ", state);
-        entityCheck.isCheckUserId(userId);
+        userService.isCheckUserId(userId);
         List<Booking> bookings = new ArrayList<>();
         Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
         switch (state) {

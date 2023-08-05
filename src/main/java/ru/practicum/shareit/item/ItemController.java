@@ -3,7 +3,6 @@ package ru.practicum.shareit.item;
 import static ru.practicum.shareit.service.MyConstants.USER_ID;
 
 import javax.validation.Valid;
-
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
@@ -25,7 +23,6 @@ import ru.practicum.shareit.item.service.ItemService;
 public class ItemController {
 
     private final ItemService itemService;
-    private final EntityCheck entityCheck;
 
     @GetMapping("/{itemId}")
     public ItemInfoDto getItemById(@RequestHeader(USER_ID) Long ownerId, @PathVariable Long itemId) {
@@ -51,7 +48,7 @@ public class ItemController {
             @RequestHeader(USER_ID) Long id,
             @RequestParam(value = "from", defaultValue = "0") int from,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        entityCheck.isCheckFromSize(from, size);
+        itemService.isCheckFromSize(from, size);
         log.info("ItemController: Получен GET-запрос на получение всех вещей владельца с УИН {} с from {} и size {}", id, from, size);
         return itemService.getItemsByOwner(id, PageRequest.of(from / size, size));
     }
@@ -76,7 +73,7 @@ public class ItemController {
             @RequestParam String text,
             @RequestParam(value = "from", defaultValue = "0") int from,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        entityCheck.isCheckFromSize(from, size);
+        itemService.isCheckFromSize(from, size);
         log.info("ItemController: Получен GET-запрос на поиск вещи : {} с from {} и size {} от {} ", text, from, size, userId);
         return itemService.getAvailableItems(userId, text, PageRequest.of(from / size, size));
     }

@@ -34,4 +34,6 @@ public interface ItemService {
 
     boolean isCheckItemOwner(Long itemId, Long userId);
 
+    void isCheckFromSize(int from, int size);
+
 }

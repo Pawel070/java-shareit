@@ -26,13 +26,13 @@ import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
-import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -41,11 +41,9 @@ import ru.practicum.shareit.user.model.User;
 class ItemRequestServiceImplTest {
 
     ItemRequestService itemRequestService;
+    ItemService itemService;
     ItemRequest itemRequest;
     ItemRequestDto itemRequestDto;
-
-    @Autowired
-    EntityCheck entityCheck;
 
     @Autowired
     ItemMapper mapper;

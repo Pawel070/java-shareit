@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import ru.practicum.shareit.service.EntityCheck;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -23,7 +23,7 @@ import ru.practicum.shareit.booking.service.BookingService;
 public class BookingController {
 
     private final BookingService service;
-    private final EntityCheck entityCheck;
+    private final ItemService itemService;
 
     @PostMapping
     public BookingModelDto create(
@@ -53,7 +53,7 @@ public class BookingController {
             @RequestParam(value = "state", defaultValue = "ALL") String state,
             @RequestParam(value = "from", defaultValue = "0") int from,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        entityCheck.isCheckFromSize(from, size);
+        itemService.isCheckFromSize(from, size);
         log.info("BookingController getBookings: Получен GET-запрос с параметром STATE = {} from = {} size = {} " +
                 "списка бронирований пользователя с УИН {}", state, from, size, userId);
         return service.getAllBookingByUser(userId, state, PageRequest.of(from / size, size));
@@ -65,7 +65,7 @@ public class BookingController {
             @RequestParam(value = "state", defaultValue = "ALL") String state,
             @RequestParam(value = "from", defaultValue = "0") int from,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        entityCheck.isCheckFromSize(from, size);
+        itemService.isCheckFromSize(from, size);
         log.info("BookingController getBookingsOwner: Получен GET-запрос с параметром STATE = {} from = {} size = {} на получение списка " +
                 "бронирований вещей пользователя с УИН {}", state, from, size, userId);
         return service.getAllBookingByOwner(userId, state, PageRequest.of(from / size, size));

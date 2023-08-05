@@ -32,7 +32,6 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
-import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
@@ -52,7 +51,6 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final ItemRequestRepository itemRequestRepository;
     private final BookingRepository bookingRepository;
-    private final EntityCheck entityCheck;
 
     @Transactional
     @Override
@@ -94,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
         Map<Long, List<Comment>> comments = new HashMap<>();
         LocalDateTime now = LocalDateTime.now();
         log.info("ItemServiceImpl: Получен GET-запрос на получение списка вещей владельца с УИН {}", id);
-        entityCheck.isCheckUserId(id);
+        userService.isCheckUserId(id);
         List<Item> items = repository.findByOwner_Id(id, pageable);
         List<Long> itemsId = items
                 .stream()
@@ -256,4 +254,17 @@ public class ItemServiceImpl implements ItemService {
         return boo;
     }
 
+    @Override
+    public void isCheckFromSize(int from, int size) {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        String messageClass = "";
+        if (stackTraceElements.length >= 3) {
+            StackTraceElement element = stackTraceElements[2];
+            messageClass = element.getClassName() + ":" + element.getMethodName();
+        }
+        log.info("Проверка from {} и size {} вызов из > {} ", from, size, messageClass);
+        if (from < 0 || size < 1) {
+            throw new ru.practicum.shareit.exceptions.EntityNotAvailable("Ошибочный параметр \"size\" или \"from\"");
+        }
+    }
 }

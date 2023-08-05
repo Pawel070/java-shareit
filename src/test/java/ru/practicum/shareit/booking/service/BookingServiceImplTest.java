@@ -1,13 +1,11 @@
 package ru.practicum.shareit.booking.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import javax.persistence.EntityNotFoundException;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
@@ -34,7 +32,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -45,7 +42,6 @@ class BookingServiceImplTest {
 
     BookingService bookingService;
     final ItemService itemService;
-    final EntityCheck entityCheck;
     BookingModelDto bookingModelDto;
     BookingDto bookingDto;
     Pageable pageable;

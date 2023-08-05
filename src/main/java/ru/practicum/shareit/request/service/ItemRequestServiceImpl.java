@@ -18,9 +18,9 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
-import ru.practicum.shareit.service.EntityCheck;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +29,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final ItemMapper mapper;
-    private final EntityCheck entityCheck;
 
     @Transactional
     @Override
@@ -43,7 +43,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestInfoDto> getUsersItemRequests(Long id) {
-        entityCheck.isCheckUserId(id);
+        userService.isCheckUserId(id);
         List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(id);
         return requests.stream()
                 .map(req -> mapper.toItemRequestInfoDto(req, itemRepository.findAllByRequest_IdOrderByIdDesc(req.getId())))
@@ -52,7 +52,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestInfoDto> getItemRequests(Long id, Pageable pageable) {
-        entityCheck.isCheckUserId(id);
+        userService.isCheckUserId(id);
         List<ItemRequest> requests = itemRequestRepository.findRequestsWithoutOwner(id, pageable);
         return requests.stream()
                 .map(request -> mapper.toItemRequestInfoDto(request,
@@ -62,7 +62,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestInfoDto getItemRequestById(Long requestId, Long id) {
-        entityCheck.isCheckUserId(id);
+        userService.isCheckUserId(id);
         ItemRequest itemRequest = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("ItemRequestServiceImpl createItemRequest : Запрос на вещь с УИН" + requestId + " не существует."));
         return mapper.toItemRequestInfoDto(itemRequest, itemRepository.findAllByRequest_IdOrderByIdDesc(itemRequest.getId()));
