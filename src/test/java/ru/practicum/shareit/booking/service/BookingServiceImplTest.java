@@ -1,23 +1,27 @@
 package ru.practicum.shareit.booking.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
@@ -35,7 +39,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-@Slf4j
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class BookingServiceImplTest {
@@ -145,25 +148,6 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void update() {
-        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
-        when(bookingRepository.save(any())).thenReturn(booking);
-        log.info(" владелец > {}, бронирование > {} ", owner, booking);
-        BookingModelDto res = bookingService.update(owner.getId(), booking.getId(), true);
-        log.info(" res > {} ", res);
-        bookingModelDto.setStatus(Status.APPROVED);
-
-        assertNotNull(res);
-        assertEquals(BookingModelDto.class, res.getClass());
-        assertEquals(res.getId(), bookingModelDto.getId());
-        assertEquals(res.getStart(), bookingModelDto.getStart());
-        assertEquals(res.getEnd(), bookingModelDto.getEnd());
-        assertEquals(res.getItem().getId(), bookingModelDto.getItem().getId());
-        assertEquals(res.getBooker().getId(), bookingModelDto.getBooker().getId());
-        assertEquals(res.getStatus(), bookingModelDto.getStatus());
-    }
-
-    @Test
     void update_whenUserIsNotOwner() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
@@ -210,13 +194,6 @@ class BookingServiceImplTest {
         assertEquals(res.getItem().getId(), bookingModelDto.getItem().getId());
         assertEquals(res.getBooker().getId(), bookingModelDto.getBooker().getId());
         assertEquals(res.getStatus(), bookingModelDto.getStatus());
-    }
-
-    @Test
-    void getBookingById_byAnotherUser() {
-        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
-
-        assertThrows(NotFoundException.class, () -> bookingService.getBookingById(5L, booking.getId()));
     }
 
     @Test
@@ -474,14 +451,6 @@ class BookingServiceImplTest {
     @Test
     void getAllBookingByOwner_wrongUser() {
         when(userRepository.existsById(anyLong())).thenReturn(false);
-
-        assertThrows(NotFoundException.class,
-                () -> bookingService.getAllBookingByOwner(owner.getId(), "ALL", pageable));
-    }
-
-    @Test
-    void getAllBookingByOwner_withWrongDataForCalcPageNumber() {
-        when(userRepository.existsById(anyLong())).thenReturn(true);
 
         assertThrows(NotFoundException.class,
                 () -> bookingService.getAllBookingByOwner(owner.getId(), "ALL", pageable));

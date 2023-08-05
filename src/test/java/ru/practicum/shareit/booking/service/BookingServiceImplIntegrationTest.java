@@ -3,14 +3,17 @@ package ru.practicum.shareit.booking.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import javax.transaction.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -42,12 +45,12 @@ class BookingServiceImplIntegrationTest {
     void create() {
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -78,12 +81,12 @@ class BookingServiceImplIntegrationTest {
     void create_itemUnavailable() {
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -105,12 +108,12 @@ class BookingServiceImplIntegrationTest {
     void create_startAfterEnd() {
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -132,7 +135,7 @@ class BookingServiceImplIntegrationTest {
     void create_bookerIsOwner() {
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -155,12 +158,12 @@ class BookingServiceImplIntegrationTest {
         LocalDateTime now = LocalDateTime.now();
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         User savedBooker = userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -179,7 +182,7 @@ class BookingServiceImplIntegrationTest {
         Booking savedBooking = bookingRepository.save(booking);
 
         BookingModelDto updatedBooking = bookingService
-                .update(savedOwner.getId(), savedBooking.getId(), true);
+                .update(savedBooking.getId(), savedOwner.getId(),true);
 
         assertEquals(updatedBooking.getStatus(), Status.APPROVED);
     }
@@ -190,12 +193,12 @@ class BookingServiceImplIntegrationTest {
 
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         User savedBooker = userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -214,7 +217,7 @@ class BookingServiceImplIntegrationTest {
         Booking savedBooking = bookingRepository.save(booking);
 
         BookingModelDto updatedBooking = bookingService
-                .update(savedOwner.getId(), savedBooking.getId(), false);
+                .update(savedBooking.getId(), savedOwner.getId(), false);
 
         assertEquals(updatedBooking.getStatus(), Status.REJECTED);
     }
@@ -226,12 +229,12 @@ class BookingServiceImplIntegrationTest {
 
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         User savedBooker = userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -259,12 +262,12 @@ class BookingServiceImplIntegrationTest {
 
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         User savedBooker = userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -292,12 +295,12 @@ class BookingServiceImplIntegrationTest {
 
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         User savedBooker = userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -325,12 +328,12 @@ class BookingServiceImplIntegrationTest {
 
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         User savedBooker = userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -348,7 +351,7 @@ class BookingServiceImplIntegrationTest {
         booking.setBooker(savedBooker);
         Booking savedBooking = bookingRepository.save(booking);
 
-        BookingModelDto result = bookingService.getBookingById(savedBooker.getId(), savedBooking.getId());
+        BookingModelDto result = bookingService.getBookingById(savedBooking.getId(), savedBooker.getId());
 
         assertNotNull(result);
         assertEquals(result.getId(), savedBooking.getId());
@@ -360,12 +363,12 @@ class BookingServiceImplIntegrationTest {
 
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         User savedBooker = userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -395,17 +398,17 @@ class BookingServiceImplIntegrationTest {
 
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         User savedBooker = userRepository.save(booker);
 
         User booker2 = new User();
         booker2.setName("booker2");
-        booker2.setEmail("booker2@ya.ru");
+        booker2.setEmail("booker2@mail.ru");
         User savedBooker2 = userRepository.save(booker2);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -455,17 +458,17 @@ class BookingServiceImplIntegrationTest {
 
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         User savedBooker = userRepository.save(booker);
 
         User booker2 = new User();
         booker2.setName("booker2");
-        booker2.setEmail("booker2@ya.ru");
+        booker2.setEmail("booker2@mail.ru");
         User savedBooker2 = userRepository.save(booker2);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
