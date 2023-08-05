@@ -3,10 +3,9 @@ package ru.practicum.shareit.booking.service;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
-import ru.practicum.shareit.booking.model.Booking;
 
 public interface BookingService {
 
