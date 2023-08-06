@@ -42,7 +42,6 @@ public class ErrorHandler {
         return Map.of("409", exception.getMessage());
     }
 
-
     @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
