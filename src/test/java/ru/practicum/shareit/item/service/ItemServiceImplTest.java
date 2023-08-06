@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +43,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+@Slf4j
 @SpringBootTest
 @RequiredArgsConstructor
 class ItemServiceImplTest {
@@ -112,9 +114,7 @@ class ItemServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
         when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(request1));
         when(itemRepository.save(any())).thenReturn(item1);
-
         ItemDto res = itemService.create(itemDto1, user1.getId());
-
         assertNotNull(res);
         assertEquals(ItemDto.class, res.getClass());
         assertEquals(res.getId(), itemDto1.getId());
@@ -130,7 +130,6 @@ class ItemServiceImplTest {
         itemDto1.setRequestId(99L);
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
         when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.empty());
-
         assertThrows(NotFoundException.class, () -> itemService.create(itemDto1, user1.getId()));
     }
 
@@ -139,11 +138,8 @@ class ItemServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
         when(itemRepository.save(any())).thenReturn(item1);
-
         ItemDto newItemDto = new ItemDto(0, "upd", "upd", false, user1, request1.getId());
-
         ItemDto res = itemService.update(newItemDto, user1.getId(), itemDto1.getId());
-
         assertNotNull(res);
         assertEquals(ItemDto.class, res.getClass());
         assertEquals(res.getId(), itemDto1.getId());
@@ -157,9 +153,7 @@ class ItemServiceImplTest {
     void updateItem_itemDoesNotBelongToUser() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
-
         ItemDto newItemDto = new ItemDto(0, "upd", "upd", false, user1, request1.getId());
-
         assertThrows(NotFoundException.class,
                 () -> itemService.update(newItemDto, user1.getId(), itemDto1.getId()));
     }
@@ -172,9 +166,7 @@ class ItemServiceImplTest {
                 .thenReturn(booking1);
         when(bookingRepository.findFirstByItem_IdAndItem_Owner_IdAndStartIsAfterAndStatusIsNotAndStatusIsNot(
                 anyLong(), anyLong(), any(), any(), any(), any())).thenReturn(booking2);
-
         ItemInfoDto res = itemService.getItemById(itemDto1.getId(), user1.getId());
-
         assertNotNull(res);
         assertEquals(ItemInfoDto.class, res.getClass());
         assertEquals(res.getId(), itemDto1.getId());
@@ -197,11 +189,8 @@ class ItemServiceImplTest {
                 .thenReturn(List.of(booking1));
         when(bookingRepository.findFirstByItem_IdInAndItem_Owner_IdAndStartIsAfterAndStatusIsNotAndStatusIsNot(
                 any(), anyLong(), any(), any(), any(), any())).thenReturn(List.of(booking2));
-
         List<ItemInfoDto> res = itemService.getItemsByOwner(user1.getId(), pageable);
-
         assertEquals(res.size(), 2);
-
         assertEquals(ItemInfoDto.class, res.get(0).getClass());
         assertEquals(res.get(0).getId(), item1.getId());
         assertEquals(res.get(0).getName(), item1.getName());
@@ -212,7 +201,6 @@ class ItemServiceImplTest {
         assertEquals(res.get(0).getLastBooking().toString(), bookingMapper.toBookingInfoDto(booking1).toString());
         assertEquals(res.get(0).getNextBooking().toString(), bookingMapper.toBookingInfoDto(booking2).toString());
         assertEquals(res.get(0).getComments().size(), 0);
-
         assertEquals(ItemInfoDto.class, res.get(1).getClass());
         assertEquals(res.get(1).getId(), item2.getId());
         assertEquals(res.get(1).getName(), item2.getName());
@@ -228,18 +216,14 @@ class ItemServiceImplTest {
     @Test
     void getItemsByUser_wrongUser() {
         when(userRepository.existsById(anyLong())).thenReturn(false);
-
         assertThrows(NotFoundException.class, () -> itemService.getItemsByOwner(99L, pageable));
     }
 
     @Test
     void getAvailableItems() {
         when(itemRepository.searchAvailableItems(anyString(), any())).thenReturn(List.of(item1, item2));
-
         List<ItemDto> res = itemService.getAvailableItems(user1.getId(), "item", pageable);
-
         assertEquals(res.size(), 2);
-
         assertEquals(ItemDto.class, res.get(0).getClass());
         assertEquals(res.get(0).getId(), item1.getId());
         assertEquals(res.get(0).getName(), item1.getName());
@@ -247,7 +231,6 @@ class ItemServiceImplTest {
         assertEquals(res.get(0).getAvailable(), item1.getAvailable());
         assertEquals(res.get(0).getOwner().toString(), user1.toString());
         assertEquals(res.get(0).getRequestId(), item1.getRequest().getId());
-
         assertEquals(ItemDto.class, res.get(1).getClass());
         assertEquals(res.get(1).getId(), item2.getId());
         assertEquals(res.get(1).getName(), item2.getName());
@@ -260,7 +243,6 @@ class ItemServiceImplTest {
     @Test
     void getAvailableItems_withBlankText() {
         List<ItemDto> res = itemService.getAvailableItems(user1.getId(), "       ", pageable);
-
         assertEquals(res.size(), 0);
     }
 
@@ -272,9 +254,7 @@ class ItemServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
         when(bookingRepository.isItemWasUsedByUser(anyLong(), anyLong(), any())).thenReturn(true);
         when(commentRepository.save(any())).thenReturn(comment);
-
         CommentDto res = itemService.createComment(commentDto, item1.getId(), user1.getId());
-
         assertNotNull(res);
         assertEquals(CommentDto.class, res.getClass());
         assertEquals(res.getId(), commentDto.getId());
@@ -290,9 +270,27 @@ class ItemServiceImplTest {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
         when(bookingRepository.isItemWasUsedByUser(anyLong(), anyLong(), any())).thenReturn(false);
-
         assertThrows(EntityNotAvailable.class,
                 () -> itemService.createComment(commentDto, item1.getId(), user1.getId()));
+    }
+
+    @Test
+    void findItemById() {
+        when(itemRepository.existsById(anyLong())).thenReturn(false);
+        assertThrows(NotFoundException.class, () -> itemService.getItemsByOwner(99L, pageable));
+    }
+
+    @Test
+    void deleteItemsByUser() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(request1));
+        when(itemRepository.save(any())).thenReturn(item1);
+        ItemDto res = itemService.create(itemDto1, user1.getId());
+        log.info("res > {}",res);
+        assertNotNull(res);
+        itemService.deleteItemsByUser(res.getOwner().getId());
+        assertThrows(NotFoundException.class,
+                () -> itemService.getItemsByOwner(res.getOwner().getId(), pageable));
     }
 
 }

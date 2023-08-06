@@ -1,5 +1,7 @@
 package ru.practicum.shareit.user.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -17,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.Rollback;
 import ru.practicum.shareit.exceptions.ConflictException;
+import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -135,9 +138,7 @@ class UserServiceImplTest {
     @Rollback(false)
     void getUser() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-
         UserDto res = userService.getUser(userDto.getId());
-
         assertNotNull(res);
         assertEquals(UserDto.class, res.getClass());
         assertEquals(userDto.getId(), res.getId());
@@ -145,4 +146,30 @@ class UserServiceImplTest {
         assertEquals(userDto.getEmail(), res.getEmail());
     }
 
+
+    @Test
+    @Rollback(false)
+    void testGetUser() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        UserDto res = userService.getUser(userDto.getId());
+        assertNotNull(res);
+        assertEquals(UserDto.class, res.getClass());
+        assertEquals(userDto.getId(), res.getId());
+        assertEquals(userDto.getName(), res.getName());
+        assertEquals(userDto.getEmail(), res.getEmail());
+    }
+
+    @Test
+    @Rollback(false)
+    void findUserById() {
+        when(userRepository.findById(11L)).thenReturn(Optional.of(mapper.toUser(userDto)));
+        UserDto newUserDto = userService.getUser(11L);
+        assertThat(newUserDto.getId(), equalTo(userDto.getId()));
+        assertThat(newUserDto.getEmail(), equalTo(userDto.getEmail()));
+    }
+
+    @Test
+    @Rollback(false)
+    void isCheckUserId() {
+    }
 }

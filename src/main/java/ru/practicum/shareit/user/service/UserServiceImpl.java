@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         User user = mapper.toUser(userDto);
         try {
             UserDto userDto1 = mapper.toUserDto(repository.save(user));
-            log.info("UserServiceImpl: Пользователь {}  с УИД : {} создан", mapper.toUser(userDto1), userDto1.getId());
+            log.info("UserServiceImpl: Пользователь {}  с УИД : {} создан", userDto1, user.getId());
             return userDto1;
         } catch (ConstraintViolationException e) {
             throw new ru.practicum.shareit.exceptions.ConflictException("Mail " + userDto.getEmail() + " уже используется другим пользователем.");

@@ -64,7 +64,6 @@ public class ItemServiceImpl implements ItemService {
 
     }
 
-
     @Transactional
     @Override
     public CommentDto createComment(CommentDto commentDto, Long itemId, Long userId) {
@@ -91,9 +90,6 @@ public class ItemServiceImpl implements ItemService {
                 if (!userRepository.existsById(id)) {
             throw new NotFoundException("ItemServiceImpl getItemById: Вещь с УИН " + id + " не существует.");
         }
-
- //       Item item1 = repository.findById(id)
- //               .orElseThrow(() -> new NotFoundException("ItemServiceImpl getItemById: Вещь с УИН " + id + " не существует."));
         List<Item> items = repository.findByOwner_Id(id, pageable);
         List<Long> itemsId = items
                 .stream()
@@ -206,7 +202,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public void deleteItemsByOwner(Long id) {
-        log.info("ItemServiceImpl deleteItemsByOwner: Получен DELETE-запрос на удаление всех вещеепользователя с УИН {}", id);
+        log.info("ItemServiceImpl deleteItemsByOwner: Получен DELETE-запрос на удаление всех вещей пользователя с УИН {}", id);
         repository.deleteById(id);
     }
 
