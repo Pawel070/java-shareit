@@ -43,7 +43,7 @@ class ErrorHandlerTest {
     }
 
     @Test
-    void ConstraintViolationExceptionTest() {
+    void constraintViolationExceptionTest() {
         ErrorResponse error = errorHandler.handleConstraintViolationException(new Exception("message"));
         Assertions.assertEquals(error.getError(), "http:400 Искомый объект не найден при первичной проверке.");
     }
