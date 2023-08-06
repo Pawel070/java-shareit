@@ -1,30 +1,25 @@
 package ru.practicum.shareit.user;
 
 import static org.hamcrest.Matchers.is;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.nio.charset.StandardCharsets;
-
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
-
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -49,6 +44,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Rollback(false)
     void createUser() throws Exception {
         when(userService.create(any())).thenReturn(userDto);
 
@@ -64,6 +60,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Rollback(false)
     void createUser_WithWrongMailFormat() throws Exception {
         userDto.setEmail("email.ru");
 
@@ -76,6 +73,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Rollback(false)
     void createUser_WithBlankMail() throws Exception {
         userDto.setEmail("");
 
@@ -88,6 +86,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Rollback(false)
     void createUser_WithNullMail() throws Exception {
         userDto.setEmail(null);
 
@@ -100,6 +99,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Rollback(false)
     void updateUser() throws Exception {
         when(userService.update(any(), anyLong())).thenReturn(userDto);
 
@@ -115,6 +115,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Rollback(false)
     void getUser() throws Exception {
         when(userService.getUser(anyLong())).thenReturn(userDto);
 
@@ -124,6 +125,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Rollback(false)
     void getAllUsers() throws Exception {
         when(userService.getUsers()).thenReturn(List.of(userDto));
 
@@ -133,6 +135,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Rollback(false)
     void deleteUser() throws Exception {
         mockMvc.perform(delete("/users/{userId}", userDto.getId()))
                 .andExpect(status().isOk());

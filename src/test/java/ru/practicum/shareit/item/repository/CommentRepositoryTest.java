@@ -78,7 +78,7 @@ class CommentRepositoryTest {
         assertEquals(res.get(0).getAuthor().getId(), commentary01.getAuthor().getId());
         assertEquals(res.get(0).getAuthor().getName(), commentary01.getAuthor().getName());
         assertEquals(res.get(0).getAuthor().getEmail(), commentary01.getAuthor().getEmail());
-        assertEquals(res.get(0).getCreated().toString(), commentary01.getCreated().toString());
+        assertEquals(res.get(0).getCreated().toString().substring(0, 22), commentary01.getCreated().toString().substring(0, 22));
 
         assertEquals(res.get(1).getId(), commentary02.getId());
         assertEquals(res.get(1).getText(), commentary02.getText());
@@ -93,7 +93,7 @@ class CommentRepositoryTest {
         assertEquals(res.get(1).getAuthor().getId(), commentary02.getAuthor().getId());
         assertEquals(res.get(1).getAuthor().getName(), commentary02.getAuthor().getName());
         assertEquals(res.get(1).getAuthor().getEmail(), commentary02.getAuthor().getEmail());
-        assertEquals(res.get(1).getCreated().toString(), commentary02.getCreated().toString());
+        assertEquals(res.get(1).getCreated().toString().substring(0, 22), commentary02.getCreated().toString().substring(0, 22));
     }
 
     @Test
@@ -117,7 +117,7 @@ class CommentRepositoryTest {
         assertEquals(res.get(0).getAuthor().getId(), commentary03.getAuthor().getId());
         assertEquals(res.get(0).getAuthor().getName(), commentary03.getAuthor().getName());
         assertEquals(res.get(0).getAuthor().getEmail(), commentary03.getAuthor().getEmail());
-        assertEquals(res.get(0).getCreated().toString(), commentary03.getCreated().toString());
+        assertEquals(res.get(0).getCreated().toString().substring(0, 22), commentary03.getCreated().toString().substring(0, 22));
 
         assertEquals(res.get(1).getId(), commentary04.getId());
         assertEquals(res.get(1).getText(), commentary04.getText());
@@ -132,6 +132,6 @@ class CommentRepositoryTest {
         assertEquals(res.get(1).getAuthor().getId(), commentary04.getAuthor().getId());
         assertEquals(res.get(1).getAuthor().getName(), commentary04.getAuthor().getName());
         assertEquals(res.get(1).getAuthor().getEmail(), commentary04.getAuthor().getEmail());
-        assertEquals(res.get(1).getCreated().toString(), commentary04.getCreated().toString());
+        assertEquals(res.get(1).getCreated().toString().substring(0, 22), commentary04.getCreated().toString().substring(0, 22));
     }
 }

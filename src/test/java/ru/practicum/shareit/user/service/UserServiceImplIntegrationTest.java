@@ -3,20 +3,17 @@ package ru.practicum.shareit.user.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import javax.transaction.Transactional;
-
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
 @Transactional
 @SpringBootTest
@@ -27,6 +24,12 @@ class UserServiceImplIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @BeforeEach
+    void setUp() {
+        userRepository.deleteAll();
+    }
+
 
     @Test
     void create() {

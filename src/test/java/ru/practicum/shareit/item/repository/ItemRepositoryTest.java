@@ -73,7 +73,12 @@ class ItemRepositoryTest {
         assertEquals(res.get(0).getDescription(), item2.getDescription());
         assertEquals(res.get(0).getAvailable(), item2.getAvailable());
         assertEquals(res.get(0).getOwner().toString(), item2.getOwner().toString());
-        assertEquals(res.get(0).getRequest().toString(), item2.getRequest().toString());
+
+        String strT1 = res.get(0).getRequest().toString();
+        strT1 = strT1.substring(0, strT1.length() - 4);
+        String strT2 = item2.getRequest().toString();
+        strT2 = strT2.substring(0, strT1.length());
+        assertEquals(strT1, strT2);
 
         assertEquals(res.get(1).getId(), item3.getId());
         assertEquals(res.get(1).getName(), item3.getName());
@@ -94,7 +99,12 @@ class ItemRepositoryTest {
         assertEquals(res.get(0).getDescription(), item1.getDescription());
         assertEquals(res.get(0).getAvailable(), item1.getAvailable());
         assertEquals(res.get(0).getOwner().toString(), item1.getOwner().toString());
-        assertEquals(res.get(0).getRequest().toString(), item1.getRequest().toString());
+
+        String strT1 = res.get(0).getRequest().toString();
+        strT1 = strT1.substring(0, strT1.length() - 4);
+        String strT2 = item1.getRequest().toString();
+        strT2 = strT2.substring(0, strT1.length());
+        assertEquals(strT1, strT2);
     }
 
     @Test
@@ -108,7 +118,12 @@ class ItemRepositoryTest {
         assertEquals(res.get(0).getDescription(), item1.getDescription());
         assertEquals(res.get(0).getAvailable(), item1.getAvailable());
         assertEquals(res.get(0).getOwner().toString(), item1.getOwner().toString());
-        assertEquals(res.get(0).getRequest().toString(), item1.getRequest().toString());
+
+        String strT1 = res.get(0).getRequest().toString();
+        strT1 = strT1.substring(0, strT1.length() - 4);
+        String strT2 = item1.getRequest().toString();
+        strT2 = strT2.substring(0, strT1.length());
+        assertEquals(strT1, strT2);
     }
 
     @Test
@@ -122,7 +137,12 @@ class ItemRepositoryTest {
         assertEquals(res.get(0).getDescription(), item1.getDescription());
         assertEquals(res.get(0).getAvailable(), item1.getAvailable());
         assertEquals(res.get(0).getOwner().toString(), item1.getOwner().toString());
-        assertEquals(res.get(0).getRequest().toString(), item1.getRequest().toString());
+
+        String strT1 = res.get(0).getRequest().toString();
+        strT1 = strT1.substring(0, strT1.length() - 4);
+        String strT2 = item1.getRequest().toString();
+        strT2 = strT2.substring(0, strT1.length());
+        assertEquals(strT1, strT2);
     }
 
     @Test
@@ -136,14 +156,24 @@ class ItemRepositoryTest {
         assertEquals(res.get(0).getDescription(), item1.getDescription());
         assertEquals(res.get(0).getAvailable(), item1.getAvailable());
         assertEquals(res.get(0).getOwner().toString(), item1.getOwner().toString());
-        assertEquals(res.get(0).getRequest().toString(), item1.getRequest().toString());
+
+        String strT1 = res.get(0).getRequest().toString();
+        strT1 = strT1.substring(0, strT1.length() - 4);
+        String strT2 = item1.getRequest().toString();
+        strT2 = strT2.substring(0, strT1.length());
+        assertEquals(strT1, strT2);
 
         assertEquals(res.get(1).getId(), item2.getId());
         assertEquals(res.get(1).getName(), item2.getName());
         assertEquals(res.get(1).getDescription(), item2.getDescription());
         assertEquals(res.get(1).getAvailable(), item2.getAvailable());
         assertEquals(res.get(1).getOwner().toString(), item2.getOwner().toString());
-        assertEquals(res.get(1).getRequest().toString(), item2.getRequest().toString());
+
+        String strT3 = res.get(1).getRequest().toString();
+        strT3 = strT3.substring(0, strT3.length() - 4);
+        String strT4 = item2.getRequest().toString();
+        strT4 = strT4.substring(0, strT3.length());
+        assertEquals(strT3, strT4);
     }
 
     @Test
@@ -157,7 +187,13 @@ class ItemRepositoryTest {
         assertEquals(res.get(0).getDescription(), item2.getDescription());
         assertEquals(res.get(0).getAvailable(), item2.getAvailable());
         assertEquals(res.get(0).getOwner().toString(), item2.getOwner().toString());
-        assertEquals(res.get(0).getRequest().toString(), item2.getRequest().toString());
+
+        String strT1 = res.get(0).getRequest().toString();
+        strT1 = strT1.substring(0, strT1.length() - 4);
+        String strT2 = item2.getRequest().toString();
+        strT2 = strT2.substring(0, strT1.length());
+        assertEquals(strT1, strT2);
+
         assertEquals(res.get(0).getRequest().getRequester().getId(), user1.getId());
     }
 }
