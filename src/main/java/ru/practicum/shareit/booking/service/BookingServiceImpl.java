@@ -98,7 +98,8 @@ public class BookingServiceImpl implements BookingService {
         if (!userId.equals(item.getOwner().getId()) && !userId.equals(booking.getBooker().getId())) {
             throw new NotFoundException("BookingServiceImpl: Данные бронирования доступны владельцу и бронирующему.");
         }
-        return mapper.toBookingModelDto(booking);    }
+        return mapper.toBookingModelDto(booking);
+    }
 
     @Override
     public List<BookingModelDto> getAllBookingByUser(Long userId, String ofProcess, Pageable pageable) {

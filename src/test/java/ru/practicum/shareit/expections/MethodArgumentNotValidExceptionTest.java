@@ -13,7 +13,7 @@ class MethodArgumentNotValidExceptionTest {
     private final ErrorHandler errorHandler;
 
     @Test
-    void MethodArgumentNotValidExceptionTests() {
+    void methodArgumentNotValidExceptionTests() {
         ErrorResponse error = errorHandler.handleServerError(new ServerError("message"));
         Assertions.assertEquals(error.getError(), "http:500 Ошибка на сервере.");
     }
