@@ -98,21 +98,7 @@ public class BookingServiceImpl implements BookingService {
         if (!userId.equals(item.getOwner().getId()) && !userId.equals(booking.getBooker().getId())) {
             throw new NotFoundException("BookingServiceImpl: Данные бронирования доступны владельцу и бронирующему.");
         }
-        return mapper.toBookingModelDto(booking);
-
-/*
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("UserServiceImpl findUserById: Пользователь с УИН " + userId + " не существует.");
-        }
-        Booking booking = repository.findById(bookingId)
-                .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Такого бронирования УИН " + bookingId + " нет."));
-        Item item = booking.getItem();
-        if (userId.equals(item.getOwner().getId()) || userId.equals(booking.getBooker().getId())) {
-            return mapper.toBookingModelDto(booking);
-        } else {
-            throw new NotFoundException("BookingServiceImpl: Данные бронирования доступны владельцу и бронирующему.");
-        }*/
-    }
+        return mapper.toBookingModelDto(booking);    }
 
     @Override
     public List<BookingModelDto> getAllBookingByUser(Long userId, String ofProcess, Pageable pageable) {
