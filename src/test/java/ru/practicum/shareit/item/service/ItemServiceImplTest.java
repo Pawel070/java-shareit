@@ -293,4 +293,22 @@ class ItemServiceImplTest {
                 () -> itemService.getItemsByOwner(res.getOwner().getId(), pageable));
     }
 
+    @Test
+    void isCheckFromSizeNoFromTest() {
+        assertThrows(Exception.class,
+                () -> itemService.isCheckFromSize(-2, 10));
+    }
+
+    @Test
+    void isCheckFromSizeNoSizeTest() {
+        assertThrows(Exception.class,
+                () -> itemService.isCheckFromSize(0, 0));
+    }
+
+    @Test
+    void isCheckFromSizeNoFromSizeTest() {
+        assertThrows(Exception.class,
+                () -> itemService.isCheckFromSize(-2, 0));
+    }
+
 }

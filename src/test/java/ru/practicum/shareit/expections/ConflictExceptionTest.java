@@ -11,7 +11,8 @@ class ConflictExceptionTest {
 
     @Test
     void setConflictException() {
-        ru.practicum.shareit.exceptions.ConflictException conflictException = new ru.practicum.shareit.exceptions.ConflictException("message");
+        ru.practicum.shareit.exceptions.ConflictException conflictException =
+                new ru.practicum.shareit.exceptions.ConflictException("http:400 Искомый объект не найден при первичной проверке.");
     }
 
 }

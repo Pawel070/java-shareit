@@ -14,8 +14,8 @@ class MethodArgumentNotValidExceptionTest {
 
     @Test
     void methodArgumentNotValidExceptionTests() {
-        ErrorResponse error = errorHandler.handleServerError(new ServerError("message"));
-        Assertions.assertEquals(error.getError(), "http:500 Ошибка на сервере.");
+        ErrorResponse error = errorHandler.handleMethodArgumentNotValidException(new MethodArgumentNotValidException("message"));
+        Assertions.assertEquals(error.getError(), "500 INTERNAL_SERVER_ERROR");
     }
 
 }

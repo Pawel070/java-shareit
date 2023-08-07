@@ -1,9 +1,6 @@
 package ru.practicum.shareit.expections;
 
-import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,8 +35,8 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT) // 409
-    public Map<String, String> conflictException(final ru.practicum.shareit.exceptions.ConflictException exception) {
-        return Map.of("409", exception.getMessage());
+    public ErrorResponse conflictException(final ru.practicum.shareit.exceptions.ConflictException exception) {
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ResponseBody
@@ -73,8 +70,14 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
-    public Map<String, String> entityNotAvailable(final ru.practicum.shareit.exceptions.EntityNotAvailable exception) {
-        return Map.of("400", exception.getMessage());
+    public ErrorResponse entityNotAvailable(final ru.practicum.shareit.exceptions.EntityNotAvailable exception) {
+        return new ErrorResponse(exception.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
+    public ErrorResponse handleMethodArgumentNotValidException(
+            final ru.practicum.shareit.expections.MethodArgumentNotValidException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
 }

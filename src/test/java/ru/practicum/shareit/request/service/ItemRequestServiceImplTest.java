@@ -179,4 +179,22 @@ class ItemRequestServiceImplTest {
                 () -> itemRequestService.getItemRequestById(itemRequest.getId(), 999L));
     }
 
+    @Test
+    void isCheckFromSizeNoFromTest() {
+        assertThrows(Exception.class,
+                () -> itemRequestService.isCheckFromSize(-2, 10));
+    }
+
+    @Test
+    void isCheckFromSizeNoSizeTest() {
+        assertThrows(Exception.class,
+                () -> itemRequestService.isCheckFromSize(0, 0));
+    }
+
+    @Test
+    void isCheckFromSizeNoFromSizeTest() {
+        assertThrows(Exception.class,
+                () -> itemRequestService.isCheckFromSize(-2, 0));
+    }
+
 }

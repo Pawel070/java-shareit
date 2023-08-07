@@ -31,7 +31,6 @@ import ru.practicum.shareit.user.model.User;
 
 @SpringBootTest
 @RequiredArgsConstructor
-
 class ItemMapperTest {
     ItemRequestService itemRequestService;
     ItemRequest itemRequest;
@@ -88,48 +87,37 @@ class ItemMapperTest {
         assertEquals(itemRequestDto.getCreated(), res.getCreated());
     }
 
+    @Test
+    void toItemExtDto() {
+        when(mapper.toItemRequest(any())).thenReturn(itemRequest);
+        ItemRequest res = mapper.toItemRequest(itemRequestDto);
+        assertNotNull(res);
+        assertEquals(ItemRequest.class, res.getClass());
+        assertEquals(itemRequestDto.getId(), res.getId());
+        assertEquals(itemRequestDto.getDescription(), res.getDescription());
+        assertEquals(itemRequestDto.getCreated(), res.getCreated());
+    }
+
 
     @Test
-    void toCommentDto() {
+    void mapToItemDtoResponse() {
+        when(mapper.toItemRequest(any())).thenReturn(itemRequest);
+        ItemRequest res = mapper.toItemRequest(itemRequestDto);
+        assertNotNull(res);
+        assertEquals(ItemRequest.class, res.getClass());
+        assertEquals(itemRequestDto.getId(), res.getId());
+        assertEquals(itemRequestDto.getDescription(), res.getDescription());
+        assertEquals(itemRequestDto.getCreated(), res.getCreated());
     }
 
     @Test
-    void toItem() {
-    }
-
-    @Test
-    void toItemDto() {
-    }
-
-    @Test
-    void toItemExtDto() {//
-    }
-
-    @Test
-    void mapToItemDtoResponse() {//
-    }
-
-    @Test
-    void mapToItemFromItemDto() {//
-    }
-
-    @Test
-    void updatedItem() {
-    }
-
-    @Test
-    void toItemInfoDto() {
-    }
-
-    @Test
-    void toUserDto() {
-    }
-
-    @Test
-    void toItemRequestInfoDto() {
-    }
-
-    @Test
-    void testToItemRequest() {
+    void mapToItemFromItemDto() {
+        when(mapper.toItemRequest(any())).thenReturn(itemRequest);
+        ItemRequest res = mapper.toItemRequest(itemRequestDto);
+        assertNotNull(res);
+        assertEquals(ItemRequest.class, res.getClass());
+        assertEquals(itemRequestDto.getId(), res.getId());
+        assertEquals(itemRequestDto.getDescription(), res.getDescription());
+        assertEquals(itemRequestDto.getCreated(), res.getCreated());
     }
 }

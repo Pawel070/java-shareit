@@ -2,8 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -460,6 +459,24 @@ class BookingServiceImplTest {
     void getAllBookingByOwner_wrongState() {
         assertThrows(UnsupportedState.class,
                 () -> bookingService.getAllBookingByOwner(owner.getId(), "MEOW", pageable));
+    }
+
+    @Test
+    void isCheckFromSizeNoFromTest() {
+        assertThrows(Exception.class,
+                () -> bookingService.isCheckFromSize(-2, 10));
+    }
+
+    @Test
+    void isCheckFromSizeNoSizeTest() {
+        assertThrows(Exception.class,
+                () -> bookingService.isCheckFromSize(0, 0));
+    }
+
+    @Test
+    void isCheckFromSizeNoFromSizeTest() {
+        assertThrows(Exception.class,
+                () -> bookingService.isCheckFromSize(-2, 0));
     }
 
 }

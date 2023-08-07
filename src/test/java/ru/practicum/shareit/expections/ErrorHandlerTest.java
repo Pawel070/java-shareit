@@ -48,4 +48,16 @@ class ErrorHandlerTest {
         Assertions.assertEquals(error.getError(), "http:400 Искомый объект не найден при первичной проверке.");
     }
 
+    @Test
+    void conflictException(){
+        ErrorResponse error = errorHandler.conflictException(new ru.practicum.shareit.exceptions.ConflictException("message"));
+        Assertions.assertEquals(error.getError(), "message");
+    }
+
+    @Test
+    void entityNotAvailable() {
+        ErrorResponse error = errorHandler.entityNotAvailable(new ru.practicum.shareit.exceptions.EntityNotAvailable("message"));
+        Assertions.assertEquals(error.getError(), "message");
+    }
+
 }
