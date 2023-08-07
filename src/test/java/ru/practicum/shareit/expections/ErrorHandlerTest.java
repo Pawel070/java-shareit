@@ -49,7 +49,7 @@ class ErrorHandlerTest {
     }
 
     @Test
-    void conflictException(){
+    void conflictException() {
         ErrorResponse error = errorHandler.conflictException(new ru.practicum.shareit.exceptions.ConflictException("message"));
         Assertions.assertEquals(error.getError(), "message");
     }
