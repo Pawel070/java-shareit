@@ -50,7 +50,7 @@ class ItemControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        owner = new User(1L, "user", "mail@ya.ru");
+        owner = new User(1L, "user", "mail@mail.ru");
         itemDto = new ItemDto(1L, "item", "des", true, owner, 0);
         itemInfoDto = new ItemInfoDto(1L, "item", "des", true, ownerDto, null,
                 null, null, null);
@@ -222,4 +222,29 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.authorName", is(commentDto.getAuthorName()), String.class));
     }
 
+    @Test
+    void deleteItemNot() throws Exception {
+        itemDto.setId(100L);
+        mockMvc.perform(delete("/items", itemDto.getId())
+                        .content(mapper.writeValueAsString(itemDto))
+                        .header(USER_ID, 1L)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+
+    }
+
+    @Test
+    void deleteItemYes() throws Exception {
+        itemDto.setId(1L);
+        mockMvc.perform(delete("/items", itemDto.getId())
+                        .content(mapper.writeValueAsString(itemDto))
+                        .header(USER_ID, 1L)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+
+    }
 }

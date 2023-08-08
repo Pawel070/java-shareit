@@ -66,7 +66,7 @@ class ItemRequestServiceImplTest {
     @BeforeEach
     void beforeEach() {
         itemRequestService = new ItemRequestServiceImpl(itemRequestRepository, itemRepository, userRepository, mapper);
-        user = new User(1L, "name", "user@ya.ru");
+        user = new User(1L, "name", "user@mail.ru");
         itemRequest = new ItemRequest(
                 1L,
                 "d2",

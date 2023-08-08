@@ -39,7 +39,7 @@ class ItemRequestServiceImplIntegrationTest {
     void createItemRequest() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         ItemRequestDto requestDto = new ItemRequestDto();
@@ -57,7 +57,7 @@ class ItemRequestServiceImplIntegrationTest {
     void getUsersItemRequests() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         ItemRequestDto requestDto = new ItemRequestDto();
@@ -80,12 +80,12 @@ class ItemRequestServiceImplIntegrationTest {
     void getItemRequests() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         User user2 = new User();
         user2.setName("Max");
-        user2.setEmail("max@ya.ru");
+        user2.setEmail("max@mail.ru");
         User savedUser2 = userRepository.save(user2);
 
         ItemRequestDto requestDto = new ItemRequestDto();
@@ -108,12 +108,12 @@ class ItemRequestServiceImplIntegrationTest {
     void getItemRequestById() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         User user2 = new User();
         user2.setName("Max");
-        user2.setEmail("max@ya.ru");
+        user2.setEmail("max@mail.ru");
         User savedUser2 = userRepository.save(user2);
 
         ItemRequestDto requestDto = new ItemRequestDto();

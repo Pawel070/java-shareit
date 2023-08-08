@@ -49,7 +49,7 @@ class ItemServiceImplIntegrationTest {
     void create() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         ItemDto itemDto = new ItemDto();
@@ -70,7 +70,7 @@ class ItemServiceImplIntegrationTest {
     void create_invalidItemRequest() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         ItemDto itemDto = new ItemDto();
@@ -86,7 +86,7 @@ class ItemServiceImplIntegrationTest {
     void update() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         Item oldItem = new Item();
@@ -110,7 +110,7 @@ class ItemServiceImplIntegrationTest {
     void update_byWrongUser() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         Item oldItem = new Item();
@@ -130,7 +130,7 @@ class ItemServiceImplIntegrationTest {
     void update_wrongItemId() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         Item oldItem = new Item();
@@ -151,12 +151,12 @@ class ItemServiceImplIntegrationTest {
         LocalDateTime now = LocalDateTime.now();
         User booker = new User();
         booker.setName("booker");
-        booker.setEmail("booker@ya.ru");
+        booker.setEmail("booker@mail.ru");
         userRepository.save(booker);
 
         User owner = new User();
         owner.setName("owner");
-        owner.setEmail("owner@ya.ru");
+        owner.setEmail("owner@mail.ru");
         userRepository.save(owner);
 
         Item item = new Item();
@@ -196,7 +196,7 @@ class ItemServiceImplIntegrationTest {
     void getItemsByUser() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         Item item1 = new Item();
@@ -234,7 +234,7 @@ class ItemServiceImplIntegrationTest {
     void getAvailableItems() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         Item item1 = new Item();
@@ -272,12 +272,12 @@ class ItemServiceImplIntegrationTest {
         LocalDateTime now = LocalDateTime.now();
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         User owner = new User();
         owner.setName("Max");
-        owner.setEmail("max@ya.ru");
+        owner.setEmail("max@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();
@@ -310,12 +310,12 @@ class ItemServiceImplIntegrationTest {
     public void createComment_fromInvalidUser() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         User owner = new User();
         owner.setName("Max");
-        owner.setEmail("max@ya.ru");
+        owner.setEmail("max@mail.ru");
         User savedOwner = userRepository.save(owner);
 
         Item item = new Item();

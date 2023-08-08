@@ -41,8 +41,8 @@ class CommentRepositoryTest {
 
     @BeforeAll
     public void beforeAll() {
-        user1 = new User(1L, "user1", "mail1@ya.ru");
-        user2 = new User(2L, "user2", "mail2@ya.ru");
+        user1 = new User(1L, "user1", "mail1@mail.ru");
+        user2 = new User(2L, "user2", "mail2@mail.ru");
         userRepository.save(user1);
         userRepository.save(user2);
         item1 = new Item(1L, "item1", "desc1", true, user1, null);

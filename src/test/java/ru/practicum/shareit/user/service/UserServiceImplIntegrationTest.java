@@ -35,7 +35,7 @@ class UserServiceImplIntegrationTest {
     void create() {
         UserDto userDto = new UserDto();
         userDto.setName("Alex");
-        userDto.setEmail("alex@ya.ru");
+        userDto.setEmail("alex@mail.ru");
 
         UserDto userDtoRespond = userService.create(userDto);
         User userRespond = userRepository.findById(userDtoRespond.getId()).orElse(null);
@@ -50,7 +50,7 @@ class UserServiceImplIntegrationTest {
 
     @Test
     public void create_duplicateEmail() {
-        String email = "alex@ya.ru";
+        String email = "alex@mail.ru";
 
         UserDto firstUserDto = new UserDto();
         firstUserDto.setName("Alex");
@@ -68,13 +68,13 @@ class UserServiceImplIntegrationTest {
     void update() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User oldUser = userRepository.save(user);
 
         UserDto newUserDto = new UserDto();
         newUserDto.setId(oldUser.getId());
         newUserDto.setName("Max");
-        newUserDto.setEmail("max@ya.ru");
+        newUserDto.setEmail("max@mail.ru");
 
         UserDto updatedUser = userService.update(newUserDto, oldUser.getId());
 
@@ -88,7 +88,7 @@ class UserServiceImplIntegrationTest {
     public void update_userNotInBase() {
         UserDto newUserDto = new UserDto();
         newUserDto.setName("Max");
-        newUserDto.setEmail("max@ya.ru");
+        newUserDto.setEmail("max@mail.ru");
 
         assertThrows(NotFoundException.class, () -> userService.update(newUserDto, 99L));
     }
@@ -97,12 +97,12 @@ class UserServiceImplIntegrationTest {
     public void update_duplicateEmail() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         User user2 = new User();
         user2.setName("Max");
-        user2.setEmail("max@ya.ru");
+        user2.setEmail("max@mail.ru");
         userRepository.save(user2);
 
         UserDto userDto = new UserDto();
@@ -116,7 +116,7 @@ class UserServiceImplIntegrationTest {
     void getUser() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("alex@ya.ru");
+        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
 
         UserDto userFromDb = userService.getUser(savedUser.getId());
@@ -132,12 +132,12 @@ class UserServiceImplIntegrationTest {
     void getAllUsers() {
         User user1 = new User();
         user1.setName("Alex");
-        user1.setEmail("alex@ya.ru");
+        user1.setEmail("alex@mail.ru");
         userRepository.save(user1);
 
         User user2 = new User();
         user2.setName("Max");
-        user2.setEmail("max@ya.ru");
+        user2.setEmail("max@mail.ru");
         userRepository.save(user2);
 
         List<UserDto> usersDtoRespond = userService.getUsers();
@@ -160,7 +160,7 @@ class UserServiceImplIntegrationTest {
     void deleteUser() {
         User user = new User();
         user.setName("Alex");
-        user.setEmail("max@ya.ru");
+        user.setEmail("max@mail.ru");
         User savedUser = userRepository.save(user);
 
         userService.delete(savedUser.getId());

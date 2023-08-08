@@ -138,18 +138,23 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void create_whenStartBad() {
+        bookingDto.setStart(null);
+        assertThrows(NotFoundException.class,
+                () -> bookingService.create(bookingDto, user.getId()));
+    }
+
+    @Test
     void create_whenBookerIsOwner() {
         item.setOwner(user);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-
         assertThrows(NotFoundException.class, () -> bookingService.create(bookingDto, user.getId()));
     }
 
     @Test
     void update_whenUserIsNotOwner() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
-
         assertThrows(NotFoundException.class,
                 () -> bookingService.update(99L, booking.getId(), true));
     }
@@ -158,7 +163,13 @@ class BookingServiceImplTest {
     void update_whenStatusConfirmed() {
         booking.setStatus(Status.REJECTED);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
+        assertThrows(NotFoundException.class,
+                () -> bookingService.update(owner.getId(), booking.getId(), true));
+    }
 
+    @Test
+    void update_whenTimeConfirmed() {
+        booking.setEnd(null);
         assertThrows(NotFoundException.class,
                 () -> bookingService.update(owner.getId(), booking.getId(), true));
     }

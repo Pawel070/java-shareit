@@ -46,8 +46,8 @@ class ItemRepositoryTest {
 
     @BeforeAll
     public void beforeAll() {
-        user1 = new User(1L, "user1", "mail1@ya.ru");
-        user2 = new User(2L, "user2", "mail2@ya.ru");
+        user1 = new User(1L, "user1", "mail1@mail.ru");
+        user2 = new User(2L, "user2", "mail2@mail.ru");
         userRepository.save(user1);
         userRepository.save(user2);
         request1 = new ItemRequest(1L, "req1", user1, LocalDateTime.now());

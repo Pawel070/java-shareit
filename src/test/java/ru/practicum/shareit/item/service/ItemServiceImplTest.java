@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -24,6 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingRepository;
@@ -35,6 +37,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.UserMapper;
@@ -44,6 +47,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 @Slf4j
+@Transactional
 @SpringBootTest
 @RequiredArgsConstructor
 class ItemServiceImplTest {
@@ -78,15 +82,20 @@ class ItemServiceImplTest {
     UserMapper userMapper;
 
     Pageable pageable;
+    User user;
     User user1;
     User user2;
     UserDto userDto1;
     Item item1;
     Item item2;
+    ItemDto itemDto;
     ItemDto itemDto1;
     ItemRequest request1;
     Booking booking1;
     Booking booking2;
+    ItemRequestDto itemRequestDto;
+    ItemRequest itemRequest;
+    Item item;
 
     @BeforeEach
     void beforeEach() {
@@ -95,12 +104,14 @@ class ItemServiceImplTest {
                 userMapper, itemRepository, userRepository,
                 commentRepository, userService, itemRequestRepository,
                 bookingRepository);
+        user = new User(10L, "user10", "mail10@mail.ru");
         user1 = new User(1L, "user1", "mail1@mail.ru");
         user2 = new User(2L, "user2", "mail2@mail.ru");
         userDto1 = new UserDto(1L, "user1", "mail1@mail.ru");
         request1 = new ItemRequest(2L, "req2", user2, LocalDateTime.now());
+        item = new Item(10L, "item10", "des10", true, user, request1);
         item1 = new Item(1L, "item1", "des1", true, user1, request1);
-        item2 = new Item(2L, "item2", "des2", true, user1, null);
+        item2 = new Item(2L, "item2", "des2", true, user2, null);
         itemDto1 = new ItemDto(1L, "item1", "des1", true, user1, request1.getId());
         booking1 = new Booking(1L, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1),
                 item1, user2, APPROVED);
@@ -206,7 +217,7 @@ class ItemServiceImplTest {
         assertEquals(res.get(1).getName(), item2.getName());
         assertEquals(res.get(1).getDescription(), item2.getDescription());
         assertEquals(res.get(1).getAvailable(), item2.getAvailable());
-        assertEquals(res.get(1).getOwner().toString(), mapper.toUserDto(user1).toString());
+        assertEquals(res.get(1).getOwner().toString(), mapper.toUserDto(user2).toString());
         assertNull(res.get(1).getRequestId());
         assertNull(res.get(1).getLastBooking());
         assertNull(res.get(1).getNextBooking());
@@ -236,8 +247,14 @@ class ItemServiceImplTest {
         assertEquals(res.get(1).getName(), item2.getName());
         assertEquals(res.get(1).getDescription(), item2.getDescription());
         assertEquals(res.get(1).getAvailable(), item2.getAvailable());
-        assertEquals(res.get(1).getOwner().toString(), user1.toString());
+        assertEquals(res.get(1).getOwner().toString(), user2.toString());
         assertEquals(res.get(1).getRequestId(), 0);
+    }
+
+    @Test
+    void getCommentsByItemId() {
+        List<CommentDto> res = itemService.getCommentsByItemId(1L);
+        assertEquals(res.size(), 0);
     }
 
     @Test
@@ -281,18 +298,57 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void findItemById1() {
+        when(itemRepository.existsById(anyLong())).thenReturn(true);
+        assertThrows(NotFoundException.class, () -> itemService.findItemById(99L));
+    }
+
+    @Test
+    void findItemById2() {
+        when(itemRepository.existsById(anyLong())).thenReturn(true);
+        assertThrows(NotFoundException.class, () -> itemService.findItemById(1L));
+    }
+
+    @Test
+    void findItemByIdTest() {
+        assertThrows(NotFoundException.class, () -> itemService.findItemById(99L));
+    }
+
+    @Test
     void deleteItemsByUser() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
         when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(request1));
         when(itemRepository.save(any())).thenReturn(item1);
         ItemDto res = itemService.create(itemDto1, user1.getId());
-        log.info("res > {}",res);
+        log.info("res > {}", res);
         assertNotNull(res);
         itemService.deleteItemsByUser(res.getOwner().getId());
         assertThrows(NotFoundException.class,
                 () -> itemService.getItemsByOwner(res.getOwner().getId(), pageable));
     }
 
+    @Test
+    void deleteTest() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(request1));
+        when(itemRepository.save(any())).thenReturn(item1);
+        ItemDto res = itemService.create(itemDto1, user1.getId());
+        log.info("res > {}", res);
+        assertNotNull(res);
+        assertThrows(NotFoundException.class,
+                () -> itemService.delete(user1.getId(), res.getOwner().getId()));
+    }
+/*
+    @Test
+    void deleteTest1() {
+//        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        log.info("item > {} ", item);
+        assertThrows(NotFoundException.class,
+                () -> itemService.delete(item.getId(), item.getOwner().getId()));
+
+    }
+*/
     @Test
     void isCheckFromSizeNoFromTest() {
         assertThrows(Exception.class,
@@ -309,6 +365,12 @@ class ItemServiceImplTest {
     void isCheckFromSizeNoFromSizeTest() {
         assertThrows(Exception.class,
                 () -> itemService.isCheckFromSize(-2, 0));
+    }
+
+    @Test
+    void isCheckItemOwner() {
+        assertThrows(Exception.class,
+                () -> itemService.isCheckItemOwner(100L, 200L));
     }
 
 }
