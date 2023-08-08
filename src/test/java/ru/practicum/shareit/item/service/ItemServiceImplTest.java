@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -338,17 +337,7 @@ class ItemServiceImplTest {
         assertThrows(NotFoundException.class,
                 () -> itemService.delete(user1.getId(), res.getOwner().getId()));
     }
-/*
-    @Test
-    void deleteTest1() {
-//        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
-        log.info("item > {} ", item);
-        assertThrows(NotFoundException.class,
-                () -> itemService.delete(item.getId(), item.getOwner().getId()));
 
-    }
-*/
     @Test
     void isCheckFromSizeNoFromTest() {
         assertThrows(Exception.class,
