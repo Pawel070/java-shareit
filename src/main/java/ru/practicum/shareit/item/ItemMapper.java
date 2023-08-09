@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -18,7 +19,6 @@ import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-
 
 @Mapper(componentModel = "spring", uses = ItemMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ItemMapper {

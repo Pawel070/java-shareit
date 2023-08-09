@@ -1,67 +1,48 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.item.dto.ItemDto;
+
+import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.service.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.request.repository.ItemRequestRepository;
-import ru.practicum.shareit.request.service.ItemRequestService;
-import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
-import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 @Slf4j
 @Transactional
 @SpringBootTest
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 class ItemMapperTest {
 
-    ItemRequestService itemRequestService;
     ItemRequest itemRequest;
     ItemRequestDto itemRequestDto;
 
     @MockBean
     ItemMapper mapper;
 
-    @MockBean
-    ItemRequestRepository itemRequestRepository;
-
-    @MockBean
-    UserRepository userRepository;
-
-    @MockBean
-    ItemRepository itemRepository;
-
     User user;
     Item item;
     ItemDto itemDto;
-    List<Item> listItems;
-    List<ItemRequest> listRequests;
-    List<ItemRequestDto> listRequestsDto;
-    Pageable pageable;
 
     @BeforeEach
     void beforeEach() {
-        itemRequestService = new ItemRequestServiceImpl(itemRequestRepository, itemRepository, userRepository, mapper);
         user = new User(1L, "name", "user@mail.ru");
         itemRequest = new ItemRequest(
                 1L,
@@ -75,17 +56,14 @@ class ItemMapperTest {
                 itemRequest.getDescription(),
                 user.getId(),
                 itemRequest.getCreated());
-        listItems = List.of(item);
-        listRequests = List.of(itemRequest);
-        listRequestsDto = List.of(itemRequestDto);
-        pageable = PageRequest.of(0, 10);
     }
 
     @Test
-    void toItemRequest() {
+    void toItemRequestTest() {
         when(mapper.toItemRequest(any())).thenReturn(itemRequest);
+        log.info("itemRequest > {} , itemRequestDto > {} ", itemRequest, itemRequestDto);
         //   ItemRequest res = mapper.toItemRequest(itemRequestDto);
-        //   assertNotNull(res);
+        assertNotNull(mapper.toItemRequest(itemRequestDto));
         assertEquals(ItemRequest.class, mapper.toItemRequest(itemRequestDto).getClass());
         assertEquals(itemRequestDto.getId(), mapper.toItemRequest(itemRequestDto).getId());
         assertEquals(itemRequestDto.getDescription(), mapper.toItemRequest(itemRequestDto).getDescription());
@@ -93,25 +71,31 @@ class ItemMapperTest {
     }
 
     @Test
-    void toItemRequestNull() {
-        when(mapper.toItemRequest(any())).thenReturn(itemRequest);
-        itemRequestDto = null;
-        assertNotNull(mapper.toItemRequest(itemRequestDto));
+    void updatedItemTest() {
+        when(mapper.updatedItem(any(), any())).thenReturn(item);
+        Item item1 = mapper.updatedItem(itemDto, item);
+        log.info("itemRequestDto => {} ", item1);
+        assertNotNull(item1);
+        assertThat(item1).hasFieldOrPropertyWithValue("id", 1L);
     }
 
     @Test
-    void toItemExtDto() {
-        when(mapper.toItemExtDto(any())).thenReturn(itemDto);
-        assertNotNull(item);
-        mapper.toItemExtDto(item).setId(111L);
-        assertThat(item).hasFieldOrPropertyWithValue("id", 1L);
-        //       assertThrows(NullPointerException.class, () -> mapper.toItemExtDto(item).setId(111L));
+    void toItemRequestNullTest() {
+        //when(mapper.toItemRequest(any())).thenReturn(itemRequest);
+        log.info("itemRequestDto > {} при null > ", itemRequestDto, mapper.toItemRequest(null));
+        assertNull(mapper.toItemRequest(null));
     }
 
     @Test
-    void mapToItemDtoResponse() {
+    void toItemDtoNullTest() {
+        //when(mapper.toItemDto(any())).thenReturn(item);
+        log.info("item > {} при null > ", itemDto, mapper.toItemDto(null));
+        assertNull(mapper.toItemDto(null));
+    }
+
+    @Test
+    void mapToItemDtoResponseTest() {
         when(mapper.mapToItemDtoResponse(any())).thenReturn(itemDto);
-        //      ItemRequest res = mapper.toItemRequest(itemRequestDto);
         assertNotNull(mapper.mapToItemDtoResponse(item));
         assertEquals(ItemDto.class, mapper.mapToItemDtoResponse(item).getClass());
         assertEquals(itemDto.getId(), mapper.mapToItemDtoResponse(item).getId());
@@ -119,10 +103,11 @@ class ItemMapperTest {
     }
 
     @Test
-    void mapToItemFromItemDto() {
+    void mapToItemFromItemDtoTest() {
         when(mapper.mapToItemFromItemDto(any())).thenReturn(item);
-        //  ItemRequest res = mapper.toItemRequest(itemRequestDto);
         assertNotNull(mapper.mapToItemFromItemDto(itemDto));
+        item = new Item(1L, "item", "d1", true, user, itemRequest);
+        itemDto = new ItemDto(1L, "item", "dd1", true, user, 1L);
         assertEquals(Item.class, mapper.mapToItemFromItemDto(itemDto).getClass());
         assertEquals(itemDto.getId(), mapper.mapToItemFromItemDto(itemDto).getId());
         assertEquals(item.getDescription(), mapper.mapToItemFromItemDto(itemDto).getDescription());
@@ -146,7 +131,7 @@ class ItemMapperTest {
     }
 
     @Test
-    void toItemExtDtoTestN() {
+    void toItemExtDtoNoTest() {
         item.setId(100L);
         log.info("item > {} ", item);
         ItemDto itemDto = mapper.toItemExtDto(item);
