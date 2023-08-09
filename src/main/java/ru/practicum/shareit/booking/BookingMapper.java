@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,7 +11,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = BookingMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface BookingMapper {
 
     Booking toBooking(BookingDto bookingDto);

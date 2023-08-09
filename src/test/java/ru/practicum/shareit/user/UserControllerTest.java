@@ -140,4 +140,5 @@ class UserControllerTest {
         mockMvc.perform(delete("/users/{userId}", userDto.getId()))
                 .andExpect(status().isOk());
     }
+
 }

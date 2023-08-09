@@ -193,43 +193,4 @@ class UserServiceImplTest {
                 () -> userService.isCheckUserId(100L));
     }
 
-    /*
-       @Test
-    void findItemById() {
-        when(itemRepository.existsById(anyLong())).thenReturn(false);
-        assertThrows(NotFoundException.class, () -> itemService.getItemsByOwner(99L, pageable));
-    }
-
-    @Test
-    void deleteItemsByUser() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(request1));
-        when(itemRepository.save(any())).thenReturn(item1);
-        ItemDto res = itemService.create(itemDto1, user1.getId());
-        log.info("res > {}", res);
-        assertNotNull(res);
-        itemService.deleteItemsByUser(res.getOwner().getId());
-        assertThrows(NotFoundException.class,
-                () -> itemService.getItemsByOwner(res.getOwner().getId(), pageable));
-    }
-
-    @Test
-    void deleteTest() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(request1));
-        when(itemRepository.save(any())).thenReturn(item1);
-        ItemDto res = itemService.create(itemDto1, user1.getId());
-        log.info("res > {}", res);
-        assertNotNull(res);
-        assertThrows(NotFoundException.class,
-                () -> itemService.delete(user1.getId(), res.getOwner().getId()));
-    }
-
-    @Test
-    void isCheckFromSizeNoFromTest() {
-        assertThrows(Exception.class,
-                () -> itemService.isCheckFromSize(-2, 10));
-    }
-
-    @Test*/
 }

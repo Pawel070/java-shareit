@@ -1,20 +1,20 @@
 package ru.practicum.shareit.request;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -28,6 +28,7 @@ import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 @Slf4j
+@Transactional
 @SpringBootTest
 @RequiredArgsConstructor
 class ItemRequestMapperTest {
@@ -79,14 +80,4 @@ class ItemRequestMapperTest {
         pageable = PageRequest.of(0, 10);
     }
 
-    @Test
-    void toItemRequest() {
-        when(requestMapper.toItemRequest(any())).thenReturn(itemRequest);
-        //ItemRequest res = requestMapper.toItemRequest(itemRequestDto);
-        assertNotNull(requestMapper.toItemRequest(itemRequestDto));
-        assertEquals(ItemRequest.class, requestMapper.toItemRequest(itemRequestDto).getClass());
-        assertEquals(itemRequestDto.getId(), requestMapper.toItemRequest(itemRequestDto).getId());
-        assertEquals(itemRequestDto.getDescription(), requestMapper.toItemRequest(itemRequestDto).getDescription());
-        assertEquals(itemRequestDto.getCreated(), requestMapper.toItemRequest(itemRequestDto).getCreated());
-    }
 }
