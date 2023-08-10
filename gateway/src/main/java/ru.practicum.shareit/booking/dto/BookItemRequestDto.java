@@ -1,9 +1,9 @@
 package ru.practicum.shareit.booking.dto;
 
-import java.time.LocalDateTime;
-
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,9 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookItemRequestDto {
+
 	private long itemId;
-	@FutureOrPresent
+
+    @NotNull(message = "Время начала бронирования не может быть нулевым.")
+    @FutureOrPresent(message = "Время начала бронирования не должно быть в прошлом.")
 	private LocalDateTime start;
-	@Future
+
+    @NotNull(message = "Время окончания бронирования не может быть нулевым.")
+    @Future(message = "Время окончания бронирования не должно быть в будущем.")
 	private LocalDateTime end;
 }
