@@ -1,7 +1,5 @@
 package ru.practicum.shareit.request;
 
-import static ru.practicum.shareit.MyConstants.USER_ID;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -24,6 +22,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 public class ItemRequestController {
 
     private final ItemRequestClient itemRequestClient;
+    private final String USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
     public ResponseEntity<Object> addRequest(@RequestHeader(USER_ID) Long userId,
@@ -54,6 +53,6 @@ public class ItemRequestController {
         log.info("Получение запроса по УИН {} ", requestId);
         return itemRequestClient.getRequestById(userId, requestId);
     }
-    
+
 }
 

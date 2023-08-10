@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
 @Data

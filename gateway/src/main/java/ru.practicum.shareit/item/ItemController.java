@@ -1,17 +1,17 @@
 package ru.practicum.shareit.item;
 
-import static ru.practicum.shareit.MyConstants.USER_ID;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -23,6 +23,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 public class ItemController {
 
     private final ItemClient itemClient;
+    private final String USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
     public ResponseEntity<Object> addItem(@RequestHeader(USER_ID) Long userId,

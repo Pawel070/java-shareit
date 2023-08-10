@@ -8,8 +8,6 @@ import javax.validation.constraints.Size;
 import jdk.jfr.BooleanFlag;
 import lombok.*;
 
-import ru.practicum.shareit.user.model.User;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -31,8 +29,6 @@ public class ItemDto {
     @BooleanFlag
     @NotNull(message = "Статус доступности аренды не может быть нулевым")
     private Boolean available;
-
-    private User owner;
 
     private long requestId;
 
