@@ -1,4 +1,4 @@
 
 ${AnsiColor.BRIGHT_MAGENTA}  SHARE It  ${AnsiColor.BRIGHT_CYAN} Yandex ПРАКТИКУМ
-       ${AnsiColor.DEFAULT}  Sprint 14-15
+       ${AnsiColor.DEFAULT}  Sprint 14-16
   spring-boot.version ${spring-boot.version}
