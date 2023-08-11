@@ -13,13 +13,16 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
 import org.hibernate.exception.ConstraintViolationException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.Rollback;
-import ru.practicum.shareit.exceptions.ConflictException;
+
+import ru.practicum.shareit.expections.ConflictException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;

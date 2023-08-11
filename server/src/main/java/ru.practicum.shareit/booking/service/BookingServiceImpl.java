@@ -19,6 +19,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.expections.EntityNotAvailable;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.expections.ServerError;
 import ru.practicum.shareit.expections.UnsupportedState;
@@ -46,14 +47,14 @@ public class BookingServiceImpl implements BookingService {
         Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Вещь с УИН " + itemId + " не существует."));
         if (!item.getAvailable()) {
-            throw new ru.practicum.shareit.exceptions.EntityNotAvailable("BookingServiceImpl: Вещь с УИН " +
+            throw new EntityNotAvailable("BookingServiceImpl: Вещь с УИН " +
                     bookingDto.getItemId() + " не может быть забронирована.");
         }
         if (bookingDto.getEnd() == null || bookingDto.getStart() == null) {
-            throw new ru.practicum.shareit.exceptions.EntityNotAvailable("BookingServiceImpl: Неопределённое время бронирования.");
+            throw new EntityNotAvailable("BookingServiceImpl: Неопределённое время бронирования.");
         }
         if (!bookingDto.getEnd().isAfter(bookingDto.getStart())) {
-            throw new ru.practicum.shareit.exceptions.EntityNotAvailable("BookingServiceImpl: Время окончания бронирования не может быть раньше времени начала бронирования.");
+            throw new EntityNotAvailable("BookingServiceImpl: Время окончания бронирования не может быть раньше времени начала бронирования.");
         }
         User booker = userRepository.findById(bookerId)
                 .orElseThrow(() -> new ServerError("BookingServiceImpl: Пользователь с УИН " + itemId + " не существует."));
@@ -79,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("BookingServiceImpl: Пользователь с УИН  " + userId + " не является владельцем вещи " + bookingId);
         }
         if (booking.getStatus().equals(Status.APPROVED) || booking.getStatus().equals(Status.REJECTED)) {
-            throw new ru.practicum.shareit.exceptions.EntityNotAvailable("BookingServiceImpl: Бронирование подтверждено: " + booking.getStatus());
+            throw new EntityNotAvailable("BookingServiceImpl: Бронирование подтверждено: " + booking.getStatus());
         }
         if (accepted != null) {
             booking.setStatus(accepted ? Status.APPROVED : Status.REJECTED);
@@ -130,8 +131,10 @@ public class BookingServiceImpl implements BookingService {
                 bookings = repository.findAllByBooker_IdAndStatus(userId, Status.REJECTED);
                 break;
         }
-        List<BookingModelDto> bookingModelDtos = bookings.isEmpty() ? Collections.emptyList() : bookings.stream()
-                .map(mapper::toBookingModelDto)
+        List<BookingModelDto> bookingModelDtos;
+        if (bookings.isEmpty()) bookingModelDtos = Collections.emptyList();
+        else bookingModelDtos = bookings.stream()
+                .map(BookingMapper::toBookingModelDto)
                 .collect(Collectors.toList());
         log.info("==> {} в статусе {} ", bookingModelDtos, state);
         return bookingModelDtos;
@@ -168,7 +171,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
         }
         List<BookingModelDto> collect = bookings.stream()
-                .map(mapper::toBookingModelDto)
+                .map(BookingMapper::toBookingModelDto)
                 .collect(Collectors.toList());
         log.info("==> {} в статусе {} ", collect, state);
         return collect;
@@ -194,7 +197,7 @@ public class BookingServiceImpl implements BookingService {
         }
         log.info("Проверка from {} и size {} вызов из > {} ", from, size, messageClass);
         if (from < 0 || size < 1) {
-            throw new ru.practicum.shareit.exceptions.EntityNotAvailable("Ошибочный параметр \"size\" или \"from\"");
+            throw new EntityNotAvailable("Ошибочный параметр \"size\" или \"from\"");
         }
     }
 }

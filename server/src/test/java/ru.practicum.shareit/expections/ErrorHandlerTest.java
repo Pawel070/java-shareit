@@ -52,13 +52,13 @@ class ErrorHandlerTest {
 
     @Test
     void conflictException() {
-        ErrorResponse error = errorHandler.conflictException(new ru.practicum.shareit.exceptions.ConflictException("message"));
+        ErrorResponse error = errorHandler.conflictException(new ConflictException("message"));
         Assertions.assertEquals(error.getError(), "message");
     }
 
     @Test
     void entityNotAvailable() {
-        ErrorResponse error = errorHandler.entityNotAvailable(new ru.practicum.shareit.exceptions.EntityNotAvailable("message"));
+        ErrorResponse error = errorHandler.entityNotAvailable(new EntityNotAvailable("message"));
         Assertions.assertEquals(error.getError(), "message");
     }
 

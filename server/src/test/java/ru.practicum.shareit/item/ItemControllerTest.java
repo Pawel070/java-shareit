@@ -208,7 +208,7 @@ class ItemControllerTest {
 
     @Test
     void createComment() throws Exception {
-        CommentDto commentDto = new CommentDto(1L, "comment text", "author", LocalDateTime.now());
+        CommentDto commentDto = new CommentDto(1L, "comment text", "author", LocalDateTime.now(), 1L);
         when(itemService.createComment(any(), anyLong(), anyLong())).thenReturn(commentDto);
 
         mockMvc.perform(post("/items/{itemId}/comment", itemDto.getId())

@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,15 +23,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.transaction.annotation.Transactional;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingRepository;
-import ru.practicum.shareit.exceptions.EntityNotAvailable;
+import ru.practicum.shareit.expections.EntityNotAvailable;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -80,6 +81,9 @@ class ItemServiceImplTest {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    CommentMapper commentMapper;
+
     Pageable pageable;
     User user;
     User user1;
@@ -100,7 +104,7 @@ class ItemServiceImplTest {
     void beforeEach() {
 
         itemService = new ItemServiceImpl(mapper, bookingMapper,
-                userMapper, itemRepository, userRepository,
+                userMapper, commentMapper, itemRepository, userRepository,
                 commentRepository, userService, itemRequestRepository,
                 bookingRepository);
         user = new User(10L, "user10", "mail10@mail.ru");
@@ -265,7 +269,7 @@ class ItemServiceImplTest {
     @Test
     void createComment() {
         Comment comment = new Comment(1L, "comment1", item1, user2, LocalDateTime.now());
-        CommentDto commentDto = new CommentDto(1L, "comment1", user2.getName(), comment.getCreated());
+        CommentDto commentDto = new CommentDto(1L, "comment1", user2.getName(), comment.getCreated(), 1L);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
         when(bookingRepository.isItemWasUsedByUser(anyLong(), anyLong(), any())).thenReturn(true);
@@ -282,7 +286,7 @@ class ItemServiceImplTest {
     @Test
     void createComment_whenUserDoesNotUseItem() {
         Comment comment = new Comment(1L, "comment1", item1, user2, LocalDateTime.now());
-        CommentDto commentDto = new CommentDto(1L, "comment1", user2.getName(), comment.getCreated());
+        CommentDto commentDto = new CommentDto(1L, "comment1", user2.getName(), comment.getCreated(), 1L);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
         when(bookingRepository.isItemWasUsedByUser(anyLong(), anyLong(), any())).thenReturn(false);

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.expections.EntityNotAvailable;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.service.ItemRepository;
@@ -82,7 +83,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
         log.info("Проверка from {} и size {} вызов из > {} ", from, size, messageClass);
         if (from < 0 || size < 1) {
-            throw new ru.practicum.shareit.exceptions.EntityNotAvailable("Ошибочный параметр \"size\" или \"from\"");
+            throw new EntityNotAvailable("Ошибочный параметр \"size\" или \"from\"");
         }
     }
 

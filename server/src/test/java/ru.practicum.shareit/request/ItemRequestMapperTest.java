@@ -29,12 +29,12 @@ public class ItemRequestMapperTest {
     public void setUp() {
         user = new User(1L, "user1", "user1@mail.ru");
         itemRequest = new ItemRequest(1L, "Khren", user, LocalDateTime.now());
-        itemRequestDto = new ItemRequestDto(1L, "Khren", LocalDateTime.now());
-        itemDto = new ItemDto(1L, "Khren", "Description", true, 1L);
-        itemDto2 = new ItemDto(2L, "Rediska", "BU", true, null);
+        itemRequestDto = new ItemRequestDto(1L, "Khren",1L, LocalDateTime.now());
+        itemDto = new ItemDto(1L, "Khren", "Description", true, null, 1L);
+        itemDto2 = new ItemDto(2L, "Rediska", "BU", true, null, 1L);
         itemDtos.add(itemDto);
         itemDtos.add(itemDto2);
-        itemRequestInfoDto = new ItemRequestInfoDto(1L, "Khren", user, LocalDateTime.now(), itemDtos);
+        itemRequestInfoDto = new ItemRequestInfoDto(1L, "Khren", LocalDateTime.now(), itemDtos);
     }
 
     @Test

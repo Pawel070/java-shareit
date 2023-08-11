@@ -18,6 +18,8 @@ public class ItemRequestDto {
     @NotBlank(message = "Нет описания запрашиваемой вещи.")
     private String description;
 
+    private Long requesterId;
+
     private LocalDateTime created;
 
 }

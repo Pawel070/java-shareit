@@ -27,7 +27,7 @@ class ItemInfoDtoTest {
     private final LocalDateTime end1 = start1.plusDays(1);
     private final LocalDateTime start2 = LocalDateTime.now().plusDays(1);
     private final LocalDateTime end2 = start2.plusDays(1);
-    private final CommentDto commentDto = new CommentDto(1L, "text", "author", LocalDateTime.now());
+    private final CommentDto commentDto = new CommentDto(1L, "text", "author", LocalDateTime.now(), 1L);
 
     private final ItemInfoDto answerItemDto = new ItemInfoDto(
             1L,

@@ -8,7 +8,7 @@ import ru.practicum.shareit.item.model.Comment;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CommentMapper {
 
-    public CommentDto toCommentDto(Comment comment) {
+    public static CommentDto toCommentDto(Comment comment) {
         return CommentDto.builder()
                 .id(comment.getId())
                 .text(comment.getText())

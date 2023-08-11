@@ -1,32 +1,29 @@
 package ru.practicum.shareit.booking.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.expections.EntityNotAvailable;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.expections.UnsupportedState;
 import ru.practicum.shareit.item.ItemMapper;
@@ -128,7 +125,7 @@ class BookingServiceImplTest {
         item.setAvailable(false);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
 
-        assertThrows(ru.practicum.shareit.exceptions.EntityNotAvailable.class, () -> bookingService.create(bookingDto, user.getId()));
+        assertThrows(EntityNotAvailable.class, () -> bookingService.create(bookingDto, user.getId()));
     }
 
     @Test
@@ -136,7 +133,7 @@ class BookingServiceImplTest {
         bookingDto.setStart(bookingDto.getEnd().plusDays(2));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
 
-        assertThrows(ru.practicum.shareit.exceptions.EntityNotAvailable.class, () -> bookingService.create(bookingDto, user.getId()));
+        assertThrows(EntityNotAvailable.class, () -> bookingService.create(bookingDto, user.getId()));
     }
 
     @Test

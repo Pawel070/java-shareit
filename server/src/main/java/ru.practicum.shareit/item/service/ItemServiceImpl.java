@@ -140,7 +140,7 @@ public class ItemServiceImpl implements ItemService {
                         bookingMapper.toBookingInfoDto(nextBookings.get(item.getId())),
                         comments.get(item.getId())
                                 .stream()
-                                .map(commentMapper::toCommentDto)
+                                .map(CommentMapper::toCommentDto)
                                 .collect(toList())))
                 .collect(toList());
         return collect;
@@ -154,7 +154,7 @@ public class ItemServiceImpl implements ItemService {
         LocalDateTime now = LocalDateTime.now();
         List<CommentDto> comments = commentRepository.findAllByItem_Id(item.getId())
                 .stream()
-                .map(commentMapper::toCommentDto)
+                .map(CommentMapper::toCommentDto)
                 .collect(toList());
         BookingInfoDto lastBooking = bookingMapper.toBookingInfoDto(bookingRepository
                 .findFirstByItem_IdAndItem_Owner_IdAndStartIsBefore(
@@ -226,7 +226,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl getCommentsByItemId: Получен GET-запрос на получение отзывов вещи с УИН {}", itemId);
         return commentRepository.findAllByItem_Id(itemId,
                         Sort.by(Sort.Direction.DESC, "created")).stream()
-                .map(commentMapper::toCommentDto)
+                .map(CommentMapper::toCommentDto)
                 .collect(toList());
     }
 

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import ru.practicum.shareit.expections.ConflictException;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -109,7 +110,7 @@ class UserServiceImplIntegrationTest {
         userDto.setName("Vlad");
         userDto.setEmail(user2.getEmail());
 
-        assertThrows(ru.practicum.shareit.exceptions.ConflictException.class, () -> userService.update(userDto, savedUser.getId()));
+        assertThrows(ConflictException.class, () -> userService.update(userDto, savedUser.getId()));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ru.practicum.shareit.item.dto.CommentMapper.*;
 
 import java.time.LocalDateTime;
 
@@ -40,7 +41,7 @@ public class CommentMapperTest {
 
     @Test
     public void toCommentTest() {
-        Comment comment1 = CommentMapper.toComment(commentDto);
+        Comment comment1 = toComment(commentDto);
 
         assertEquals(comment1.getId(), commentDto.getId());
         assertEquals(comment1.getText(), commentDto.getText());
