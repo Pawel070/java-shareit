@@ -22,7 +22,7 @@ import ru.practicum.shareit.booking.dto.BookingState;
 @Validated
 public class BookingController {
     private final BookingClient bookingClient;
-    private final String USER_ID = "X-Sharer-User-Id";
+    private static final String USER_ID = "X-Sharer-User-Id";
 
     @GetMapping
     public ResponseEntity<Object> getBookings(@RequestHeader(USER_ID) long userId,
@@ -86,5 +86,5 @@ public class BookingController {
         log.info("Поиск бронирований itemId {}, userId {} ", itemId, userId);
         return bookingClient.getAllBookingsOfItem(itemId, userId);
     }
-    
+
 }

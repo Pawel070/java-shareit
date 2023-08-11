@@ -59,6 +59,7 @@ public final class BookingMapper {
                 .status(Status.WAITING)
                 .build();
     }
+
     public static Booking toBooking(BookingDto bookingDto) {
         return new Booking(
                 bookingDto.getId(),

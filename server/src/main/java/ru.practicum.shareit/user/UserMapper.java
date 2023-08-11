@@ -20,6 +20,7 @@ public final class UserMapper {
                 userDto.getEmail()
         );
     }
+
     public User updatedUser(UserDto userDto, User user) {
         return User.builder()
                 .id(userDto.getId())

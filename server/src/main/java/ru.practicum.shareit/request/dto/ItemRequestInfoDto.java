@@ -5,7 +5,6 @@ import java.util.List;
 
 import lombok.*;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.model.User;
 
 @Getter
 @Setter

@@ -22,7 +22,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 public class ItemRequestController {
 
     private final ItemRequestClient itemRequestClient;
-    private final String USER_ID = "X-Sharer-User-Id";
+    private static final String USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
     public ResponseEntity<Object> addRequest(@RequestHeader(USER_ID) Long userId,
