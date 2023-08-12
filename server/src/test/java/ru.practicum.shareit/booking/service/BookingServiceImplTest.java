@@ -1,5 +1,8 @@
 package ru.practicum.shareit.booking.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +21,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
+import ru.practicum.shareit.booking.dto.BookingQueryDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.expections.EntityNotAvailable;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.expections.UnsupportedState;
-import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
@@ -36,8 +38,8 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-@Transactional
-@SpringBootTest
+@Slf4j
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class BookingServiceImplTest {
 
@@ -57,15 +59,10 @@ class BookingServiceImplTest {
     @MockBean
     BookingRepository bookingRepository;
 
-    @Autowired
-    ItemMapper mapper;
-
-    @Autowired
-    BookingMapper bookingMapper;
-
     User user;
     User owner;
     Item item;
+    Item item1;
     Booking booking;
     UserDto userDto;
     ItemDto itemDto;
@@ -73,10 +70,11 @@ class BookingServiceImplTest {
     @BeforeEach
     void beforeEach() {
         pageable = PageRequest.of(0, 10);
-        bookingService = new BookingServiceImpl(bookingRepository, itemRepository, userRepository, bookingMapper);
+        bookingService = new BookingServiceImpl(bookingRepository, itemRepository, userRepository);
         user = new User(1L, "user", "user@mail.ru");
         owner = new User(2L, "owner", "owner@mail.ru");
         item = new Item(1L, "item", "desc", true, owner, null);
+        item1 = new Item(1L, "item", "desc", true, user, null);
         userDto = new UserDto(1L, "user", "user@mail.ru");
         itemDto = new ItemDto(1L, "item", "desc", true, owner, 0);
         booking = new Booking(
@@ -101,6 +99,24 @@ class BookingServiceImplTest {
                 user.getId(),
                 Status.WAITING);
     }
+
+    @Test
+    void createBookingTest() {
+
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(owner));
+        when(bookingRepository.save(any())).thenReturn(booking);
+
+        BookingModelDto res = bookingService.create(bookingDto, 2L);
+        log.info(" res = {}", res);
+
+        assertNotNull(res);
+        assertEquals(BookingModelDto.class, res.getClass());
+        assertThat(res, is(notNullValue()));
+        assertThat(res.getId(), is(1L));
+        assertThat(res.getStatus(), is(Status.WAITING));
+    }
+
 
     @Test
     void create() {

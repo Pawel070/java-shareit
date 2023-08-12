@@ -1,14 +1,22 @@
 package ru.practicum.shareit.item.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-import javax.transaction.Transactional;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.model.Booking;
@@ -20,30 +28,67 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.service.CommentRepository;
-import ru.practicum.shareit.item.service.ItemRepository;
-import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-@Transactional
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemServiceImplIntegrationTest {
 
-    @Autowired
-    private ItemService itemService;
+    private final ItemService itemService;
 
-    @Autowired
-    private BookingRepository bookingRepository;
+    @MockBean
+    private final ItemRepository itemRepository;
 
-    @Autowired
-    private CommentRepository commentRepository;
+    @MockBean
+    private final UserRepository userRepository;
 
-    @Autowired
-    private ItemRepository itemRepository;
+    @MockBean
+    private final BookingRepository bookingRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    @MockBean
+    private final CommentRepository commentRepository;
+
+    @MockBean
+    private final ItemRequestRepository requestRepository;
+
+    @Test
+    void createItemTest() {
+        User owner = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@test.ru")
+                .build();
+
+        when(userRepository.findById(1L))
+                .thenReturn(Optional.of(owner));
+
+        ItemDto itemDto = ItemDto.builder()
+                .name("itemDto")
+                .description("newItemDto")
+                .available(true)
+                .build();
+
+        Item item = Item.builder()
+                .id(1L)
+                .name("item")
+                .description("newItem")
+                .available(true)
+                .owner(owner)
+                .build();
+
+        when(itemRepository.save(any()))
+                .thenReturn(item);
+
+        itemDto = itemService.create(itemDto, 1L);
+        assertThat(itemDto, is(notNullValue()));
+        assertThat(itemDto.getId(), is(1L));
+        assertThat(itemDto.getName(), is("item"));
+        assertThat(itemDto.getDescription(), is("newItem"));
+    }
+
+
 
     @Test
     void create() {

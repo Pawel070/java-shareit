@@ -39,6 +39,6 @@ public class Comment {
     @JoinColumn(name = "author_id")
     private User author;            // пользователь, оставивший комментарий;
 
-    @Column(name = "create_date")
+    @Column(name = "creation_date")
     private LocalDateTime created;  // дата внесения комментария.
 }

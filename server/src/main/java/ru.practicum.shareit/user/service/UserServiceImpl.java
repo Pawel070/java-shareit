@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
@@ -19,24 +20,23 @@ import ru.practicum.shareit.user.model.User;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
-    private final UserMapper mapper;
 
     @Override
     public List<UserDto> getUsers() {
         log.info("UserServiceImpl: Получен GET-запрос '/users'");
         return repository.findAll().stream()
-                .map(mapper::toUserDto)
+                .map(UserMapper::toUserDto)
                 .collect(toList());
     }
 
     @Override
     public UserDto getUser(Long id) {
         log.info("UserServiceImpl: Получен GET-запрос '/users/{}", id);
-        return mapper.toUserDto(repository.findById(id)
+        return UserMapper.toUserDto(repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с УИН " + id + " не существует.")));
     }
 
@@ -44,9 +44,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto userDto) {
         log.info("UserServiceImpl: Получен POST-запрос '/users' {} ", userDto);
-        User user = mapper.toUser(userDto);
+        User user = UserMapper.toUser(userDto);
         try {
-            UserDto userDto1 = mapper.toUserDto(repository.save(user));
+            UserDto userDto1 = UserMapper.toUserDto(repository.save(user));
             log.info("UserServiceImpl: Пользователь {}  с УИД : {} создан", userDto1, user.getId());
             return userDto1;
         } catch (ConstraintViolationException e) {
@@ -62,10 +62,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException("User with ID " + id + " does not exist"));
         if (!isCheckUsersMail(userDto) || userDto.getEmail().equals(oldUser.getEmail())) {
             userDto.setId(id);
-            User user = mapper.updatedUser(userDto, oldUser);
+            User user = UserMapper.updatedUser(userDto, oldUser);
             repository.save(user);
             log.info("User ID {} was updated", userDto.getId());
-            return mapper.toUserDto(user);
+            return UserMapper.toUserDto(user);
         } else {
             throw new ConflictException("Mail " + userDto.getEmail() + " already used by another user");
         }

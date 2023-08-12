@@ -35,9 +35,6 @@ class UserServiceImplTest {
 
     UserService userService;
 
-    @Autowired
-    UserMapper mapper;
-
     @MockBean
     UserRepository userRepository;
 
@@ -47,7 +44,7 @@ class UserServiceImplTest {
     @BeforeEach
     void beforeEach() {
         userRepository.deleteAll();
-        userService = new UserServiceImpl(userRepository, mapper);
+        userService = new UserServiceImpl(userRepository);
         user = new User(1L, "user", "mail@mail.ru");
         userDto = new UserDto(1L, "user", "mail@mail.ru");
     }
@@ -164,7 +161,7 @@ class UserServiceImplTest {
     @Test
     @Rollback(false)
     void findUserById() {
-        when(userRepository.findById(11L)).thenReturn(Optional.of(mapper.toUser(userDto)));
+        when(userRepository.findById(11L)).thenReturn(Optional.of(UserMapper.toUser(userDto)));
         UserDto newUserDto = userService.getUser(11L);
         assertThat(newUserDto.getId(), equalTo(userDto.getId()));
         assertThat(newUserDto.getEmail(), equalTo(userDto.getEmail()));

@@ -3,17 +3,21 @@ package ru.practicum.shareit.booking.service;
 import static ru.practicum.shareit.Constants.SORT;
 
 import javax.transaction.Transactional;
+
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
@@ -31,13 +35,12 @@ import ru.practicum.shareit.user.model.User;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository repository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final BookingMapper mapper;
 
     @Transactional
     @Override
@@ -62,11 +65,11 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("BookingServiceImpl: Владелец не может забронировать свою вещь с УИН " + bookingDto.getItemId());
         }
         log.info("BookingServiceImpl: Dto {}, Вещь {} , УИН брoнирующего {} , user {} ", bookingDto, item, bookerId, booker);
-        Booking booking = mapper.toBooking(bookingDto);
+        Booking booking = BookingMapper.toBooking(bookingDto);
         booking.setItem(item);
         booking.setBooker(booker);
         booking.setStatus(Status.WAITING);
-        return mapper.toBookingModelDto(repository.save(booking));
+        return BookingMapper.toBookingModelDto(repository.save(booking));
     }
 
     @Transactional
@@ -86,7 +89,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(accepted ? Status.APPROVED : Status.REJECTED);
         }
         booking = repository.save(booking);
-        return mapper.toBookingModelDto(booking);
+        return BookingMapper.toBookingModelDto(booking);
     }
 
     @Override
@@ -99,7 +102,7 @@ public class BookingServiceImpl implements BookingService {
         if (!userId.equals(item.getOwner().getId()) && !userId.equals(booking.getBooker().getId())) {
             throw new NotFoundException("BookingServiceImpl: Данные бронирования доступны владельцу и бронирующему.");
         }
-        return mapper.toBookingModelDto(booking);
+        return BookingMapper.toBookingModelDto(booking);
     }
 
     @Override

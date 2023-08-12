@@ -30,7 +30,7 @@ public class ItemRequest {
     @JoinColumn(name = "requester_id")
     private User requester; // кто отправил запрос
 
-    @Column(name = "creation_date")
+    @Column(name = "created")
     private LocalDateTime created; // дата и времени нового запроса
 
 }

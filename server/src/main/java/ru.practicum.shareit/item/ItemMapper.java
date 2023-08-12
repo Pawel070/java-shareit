@@ -1,8 +1,12 @@
 package ru.practicum.shareit.item;
 
 import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -16,12 +20,13 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 //@Mapper(componentModel = "spring", uses = ItemMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
-public interface ItemMapper {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ItemMapper {
 
 //    @Mapping(target = "authorName", source = "author.name")
 //    CommentDto toCommentDto(Comment comment);
 
-    default Item toItem(ItemDto itemDto, User owner, ItemRequest request) {
+    public static Item toItem(ItemDto itemDto, User owner, ItemRequest request) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
@@ -32,7 +37,7 @@ public interface ItemMapper {
                 .build();
     }
 
-    default ItemDto toItemDto(Item item) { // преобразование Итема в ДТО
+    public static ItemDto toItemDto(Item item) { // преобразование Итема в ДТО
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -48,7 +53,7 @@ public interface ItemMapper {
 
  //   Item mapToItemFromItemDto(ItemDto itemDto);
 
-    default Item updatedItem(ItemDto itemDto, Item item) {
+    public static Item updatedItem(ItemDto itemDto, Item item) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName() == null ? item.getName() : itemDto.getName())
@@ -57,7 +62,7 @@ public interface ItemMapper {
                 .build();
     }
 
-    default ItemInfoDto toItemInfoDto(Item item, BookingInfoDto lastBooking,
+    public static ItemInfoDto toItemInfoDto(Item item, BookingInfoDto lastBooking,
                                       BookingInfoDto nextBooking, List<CommentDto> comments) {
         return ItemInfoDto.builder()
                 .id(item.getId())
@@ -72,20 +77,26 @@ public interface ItemMapper {
                 .build();
     }
 
-    UserDto toUserDto(User owner);
+    public static UserDto toUserDto(User owner) {
+        return UserDto.builder()
+                .id(owner.getId())
+                .name(owner.getName())
+                .email(owner.getEmail())
+                .build();
+    }
 
- //   ItemRequest toItemRequest(ItemRequestDto itemRequestDto);
+    //   ItemRequest toItemRequest(ItemRequestDto itemRequestDto);
 
-    default ItemRequestInfoDto toItemRequestInfoDto(ItemRequest itemRequest, List<Item> items) {
+    public static ItemRequestInfoDto toItemRequestInfoDto(ItemRequest itemRequest, List<Item> items) {
         return ItemRequestInfoDto.builder()
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())
                 .created(itemRequest.getCreated())
-                .items(items.stream().map(this::toItemDto).collect(Collectors.toList()))
+                .items(items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList()))
                 .build();
     }
 
-    default ItemRequest toItemRequest(ItemRequestDto request, User requester) {
+    public static ItemRequest toItemRequest(ItemRequestDto request, User requester) {
         return ItemRequest.builder()
                 .description(request.getDescription())
                 .requester(requester)

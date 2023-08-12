@@ -10,9 +10,8 @@ import ru.practicum.shareit.user.model.User;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "items")

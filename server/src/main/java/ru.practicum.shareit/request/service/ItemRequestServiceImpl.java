@@ -29,15 +29,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final ItemMapper mapper;
 
     @Transactional
     @Override
     public ItemRequestInfoDto createItemRequest(Long id, ItemRequestDto itemRequestDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("ItemRequestServiceImpl createItemRequest : Пользователь с УИН " + id + " не существует."));
-        ItemRequest itemRequest = mapper.toItemRequest(itemRequestDto, user);
-        return mapper.toItemRequestInfoDto(itemRequestRepository.save(itemRequest), new ArrayList<>());
+        ItemRequest itemRequest = ItemMapper.toItemRequest(itemRequestDto, user);
+        return ItemMapper.toItemRequestInfoDto(itemRequestRepository.save(itemRequest), new ArrayList<>());
     }
 
     @Override
@@ -47,7 +46,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
         List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(id);
         return requests.stream()
-                .map(req -> mapper.toItemRequestInfoDto(req, itemRepository.findAllByRequest_IdOrderByIdDesc(req.getId())))
+                .map(req -> ItemMapper.toItemRequestInfoDto(req, itemRepository.findAllByRequest_IdOrderByIdDesc(req.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -58,7 +57,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
         List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdNot(id, pageable);
         return requests.stream()
-                .map(request -> mapper.toItemRequestInfoDto(request,
+                .map(request -> ItemMapper.toItemRequestInfoDto(request,
                         itemRepository.findAllByRequest_IdOrderByIdDesc(request.getId())))
                 .collect(Collectors.toList());
     }
@@ -70,7 +69,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
         ItemRequest itemRequest = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("ItemRequestServiceImpl createItemRequest : Запрос на вещь с УИН" + requestId + " не существует."));
-        return mapper.toItemRequestInfoDto(itemRequest, itemRepository.findAllByRequest_IdOrderByIdDesc(itemRequest.getId()));
+        return ItemMapper.toItemRequestInfoDto(itemRequest, itemRepository.findAllByRequest_IdOrderByIdDesc(itemRequest.getId()));
     }
 
     @Override

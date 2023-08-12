@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,24 +30,17 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
-import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemMapper mapper;//
-    private final BookingMapper bookingMapper;
-    private final UserMapper userMapper;
-    private final CommentMapper commentMapper;
     private final ItemRepository repository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
-    private final UserService userService;
     private final ItemRequestRepository itemRequestRepository;
     private final BookingRepository bookingRepository;
 
@@ -55,15 +48,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto create(ItemDto itemDto, Long id) {
         log.info("ItemServiceImpl: Получен POST-запрос на создание вещи");
-        User owner = userMapper.toUser(userService.getUser(id));
+        User owner = userRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("Отсутствует пользователь c УИН " + id));
         ItemRequest request = null;
         if (itemDto.getRequestId() != 0) {
             request = itemRequestRepository.findById(itemDto.getRequestId())
                     .orElseThrow(() -> new NotFoundException(
-                            "ItemServiceImpl create: Запроса с id " + itemDto.getRequestId() + " не существует."));
+                            "ItemServiceImpl create: Запроса с УИН " + itemDto.getRequestId() + " не существует."));
         }
-        Item item = mapper.toItem(itemDto, owner, request);
-        return mapper.toItemDto(repository.save(item));
+        Item item = ItemMapper.toItem(itemDto, owner, request);
+        return ItemMapper.toItemDto(repository.save(item));
 
     }
 
@@ -77,7 +71,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl createComment: Пльзаватель с УИН " + userId + " не существует."));
         if (bookingRepository.isItemWasUsedByUser(itemId, userId, LocalDateTime.now())) {
             Comment comment = new Comment(commentDto.getId(), commentDto.getText(), item, user, LocalDateTime.now());
-            return commentMapper.toCommentDto(commentRepository.save(comment));
+            return CommentMapper.toCommentDto(commentRepository.save(comment));
         } else {
             throw new EntityNotAvailable("ItemServiceImpl createComment: Данный пользователь вещь не бронировал!");
         }
@@ -134,10 +128,10 @@ public class ItemServiceImpl implements ItemService {
             comments.put(signature, valueOfComments);
         });
         List<ItemInfoDto> collect = items.stream()
-                .map(item -> mapper.toItemInfoDto(
+                .map(item -> ItemMapper.toItemInfoDto(
                         item,
-                        bookingMapper.toBookingInfoDto(lastBookings.get(item.getId())),
-                        bookingMapper.toBookingInfoDto(nextBookings.get(item.getId())),
+                        BookingMapper.toBookingInfoDto(lastBookings.get(item.getId())),
+                        BookingMapper.toBookingInfoDto(nextBookings.get(item.getId())),
                         comments.get(item.getId())
                                 .stream()
                                 .map(CommentMapper::toCommentDto)
@@ -156,13 +150,13 @@ public class ItemServiceImpl implements ItemService {
                 .stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(toList());
-        BookingInfoDto lastBooking = bookingMapper.toBookingInfoDto(bookingRepository
+        BookingInfoDto lastBooking = BookingMapper.toBookingInfoDto(bookingRepository
                 .findFirstByItem_IdAndItem_Owner_IdAndStartIsBefore(
                         id,
                         userId,
                         now,
                         SORT_DESC));
-        BookingInfoDto nextBooking = bookingMapper.toBookingInfoDto(bookingRepository
+        BookingInfoDto nextBooking = BookingMapper.toBookingInfoDto(bookingRepository
                 .findFirstByItem_IdAndItem_Owner_IdAndStartIsAfterAndStatusIsNotAndStatusIsNot(
                         id,
                         userId,
@@ -170,7 +164,7 @@ public class ItemServiceImpl implements ItemService {
                         Status.CANCELED,
                         Status.REJECTED,
                         SORT_ASC));
-        return mapper.toItemInfoDto(item, lastBooking, nextBooking, comments);
+        return ItemMapper.toItemInfoDto(item, lastBooking, nextBooking, comments);
     }
 
     @Override
@@ -183,11 +177,11 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl update: У пользователя нет такой вещи."));
         if (oldItem.getOwner().getId().equals(owner.getId())) {
             itemDto.setId(itemId);
-            Item item = mapper.updatedItem(itemDto, oldItem);
+            Item item = ItemMapper.updatedItem(itemDto, oldItem);
             item.setOwner(owner);
             repository.save(item);
             log.info("ItemServiceImpl update: Вещь с УИН {} изменена пользователем с УИН {}", itemId, userId);
-            return mapper.toItemDto(item);
+            return ItemMapper.toItemDto(item);
         } else {
             throw new NotFoundException("ItemServiceImpl update: У пользователя нет такой вещи.");
         }
@@ -216,7 +210,7 @@ public class ItemServiceImpl implements ItemService {
         } else {
             return repository.searchAvailableItems("%" + text + "%", pageable)
                     .stream()
-                    .map(mapper::toItemDto)
+                    .map(ItemMapper::toItemDto)
                     .collect(toList());
         }
     }
