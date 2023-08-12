@@ -1,8 +1,17 @@
-package ru.practicum.shareit.service;
+package ru.practicum.shareit;
 
 import org.springframework.data.domain.Sort;
 
-public final class MyConstants {
+public enum State {
+    ALL,
+    CURRENT,
+    PAST,
+    FUTURE,
+    WAITING,
+    REJECTED
+}
+
+public final class Constants {
 
     public static final String USER_ID = "X-Sharer-User-Id";
     public static final Sort SORT_DESC = Sort.by(Sort.Direction.DESC, "end");

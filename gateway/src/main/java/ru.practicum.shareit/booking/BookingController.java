@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking;
 
+import static ru.practicum.shareit.Constants.USER_ID;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -22,7 +24,6 @@ import ru.practicum.shareit.booking.dto.BookingState;
 @Validated
 public class BookingController {
     private final BookingClient bookingClient;
-    private static final String USER_ID = "X-Sharer-User-Id";
 
     @GetMapping
     public ResponseEntity<Object> getBookings(@RequestHeader(USER_ID) long userId,

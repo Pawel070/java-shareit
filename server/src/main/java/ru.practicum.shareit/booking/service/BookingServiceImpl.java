@@ -25,7 +25,7 @@ import ru.practicum.shareit.expections.ServerError;
 import ru.practicum.shareit.expections.UnsupportedState;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
-import ru.practicum.shareit.service.State;
+import ru.practicum.shareit.State;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 

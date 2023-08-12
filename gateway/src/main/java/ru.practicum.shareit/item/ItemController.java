@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item;
 
+import static ru.practicum.shareit.Constants.USER_ID;
+
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
@@ -23,7 +26,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 public class ItemController {
 
     private final ItemClient itemClient;
-    private static final String USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
     public ResponseEntity<Object> addItem(@RequestHeader(USER_ID) Long userId,
@@ -57,7 +59,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<Object> searchItem(@RequestHeader(USER_ID) Long userId,
-                                             @RequestParam(value = "text") String text,
+                                             @RequestParam(value = "text", defaultValue = "-") @NotBlank String text,
                                              @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero int from,
                                              @RequestParam(name = "size", defaultValue = "10") @Positive int size) {
         log.info("Поиск элементов, содержащих {} ", text);
