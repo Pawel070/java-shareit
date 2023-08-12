@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking;
 
-import static ru.practicum.shareit.service.MyConstants.USER_ID;
+import static ru.practicum.shareit.Constants.USER_ID;
 
 import javax.validation.Valid;
 import java.util.List;

@@ -1,8 +1,8 @@
 package ru.practicum.shareit.item.service;
 
 import static java.util.stream.Collectors.toList;
-import static ru.practicum.shareit.service.MyConstants.SORT_ASC;
-import static ru.practicum.shareit.service.MyConstants.SORT_DESC;
+import static ru.practicum.shareit.Constants.SORT_ASC;
+import static ru.practicum.shareit.Constants.SORT_DESC;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;

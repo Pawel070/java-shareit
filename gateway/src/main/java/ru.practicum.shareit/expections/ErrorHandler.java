@@ -56,28 +56,9 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
-    public ErrorResponse handleServerError(final Exception exception) {
-        log.debug("Ошибка на сервере. Возврат код 500 {}", exception.getMessage());
-        return new ErrorResponse("http:500 Ошибка на сервере.", exception.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
-    public ErrorResponse unsupportedState(final UnsupportedState exception) {
-        return new ErrorResponse(exception.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
     public ErrorResponse entityNotAvailable(final EntityNotAvailable exception) {
         return new ErrorResponse(exception.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
-    public ErrorResponse handleMethodArgumentNotValidException(
-            final ru.practicum.shareit.expections.MethodArgumentNotValidException exception) {
-        return new ErrorResponse(exception.getMessage());
-    }
 }

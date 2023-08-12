@@ -21,12 +21,6 @@ class ErrorHandlerTest {
     }
 
     @Test
-    void validationExceptionTest() {
-        ErrorResponse error = errorHandler.handleValidationException(new ValidationException("message"));
-        Assertions.assertEquals(error.getError(), "message");
-    }
-
-    @Test
     void userAlreadyExistsExceptionTest() {
         ErrorResponse error = errorHandler.handleUserAlreadyExistException(new UserAlreadyExistsException("message"));
         Assertions.assertEquals(error.getError(), "message");

@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
-import static ru.practicum.shareit.service.MyConstants.SORT;
+import static ru.practicum.shareit.Constants.SORT;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;

@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,24 +23,23 @@ import ru.practicum.shareit.expections.EntityNotAvailable;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 @Transactional
 @SpringBootTest
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class BookingServiceImplIntegrationTest {
 
-    @Autowired
     private BookingService bookingService;
+    private UserService userService;
+    private ItemService itemService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ItemRepository itemRepository;
-
-    @Autowired
-    private BookingRepository bookingRepository;
+//    private UserRepository userRepository;
+//    private ItemRepository itemRepository;
+//    private BookingRepository bookingRepository;
 
     @Test
     void create() {

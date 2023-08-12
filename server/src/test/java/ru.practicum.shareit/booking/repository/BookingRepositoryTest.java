@@ -3,7 +3,7 @@ package ru.practicum.shareit.booking.repository;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.practicum.shareit.service.MyConstants.SORT_DESC;
+import static ru.practicum.shareit.Constants.SORT_DESC;
 
 import java.time.LocalDateTime;
 
