@@ -27,7 +27,7 @@ class ItemRequestInfoDtoTest {
             "description1",
             true,
             null,
-            0);
+            null);
 
     private final ItemRequestInfoDto itemRequestInfoDto = new ItemRequestInfoDto(
             2L,
@@ -58,6 +58,6 @@ class ItemRequestInfoDtoTest {
         assertThat(res)
                 .extractingJsonPathStringValue("$.items[0].description").isEqualTo("description1");
         assertThat(res).extractingJsonPathBooleanValue("$.items[0].available").isEqualTo(true);
-        assertThat(res).extractingJsonPathNumberValue("$.items[0].requestId").isEqualTo(0);
+        assertThat(res).extractingJsonPathNumberValue("$.items[0].requestId").isEqualTo(null);
     }
 }

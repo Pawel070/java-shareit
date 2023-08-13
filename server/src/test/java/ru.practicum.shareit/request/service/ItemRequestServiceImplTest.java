@@ -22,7 +22,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -35,17 +34,14 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-@Transactional
-@SpringBootTest
-@RequiredArgsConstructor
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemRequestServiceImplTest {
 
     ItemRequestService itemRequestService;
     ItemService itemService;
     ItemRequest itemRequest;
     ItemRequestDto itemRequestDto;
-
-    @Autowired
     ItemMapper mapper;
 
     @MockBean

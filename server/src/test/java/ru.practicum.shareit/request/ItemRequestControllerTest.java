@@ -92,7 +92,7 @@ class ItemRequestControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 
     @Test

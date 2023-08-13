@@ -21,7 +21,7 @@ class ItemMapperTest {
     @Test
     void testItemDto() throws Exception {
         User owner = new User(2L, "owner", "owner@mail.ru");
-        ItemDto itemDto = new ItemDto(1L, "item", "desc", true, owner, 2);
+        ItemDto itemDto = new ItemDto(1L, "item", "desc", true, owner, 2L);
         JsonContent<ItemDto> result = json.write(itemDto);
         AssertionsForInterfaceTypes.assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         AssertionsForInterfaceTypes.assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo("item");

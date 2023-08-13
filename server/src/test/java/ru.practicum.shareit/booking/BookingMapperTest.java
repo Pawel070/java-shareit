@@ -34,7 +34,7 @@ public class BookingMapperTest {
         user = new User(1L, "Dydy", "user@mail.ru");
         item = new Item(1L, "itemName1", "itemDescription1", true, user, null);
         userDto = new UserDto(1L, "Dydy", "user@mail.ru");
-        itemDto = new ItemDto(1L, "itemName1", "itemDescription1", true, user, 0);
+        itemDto = new ItemDto(1L, "itemName1", "itemDescription1", true, user, null);
         booking = new Booking(1L, LocalDateTime.now().minusDays(10),
                 LocalDateTime.now().minusDays(5), item, user, Status.APPROVED);
         bookingModelDto = new BookingModelDto(1L, LocalDateTime.now().minusDays(10),

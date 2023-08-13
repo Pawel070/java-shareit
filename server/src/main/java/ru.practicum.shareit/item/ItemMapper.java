@@ -43,15 +43,10 @@ public final class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .owner(item.getOwner())
                 .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
-
- //   ItemDto toItemExtDto(Item item);
-
- //   ItemDto mapToItemDtoResponse(Item item);
-
- //   Item mapToItemFromItemDto(ItemDto itemDto);
 
     public static Item updatedItem(ItemDto itemDto, Item item) {
         return Item.builder()

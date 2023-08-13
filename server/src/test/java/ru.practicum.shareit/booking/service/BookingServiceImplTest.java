@@ -3,27 +3,32 @@ package ru.practicum.shareit.booking.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
-import ru.practicum.shareit.booking.dto.BookingQueryDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.expections.EntityNotAvailable;
@@ -76,7 +81,7 @@ class BookingServiceImplTest {
         item = new Item(1L, "item", "desc", true, owner, null);
         item1 = new Item(1L, "item", "desc", true, user, null);
         userDto = new UserDto(1L, "user", "user@mail.ru");
-        itemDto = new ItemDto(1L, "item", "desc", true, owner, 0);
+        itemDto = new ItemDto(1L, "item", "desc", true, owner, null);
         booking = new Booking(
                 1L,
                 LocalDateTime.now().plusDays(1),

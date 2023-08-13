@@ -84,7 +84,7 @@ public class ItemServiceImpl implements ItemService {
         Map<Long, List<Comment>> comments = new HashMap<>();
         LocalDateTime now = LocalDateTime.now();
         log.info("ItemServiceImpl: Получен GET-запрос на получение списка вещей владельца с УИН {}", id);
-                if (!userRepository.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             throw new NotFoundException("ItemServiceImpl getItemById: Вещь с УИН " + id + " не существует.");
         }
         List<Item> items = repository.findByOwner_Id(id, pageable);
@@ -170,21 +170,20 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDto update(ItemDto itemDto, Long userId, Long itemId) {
-        log.info("ItemServiceImpl update: Получен PUT-запрос на обновление вещи с УИН {}", itemId);
+        log.info("ItemServiceImpl update: Получен PUT-запрос userId > {} на обновление вещи с УИН {}",userId, itemId);
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl update: УИН пользователя неверный."));
         Item oldItem = repository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl update: У пользователя нет такой вещи."));
-        if (oldItem.getOwner().getId().equals(owner.getId())) {
-            itemDto.setId(itemId);
-            Item item = ItemMapper.updatedItem(itemDto, oldItem);
-            item.setOwner(owner);
-            repository.save(item);
-            log.info("ItemServiceImpl update: Вещь с УИН {} изменена пользователем с УИН {}", itemId, userId);
-            return ItemMapper.toItemDto(item);
-        } else {
+        if (!oldItem.getOwner().getId().equals(owner.getId())) {
             throw new NotFoundException("ItemServiceImpl update: У пользователя нет такой вещи.");
         }
+        itemDto.setId(itemId);
+        Item item = ItemMapper.updatedItem(itemDto, oldItem);
+        item.setOwner(owner);
+        repository.save(item);
+        log.info("ItemServiceImpl update: Вещь {} изменена пользователем с УИН {}", item, userId);
+        return ItemMapper.toItemDto(item);
     }
 
     @Transactional

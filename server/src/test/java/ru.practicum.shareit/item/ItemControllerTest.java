@@ -52,7 +52,7 @@ class ItemControllerTest {
     @BeforeEach
     void beforeEach() {
         owner = new User(1L, "user", "mail@mail.ru");
-        itemDto = new ItemDto(1L, "item", "des", true, owner, 0);
+        itemDto = new ItemDto(1L, "item", "des", true, owner, null);
         itemInfoDto = new ItemInfoDto(1L, "item", "des", true, ownerDto, null,
                 null, null, null);
     }

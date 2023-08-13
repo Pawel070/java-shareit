@@ -31,6 +31,6 @@ public class ItemDto {
 
     private User owner;
 
-    private long requestId;
+    private Long requestId;
 
 }

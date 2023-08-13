@@ -1,18 +1,22 @@
 package ru.practicum.shareit.user.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+@Slf4j
 @Transactional
 @DataJpaTest
 public class UserRepositoryTest {
@@ -38,8 +42,12 @@ public class UserRepositoryTest {
     void deleteById() {
         List<User> users = repository.findAll();
         long userId = users.get(1).getId();
+        assertNotNull(users.get(1));
+        log.info("userId: {}", userId);
         repository.deleteById(userId);
-        Assertions.assertThrows(DataIntegrityViolationException.class, () -> repository.findUserById(userId));
+        User user = repository.findUserById(userId);
+        log.info("user: {}", user);
+        assertEquals(user, null);
     }
 
     @Test

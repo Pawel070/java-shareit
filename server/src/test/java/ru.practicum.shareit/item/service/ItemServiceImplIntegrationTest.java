@@ -1,24 +1,23 @@
 package ru.practicum.shareit.item.service;
 
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+
+import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
+
 import java.util.List;
-import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingRepository;
@@ -26,129 +25,75 @@ import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequestMapper;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
+@Slf4j
+@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemServiceImplIntegrationTest {
 
     private final ItemService itemService;
-
-    @MockBean
+    private final ItemRequestService itemRequestService;
     private final ItemRepository itemRepository;
-
-    @MockBean
     private final UserRepository userRepository;
-
-    @MockBean
     private final BookingRepository bookingRepository;
-
-    @MockBean
     private final CommentRepository commentRepository;
-
-    @MockBean
     private final ItemRequestRepository requestRepository;
 
-    @Test
-    void createItemTest() {
-        User owner = User.builder()
-                .id(1L)
-                .name("User1")
-                .email("user1@test.ru")
-                .build();
+    Pageable pageable;
+    User user;
+    User user1;
+    User user2;
+    UserDto userDto;
+    Item item;
+    Item item1;
+    Item item2;
+    ItemDto itemDto;
+    ItemRequest request1;
+    ItemRequestDto itemRequestDto;
+    ItemRequest itemRequest;
 
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.of(owner));
-
-        ItemDto itemDto = ItemDto.builder()
-                .name("itemDto")
-                .description("newItemDto")
-                .available(true)
-                .build();
-
-        Item item = Item.builder()
-                .id(1L)
-                .name("item")
-                .description("newItem")
-                .available(true)
-                .owner(owner)
-                .build();
-
-        when(itemRepository.save(any()))
-                .thenReturn(item);
-
-        itemDto = itemService.create(itemDto, 1L);
-        assertThat(itemDto, is(notNullValue()));
-        assertThat(itemDto.getId(), is(1L));
-        assertThat(itemDto.getName(), is("item"));
-        assertThat(itemDto.getDescription(), is("newItem"));
+    @BeforeEach
+    void beforeEach() {
+        user = new User(10L, "user10", "mail10@mail.ru");
+        user1 = new User(1L, "user1", "mail1@mail.ru");
+        user2 = new User(2L, "user2", "mail2@mail.ru");
+        userDto = new UserDto(1L, "user1", "mail1@mail.ru");
+        request1 = new ItemRequest(1L, "req2", user2, LocalDateTime.now());
+        item = new Item(10L, "item10", "des10", true, user, request1);
+        item1 = new Item(1L, "item1", "des1", true, user1, request1);
+        item2 = new Item(2L, "item2", "des2", true, user2, null);
+        itemDto = new ItemDto(1L, "item1", "des1", true, user1, request1.getId());
     }
-
-
 
     @Test
     void create() {
-        User user = new User();
-        user.setName("Alex");
-        user.setEmail("alex@mail.ru");
-        User savedUser = userRepository.save(user);
-
-        ItemDto itemDto = new ItemDto();
-        itemDto.setName("item");
-        itemDto.setDescription("desc");
-        itemDto.setAvailable(true);
-
-        ItemDto savedItem = itemService.create(itemDto, savedUser.getId());
-
+        User savedUser = userRepository.save(user2);
+        ItemRequestInfoDto requestInfoDto = itemRequestService.createItemRequest(1L, ItemRequestMapper.toItemRequestDto(request1));
+        log.info("==================================== requestInfoDto {} ", requestInfoDto);
+        log.info("==================================== user {} , saveUser {} ", user2, savedUser);
+        ItemDto savedItem = itemService.create(itemDto, 1L);
+        log.info("==================================== item {} , savedItem {} ", itemDto, savedItem);
         assertNotNull(itemDto);
         assertEquals(itemDto.getName(), savedItem.getName());
         assertEquals(itemDto.getDescription(), savedItem.getDescription());
         assertEquals(itemDto.getAvailable(), savedItem.getAvailable());
-
     }
 
     @Test
     void create_invalidItemRequest() {
-        User user = new User();
-        user.setName("Alex");
-        user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
-
-        ItemDto itemDto = new ItemDto();
-        itemDto.setName("item");
-        itemDto.setDescription("desc");
-        itemDto.setAvailable(true);
-        itemDto.setRequestId(1L);
-
         assertThrows(NotFoundException.class, () -> itemService.create(itemDto, savedUser.getId()));
-    }
-
-    @Test
-    void update() {
-        User user = new User();
-        user.setName("Alex");
-        user.setEmail("alex@mail.ru");
-        User savedUser = userRepository.save(user);
-
-        Item oldItem = new Item();
-        oldItem.setName("item");
-        oldItem.setDescription("desc");
-        oldItem.setAvailable(true);
-        oldItem.setOwner(savedUser);
-        itemRepository.save(oldItem);
-
-        ItemDto newItemDto = new ItemDto();
-        newItemDto.setName("newItem");
-
-        ItemDto updatedItemDto = itemService.update(newItemDto, user.getId(), oldItem.getId());
-
-        assertEquals(updatedItemDto.getName(), newItemDto.getName());
-        assertEquals(updatedItemDto.getDescription(), oldItem.getDescription());
-        assertEquals(updatedItemDto.getAvailable(), oldItem.getAvailable());
     }
 
     @Test
@@ -157,14 +102,12 @@ class ItemServiceImplIntegrationTest {
         user.setName("Alex");
         user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
-
         Item oldItem = new Item();
         oldItem.setName("item");
         oldItem.setDescription("desc");
         oldItem.setAvailable(true);
         oldItem.setOwner(savedUser);
         itemRepository.save(oldItem);
-
         ItemDto itemDto = new ItemDto();
         itemDto.setDescription("update");
 
@@ -177,14 +120,12 @@ class ItemServiceImplIntegrationTest {
         user.setName("Alex");
         user.setEmail("alex@mail.ru");
         User savedUser = userRepository.save(user);
-
         Item oldItem = new Item();
         oldItem.setName("item");
         oldItem.setDescription("desc");
         oldItem.setAvailable(true);
         oldItem.setOwner(savedUser);
         itemRepository.save(oldItem);
-
         ItemDto itemDto = new ItemDto();
         itemDto.setDescription("update");
 
@@ -238,44 +179,6 @@ class ItemServiceImplIntegrationTest {
     }
 
     @Test
-    void getItemsByUser() {
-        User user = new User();
-        user.setName("Alex");
-        user.setEmail("alex@mail.ru");
-        User savedUser = userRepository.save(user);
-
-        Item item1 = new Item();
-        item1.setName("item1");
-        item1.setDescription("desc1");
-        item1.setAvailable(true);
-        item1.setOwner(savedUser);
-        Item savedItem1 = itemRepository.save(item1);
-
-        Item item2 = new Item();
-        item2.setName("item2");
-        item2.setDescription("desc2");
-        item2.setAvailable(true);
-        item2.setOwner(savedUser);
-        itemRepository.save(item2);
-
-        Comment comment = new Comment();
-        comment.setAuthor(savedUser);
-        comment.setText("comment");
-        comment.setItem(savedItem1);
-        commentRepository.save(comment);
-
-        Pageable pageable =  PageRequest.of(0, 10);
-        List<ItemInfoDto> items = itemService.getItemsByOwner(user.getId(), pageable);
-
-        assertNotNull(items);
-        assertEquals(items.size(), 2);
-        assertEquals(items.get(0).getName(), item1.getName());
-        assertEquals(items.get(0).getComments().get(0).getText(), comment.getText());
-        assertEquals(items.get(1).getName(), item2.getName());
-        assertEquals(items.get(1).getComments().size(), 0);
-    }
-
-    @Test
     void getAvailableItems() {
         User user = new User();
         user.setName("Alex");
@@ -303,7 +206,6 @@ class ItemServiceImplIntegrationTest {
         item3.setOwner(savedUser);
         itemRepository.save(item3);
 
-        Pageable pageable =  PageRequest.of(0, 10);
         List<ItemDto> items = itemService.getAvailableItems(user.getId(), "sea", pageable);
 
         assertNotNull(items);

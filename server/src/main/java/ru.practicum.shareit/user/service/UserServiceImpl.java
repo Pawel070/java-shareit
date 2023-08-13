@@ -3,14 +3,16 @@ package ru.practicum.shareit.user.service;
 import static java.util.stream.Collectors.toList;
 
 import javax.transaction.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.expections.ConflictException;
 import ru.practicum.shareit.expections.NotFoundException;
 import ru.practicum.shareit.user.UserMapper;

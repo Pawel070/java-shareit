@@ -62,7 +62,7 @@ class BookingControllerTest {
         owner = new User(2L, "owner", "owner@mail.ru");
         item = new Item(1L, "item", "desc", true, owner, null);
         userDto = new UserDto(1L, "user", "user@mail.ru");
-        itemDto = new ItemDto(1L, "item", "desc", true, owner, 0);
+        itemDto = new ItemDto(1L, "item", "desc", true, owner, null);
         bookingModelDto = new BookingModelDto(
                 1L,
                 LocalDateTime.now().plusHours(1),

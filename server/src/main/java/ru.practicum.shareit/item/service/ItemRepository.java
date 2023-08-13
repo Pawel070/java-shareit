@@ -13,7 +13,7 @@ import ru.practicum.shareit.item.model.Item;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    void deleteById(Long id);
+    //void deleteById(Long id);
 
     List<Item> findByOwner_Id(Long userId, Pageable pageable);
 
