@@ -3,31 +3,28 @@ package ru.practicum.shareit.booking.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
+import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
@@ -107,7 +104,6 @@ class BookingServiceImplTest {
 
     @Test
     void createBookingTest() {
-
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
         when(userRepository.findById(2L)).thenReturn(Optional.of(owner));
         when(bookingRepository.save(any())).thenReturn(booking);
@@ -509,5 +505,94 @@ class BookingServiceImplTest {
         assertThrows(Exception.class,
                 () -> bookingService.isCheckFromSize(-2, 0));
     }
+/*
+        @Test
+    void update() {
+        User owner = User.builder()
+                .id(1L)
+                .name("User1")
+                .email("user1@test.ru")
+                .build();
 
+        Item item = Item.builder()
+                .id(1L)
+                .name("item")
+                .description("newItem")
+                .available(true)
+                .owner(owner)
+                .build();
+
+        Booking booking = Booking.builder()
+                .id(1L)
+                .item(item)
+                .status(Status.WAITING)
+                .booker(owner)
+                .start(LocalDateTime.now().plusSeconds(1))
+                .end(LocalDateTime.now().plusSeconds(2))
+                .build();
+
+ //       when(userRepository.findById(1L))
+ //               .thenReturn(Optional.of(owner));
+  //      when(bookingRepository.findById(1L))
+ //               .thenReturn(Optional.of(booking));
+ //       when(itemRepository.findById(1L))
+  //              .thenReturn(Optional.of(item));
+  //      when(bookingRepository.getById(1L))
+  //              .thenReturn(booking);
+ //       Mockito.doNothing().when(bookingRepository).approvedBooking(Status.APPROVED, 1L);
+        BookingModelDto ans = bookingService.update(1L, 1L, true);
+        assertThat(ans.getStatus(), is(Status.APPROVED));
+    }
+
+    @Test
+    public void updateBookingTest() {
+      //  when(bookingRepository..findByIdAndOwnerId(anyLong(), anyLong())).thenReturn(booking);
+      //  when(bookingRepository.save(any())).thenReturn(booking);
+
+        BookingInfoDto bookingResponseDto = BookingMapper.toBookingInfoDto(booking);
+        BookingModelDto bookingResponseDto1 = bookingService.update(booking.getId(),
+                user.getId(), true);
+
+        assertNotNull(bookingResponseDto1);
+        assertEquals(bookingResponseDto.getId(), bookingResponseDto1.getId());
+        assertEquals(bookingResponseDto.getStart(), bookingResponseDto1.getStart());
+        assertEquals(bookingResponseDto.getEnd(), bookingResponseDto1.getEnd());
+    //    Assertions.assertEquals(Status.APPROVED, bookingResponseDto1..getStatus());
+    }
+
+    @Test
+    public void approveButRejectBookingTest() {
+        when(bookingRepository.findByIdAndOwnerId(anyLong(), anyLong())).thenReturn(booking);
+        when(bookingRepository.save(any())).thenReturn(booking);
+        BookingResponseDto bookingResponseDto = BookingMapper.toBookingResponseDto(booking);
+        BookingResponseDto bookingResponseDto1 = bookingService.approveBooking(userBooker.getId(),
+                bookingRequest.getId(), false);
+
+        assertNotNull(bookingResponseDto1);
+        assertEquals(bookingResponseDto.getId(), bookingResponseDto1.getId());
+        assertEquals(bookingResponseDto.getStart(), bookingResponseDto1.getStart());
+        assertEquals(bookingResponseDto.getEnd(), bookingResponseDto1.getEnd());
+        Assertions.assertEquals(Status.REJECTED, bookingResponseDto1.getStatus());
+    }
+
+    @Test
+    public void approveBooking_WhenBookingApprovedTest() {
+        booking.setStatus(Status.APPROVED);
+        when(bookingRepository.findByIdAndOwnerId(anyLong(), anyLong())).thenReturn(booking);
+
+        ValidateException e = assertThrows(ValidateException.class,
+                () -> bookingService.approveBooking(userBooker.getId(), bookingRequest.getId(), true));
+        assertEquals("Статус бронирования изменить нельзя", e.getMessage());
+    }
+
+    @Test
+    public void approveBooking_WhenBookingNotFoundTest() {
+        long bookingId = 4L;
+        when(bookingRepository.findByIdAndOwnerId(bookingId, userOwner.getId()))
+                .thenThrow(new NotFoundException("Не найдено бронирование с id " + bookingId));
+
+        NotFoundException e = assertThrows(NotFoundException.class,
+                () -> bookingService.approveBooking(userOwner.getId(), bookingId, true));
+        assertEquals("Не найдено бронирование с id " + bookingId, e.getMessage());
+    }*/
 }

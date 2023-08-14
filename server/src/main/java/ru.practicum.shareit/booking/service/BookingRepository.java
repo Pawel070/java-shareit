@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,11 @@ import ru.practicum.shareit.booking.model.Status;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+
+    @Modifying
+    @Query(value = "update Booking b set b.status = :status where b.id = :id")
+    void approvedBooking(Status status, Long id);
+
 
     List<Booking> findAllByBooker_IdOrderByStartDesc(Long userId, Pageable pageable);
 
