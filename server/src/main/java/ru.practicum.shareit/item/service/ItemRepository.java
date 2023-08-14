@@ -25,4 +25,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> searchAvailableItems(@Param("text") String text, Pageable pageable);
 
     List<Item> findAllByRequest_IdOrderByIdDesc(Long userId);
+
+    List<Item> findAllByOwnerId(long ownerId, Pageable pageable);
 }

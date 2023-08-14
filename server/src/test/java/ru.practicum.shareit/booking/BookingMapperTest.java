@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.practicum.shareit.booking.BookingMapper.*;
 import static ru.practicum.shareit.booking.BookingMapper.bookingQuerytDto;
 
 import java.time.LocalDateTime;

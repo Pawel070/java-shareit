@@ -77,67 +77,74 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+
+    private HashMap<Long, BookingInfoDto> getNextBookingsForItemList(List<Long> itemsIds, Long userId, LocalDateTime date) {
+        List<Booking> nextBookingsItems = bookingRepository.findByItemIdIn(itemsIds, Sort.by("start").ascending());
+        HashMap<Long, BookingInfoDto> itemsBookings = new HashMap<>();
+        for (Booking booking : nextBookingsItems) {
+            if (!itemsBookings.containsKey(booking.getItem().getId())) {
+                if (booking.getStart().isAfter(date)
+                        && booking.getItem().getOwner().getId().equals(userId)
+                        && booking.getStatus().equals(Status.APPROVED)) {
+                    itemsBookings.put(booking.getItem().getId(), BookingMapper.toBookingInfoDto(booking));
+                }
+            }
+        }
+        return itemsBookings;
+    }
+
+    private HashMap<Long, BookingInfoDto> getLastBookingsForItemList(List<Long> itemsIds, Long userId, LocalDateTime date) {
+        List<Booking> lastBookingsItems = bookingRepository.findByItemIdIn(itemsIds, Sort.by("end").descending());
+        HashMap<Long, BookingInfoDto> itemsBookings = new HashMap<>();
+        for (Booking booking : lastBookingsItems) {
+            if (!itemsBookings.containsKey(booking.getItem().getId())) {
+                if (booking.getStart().isBefore(date)
+                        && booking.getItem().getOwner().getId().equals(userId)
+                        && booking.getStatus().equals(Status.APPROVED)) {
+                    itemsBookings.put(booking.getItem().getId(), BookingMapper.toBookingInfoDto(booking));
+                }
+            }
+        }
+        return itemsBookings;
+    }
+
+    private HashMap<Long, List<CommentDto>> getCommentsForAllItems(List<Long> itemsIds) {
+        List<Comment> allComments = commentRepository.findByItemIdIn(itemsIds);
+        List<CommentDto> allCommentsDto = allComments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
+        HashMap<Long, List<CommentDto>> commentsForAllItems = new HashMap<>();
+        for (CommentDto commentDto : allCommentsDto) {
+            Long id = commentDto.getItemId();
+            if (!commentsForAllItems.containsKey(id)) {
+                commentsForAllItems.put(id, new ArrayList<>());
+            }
+            commentsForAllItems.get(id).add(commentDto);
+        }
+        return commentsForAllItems;
+    }
+
     @Override
     public List<ItemInfoDto> getItemsByOwner(Long id, Pageable pageable) {
-        Map<Long, Booking> lastBookings = new HashMap<>();
-        Map<Long, Booking> nextBookings = new HashMap<>();
-        Map<Long, List<Comment>> comments = new HashMap<>();
-        LocalDateTime now = LocalDateTime.now();
-        log.info("ItemServiceImpl: Получен GET-запрос на получение списка вещей владельца с УИН {}", id);
-        if (!userRepository.existsById(id)) {
-            throw new NotFoundException("ItemServiceImpl getItemById: Вещь с УИН " + id + " не существует.");
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Отсутствует пользователь c id " + id));
+        List<Item> items = repository.findAllByOwnerId(id, pageable);
+        if (items.isEmpty()) {
+            return Collections.emptyList();
         }
-        List<Item> items = repository.findByOwner_Id(id, pageable);
-        List<Long> itemsId = items
-                .stream()
-                .map(Item::getId)
-                .collect(Collectors.toList());
-        List<Booking> allLastBookings = bookingRepository
-                .findFirstByItem_IdInAndItem_Owner_IdAndStartIsBefore(
-                        itemsId,
-                        id,
-                        now,
-                        SORT_DESC);
-        List<Booking> allNextBookings = bookingRepository
-                .findFirstByItem_IdInAndItem_Owner_IdAndStartIsAfterAndStatusIsNotAndStatusIsNot(
-                        itemsId,
-                        id,
-                        now,
-                        Status.CANCELED,
-                        Status.REJECTED,
-                        SORT_ASC);
-        itemsId.forEach(signature -> {
-            allLastBookings.stream()
-                    .filter(booking -> booking.getItem().getId().equals(signature))
-                    .findFirst()
-                    .ifPresent(booking -> {
-                        lastBookings.put(signature, booking);
-                    });
-            allNextBookings.stream()
-                    .filter(booking -> {
-                        return booking.getItem().getId().equals(signature);
-                    })
-                    .findFirst()
-                    .ifPresent((Booking booking) -> {
-                        nextBookings.put(signature, booking);
-                    });
-            List<Comment> allComments = commentRepository.findAllByItemsId(itemsId);
-            List<Comment> valueOfComments = allComments.stream()
-                    .filter(comment -> Objects.equals(comment.getAuthor().getId(), signature) && signature != null)
-                    .collect(toList());
-            comments.put(signature, valueOfComments);
-        });
-        List<ItemInfoDto> collect = items.stream()
-                .map(item -> ItemMapper.toItemInfoDto(
-                        item,
-                        BookingMapper.toBookingInfoDto(lastBookings.get(item.getId())),
-                        BookingMapper.toBookingInfoDto(nextBookings.get(item.getId())),
-                        comments.get(item.getId())
-                                .stream()
-                                .map(CommentMapper::toCommentDto)
-                                .collect(toList())))
-                .collect(toList());
-        return collect;
+        LocalDateTime date = LocalDateTime.now();
+        HashMap<Long, BookingInfoDto> nextBookingsForItemList = getNextBookingsForItemList(items.stream()
+                .map(Item::getId).collect(Collectors.toList()), id, date);
+        HashMap<Long, BookingInfoDto> lastBookingsForItemList = getLastBookingsForItemList(items.stream()
+                .map(Item::getId).collect(Collectors.toList()), id, date);
+        HashMap<Long, List<CommentDto>> commentsForAllItems = getCommentsForAllItems(items.stream()
+                .map(Item::getId).collect(Collectors.toList()));
+        List<ItemInfoDto> itemBookingAndCommentDtoList = new ArrayList<>();
+        for (Item item : items) {
+            itemBookingAndCommentDtoList.add(ItemMapper.toItemInfoDto(item,
+                    lastBookingsForItemList.get(item.getId()),
+                    nextBookingsForItemList.get(item.getId()),
+                    commentsForAllItems.get(item.getId()) == null ? new ArrayList<>() : commentsForAllItems.get(item.getId())));
+        }
+        return itemBookingAndCommentDtoList;
+
     }
 
     @Override

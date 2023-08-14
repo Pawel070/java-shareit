@@ -89,6 +89,7 @@ class ItemServiceImplTest {
     ItemRequestDto itemRequestDto;
     ItemRequest itemRequest;
     Item item;
+    Comment comment;
 
     @BeforeEach
     void beforeEach() {
@@ -108,6 +109,7 @@ class ItemServiceImplTest {
                 item1, user2, APPROVED);
         booking2 = new Booking(2L, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2),
                 item1, user2, APPROVED);
+        comment = new Comment(1L, "text", item, user2, LocalDateTime.now());
     }
 
     @Test
@@ -297,8 +299,8 @@ class ItemServiceImplTest {
         log.info("res > {}", res);
         assertNotNull(res);
         itemService.deleteItemsByUser(res.getOwner().getId());
-        assertThrows(NotFoundException.class,
-                () -> itemService.getItemsByOwner(res.getOwner().getId(), pageable));
+        log.info(" > {}", itemService.getItemsByOwner(user1.getId(), pageable));
+        assertEquals(itemService.getItemsByOwner(user1.getId(), pageable).toString(), "[]");
     }
 
     @Test
@@ -334,5 +336,24 @@ class ItemServiceImplTest {
         assertThrows(Exception.class,
                 () -> itemService.isCheckItemOwner(100L, 200L));
     }
+
+    @Test
+    public void getAllItemsByUserTest() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(itemRepository.findAllByOwnerId(anyLong(), any())).thenReturn(List.of(item));
+        when(commentRepository.findByItemIdIn(anyList())).thenReturn(List.of(comment));
+        when(bookingRepository.findByItemIdIn(anyList(), any())).thenReturn(List.of(booking1, booking2));
+        List<ItemInfoDto> items = itemService.getItemsByOwner(2L, pageable);
+        ItemInfoDto itemTest = items.get(0);
+        assertNotNull(items);
+        log.info(" items {} ======= > {} ", items, itemTest);
+        assertEquals(items.size(), 1);
+        assertEquals(itemTest.getId(), 10L);
+        assertEquals(itemTest.getName(), "item10");
+        assertEquals(itemTest.getDescription(), "des10");
+        assertEquals(itemTest.getAvailable(),  true);
+        assertEquals(itemTest.getComments().get(0).getId(), comment.getId());
+    }
+
 
 }

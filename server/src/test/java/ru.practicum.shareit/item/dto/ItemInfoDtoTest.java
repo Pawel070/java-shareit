@@ -13,8 +13,6 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
 @JsonTest

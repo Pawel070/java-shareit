@@ -17,4 +17,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("SELECT c FROM Comment c WHERE c.item.id IN :itemsId ORDER BY c.id ASC ")
     List<Comment> findAllByItemsId(@Param("itemsId") List<Long> itemsId);
+
+    List<Comment> findAllByItemId(Long itemId);
+
+    List<Comment> findByItemIdIn(List<Long> ids);
 }
