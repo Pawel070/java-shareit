@@ -18,10 +18,10 @@ import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
-@Validated
+//@Validated
 public class BookingController {
     private final BookingClient bookingClient;
 
@@ -56,17 +56,6 @@ public class BookingController {
                                              @PathVariable Long bookingId) {
         log.info("Получение бронирования {}, userId {} ", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
-    }
-
-    @GetMapping
-    public ResponseEntity<Object> getBookingsByUserId(@RequestHeader(USER_ID) long userId,
-                                                      @RequestParam(name = "state", defaultValue = "all") String stateParam,
-                                                      @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                      @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-        log.info("Получение бронирования с state {}, userId {}, from {}, size {} ", stateParam, userId, from, size);
-        return bookingClient.getAllBookingsByUserId(userId, state, from, size);
     }
 
     @GetMapping("/owner")
