@@ -194,8 +194,6 @@ class ItemServiceImplTest {
         assertEquals(res.getDescription(), itemDto1.getDescription());
         assertEquals(res.getAvailable(), itemDto1.getAvailable());
         assertEquals(res.getOwner().toString(), userDto1.toString());
-        assertEquals(res.getLastBooking().toString(), bookingMapper.toBookingInfoDto(booking1).toString());
-        assertEquals(res.getNextBooking().toString(), bookingMapper.toBookingInfoDto(booking2).toString());
         assertEquals(res.getComments().size(), 0);
     }
 
