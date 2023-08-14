@@ -1,19 +1,21 @@
 package ru.practicum.shareit.item.service;
 
 import static java.util.stream.Collectors.toList;
-import static ru.practicum.shareit.Constants.SORT_ASC;
-import static ru.practicum.shareit.Constants.SORT_DESC;
 
 import javax.transaction.Transactional;
+
 import java.time.LocalDateTime;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -77,6 +79,33 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+
+    private BookingInfoDto getLastBooking(Long itemId, Long userId, LocalDateTime date) {
+        List<Booking> lastBookings = bookingRepository.findByItemId(itemId, Sort.by("end").descending());
+        for (Booking booking : lastBookings) {
+            if (booking.getStart().isBefore(date)
+                    && booking.getItem().getOwner().getId().equals(userId)
+                    && booking.getStatus().equals(Status.APPROVED))
+                return BookingMapper.toBookingInfoDto(booking);
+        }
+        return null;
+    }
+
+    private BookingInfoDto getNextBooking(Long itemId, Long userId, LocalDateTime date) {
+        List<Booking> nextBookings = bookingRepository.findByItemId(itemId, Sort.by("start").ascending());
+        for (Booking booking : nextBookings) {
+            if (booking.getStart().isAfter(date)
+                    && booking.getItem().getOwner().getId().equals(userId)
+                    && booking.getStatus().equals(Status.APPROVED))
+                return BookingMapper.toBookingInfoDto(booking);
+        }
+        return null;
+    }
+
+    private List<CommentDto> getComments(Long itemId) {
+        List<Comment> comments = commentRepository.findAllByItemId(itemId);
+        return comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
+    }
 
     private HashMap<Long, BookingInfoDto> getNextBookingsForItemList(List<Long> itemsIds, Long userId, LocalDateTime date) {
         List<Booking> nextBookingsItems = bookingRepository.findByItemIdIn(itemsIds, Sort.by("start").ascending());
@@ -146,7 +175,7 @@ public class ItemServiceImpl implements ItemService {
         return itemBookingAndCommentDtoList;
 
     }
-
+/*
     @Override
     public ItemInfoDto getItemById(Long id, Long userId) {
         log.info("ItemServiceImpl getItemById: Получен GET-запрос на получение вещи с УИН {}", id);
@@ -173,11 +202,28 @@ public class ItemServiceImpl implements ItemService {
                         SORT_ASC));
         return ItemMapper.toItemInfoDto(item, lastBooking, nextBooking, comments);
     }
+*/
+
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Override
+    public ItemInfoDto getItemById(Long id, Long userId) {
+        log.info("ItemServiceImpl getItemById: Получен GET-запрос на получение вещи с УИН {}", id);
+        Item item = repository.findById(id).orElseThrow(() ->
+                new NotFoundException("ItemServiceImpl getItemById: Вещь с УИН " + id + " не существует."));
+        LocalDateTime date = LocalDateTime.now();
+        BookingInfoDto nextBookings = getNextBooking(id, userId, date);
+        BookingInfoDto lastBookings = getLastBooking(id, userId, date);
+        List<CommentDto> allComments = getComments(id);
+        return ItemMapper.toItemInfoDto(item, lastBookings, nextBookings,
+                allComments == null ? new ArrayList<>() : allComments);
+    }
+
 
     @Override
     @Transactional
     public ItemDto update(ItemDto itemDto, Long userId, Long itemId) {
-        log.info("ItemServiceImpl update: Получен PUT-запрос userId > {} на обновление вещи с УИН {}",userId, itemId);
+        log.info("ItemServiceImpl update: Получен PUT-запрос userId > {} на обновление вещи с УИН {}", userId, itemId);
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl update: УИН пользователя неверный."));
         Item oldItem = repository.findById(itemId)
