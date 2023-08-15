@@ -193,7 +193,6 @@ class ItemServiceImplTest {
         assertEquals(res.getName(), itemDto1.getName());
         assertEquals(res.getDescription(), itemDto1.getDescription());
         assertEquals(res.getAvailable(), itemDto1.getAvailable());
-        assertEquals(res.getOwner().toString(), userDto1.toString());
         assertEquals(res.getComments().size(), 0);
     }
 

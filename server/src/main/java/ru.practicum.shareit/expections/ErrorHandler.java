@@ -36,7 +36,7 @@ public class ErrorHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
     public ErrorResponse handleConstraintViolationException(final Exception exception) {
-        log.debug("handleConstraintViolationException Получен статус 400 Internal server error {}", exception.getMessage(), exception);
+        log.debug("handleConstraintViolationException Получен статус 400 {}", exception.getMessage(), exception);
         return new ErrorResponse("http:400 Искомый объект не найден при первичной проверке.", exception.getMessage());
     }
 

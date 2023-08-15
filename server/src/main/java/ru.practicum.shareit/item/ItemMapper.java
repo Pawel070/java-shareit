@@ -64,8 +64,6 @@ public final class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .owner(toUserDto(item.getOwner()))
-                .requestId(item.getRequest() == null ? null : item.getRequest().getId())
                 .lastBooking(lastBooking)
                 .nextBooking(nextBooking)
                 .comments(comments)

@@ -205,8 +205,8 @@ public class ItemServiceImpl implements ItemService {
 */
 
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     @Override
+    @Transactional
     public ItemInfoDto getItemById(Long id, Long userId) {
         log.info("ItemServiceImpl getItemById: Получен GET-запрос на получение вещи с УИН {}", id);
         Item item = repository.findById(id).orElseThrow(() ->
@@ -218,7 +218,6 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toItemInfoDto(item, lastBookings, nextBookings,
                 allComments == null ? new ArrayList<>() : allComments);
     }
-
 
     @Override
     @Transactional
