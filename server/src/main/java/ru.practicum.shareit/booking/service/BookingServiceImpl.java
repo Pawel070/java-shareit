@@ -3,14 +3,16 @@ package ru.practicum.shareit.booking.service;
 import static ru.practicum.shareit.Constants.SORT;
 
 import javax.transaction.Transactional;
+
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,10 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingModelDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.expections.*;
+import ru.practicum.shareit.expections.EntityNotAvailable;
+import ru.practicum.shareit.expections.NotFoundException;
+import ru.practicum.shareit.expections.ServerError;
+import ru.practicum.shareit.expections.StatusErrorException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
