@@ -33,7 +33,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.expections.EntityNotAvailable;
 import ru.practicum.shareit.expections.NotFoundException;
-import ru.practicum.shareit.expections.UnsupportedState;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemRepository;
