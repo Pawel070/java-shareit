@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.expections.BadRequestException;
 
 @Slf4j
 @RestController
@@ -26,7 +27,7 @@ public class BookingController {
                                               @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                               @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+                .orElseThrow(() -> new BadRequestException("Unknown state: " + stateParam));
         log.info("Получение бронирования с state {}, userId {}, from {}, size {} ", stateParam, userId, from, size);
         return bookingClient.getBookings(userId, state, from, size);
     }
@@ -61,7 +62,7 @@ public class BookingController {
                                                        @Positive @RequestParam(name = "size", defaultValue = "10")
                                                        Integer size) {
         BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+                .orElseThrow(() -> new BadRequestException("Unknown state: " + stateParam));
         return bookingClient.getAllBookingsByOwnerId(userId, state, from, size);
     }
 

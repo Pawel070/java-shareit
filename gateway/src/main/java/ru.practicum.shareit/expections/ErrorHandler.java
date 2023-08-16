@@ -61,4 +61,12 @@ public class ErrorHandler {
         return new ErrorResponse(exception.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleException(BadRequestException exception) {
+        log.error("Unknown state: UNSUPPORTED_STATUS", exception);
+        return new ErrorResponse(exception.getMessage());
+    }
+
+
 }
