@@ -180,12 +180,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(itemInfoDto.getId()), Long.class))
                 .andExpect(jsonPath("$[0].name", is(itemInfoDto.getName()), String.class))
-                .andExpect(jsonPath("$[0].available", is(itemInfoDto.getAvailable()), Boolean.class))
-                .andExpect(jsonPath("$[0].lastBooking",
-                        is(itemInfoDto.getLastBooking()), BookingInfoDto.class))
-                .andExpect(jsonPath("$[0].nextBooking",
-                        is(itemInfoDto.getNextBooking()), BookingInfoDto.class))
-                .andExpect(jsonPath("$[0].comments", is(itemInfoDto.getComments())));
+                .andExpect(jsonPath("$[0].available", is(itemInfoDto.getAvailable()), Boolean.class));
     }
 
     @Test

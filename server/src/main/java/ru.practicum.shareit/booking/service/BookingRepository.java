@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,6 +22,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "update Booking b set b.status = :status where b.id = :id")
     void approvedBooking(Status status, Long id);
 
+    List<Booking> findByItemId(Long itemId, Sort sort);
+
+    List<Booking> findByItemIdIn(List<Long> itemsIds, Sort sort);
 
     List<Booking> findAllByBooker_IdOrderByStartDesc(Long userId, Pageable pageable);
 
@@ -55,8 +59,26 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findFirstByItem_IdInAndItem_Owner_IdAndStartIsAfterAndStatusIsNotAndStatusIsNot(
             List<Long> itemsId, Long userId, LocalDateTime start, Status status1, Status status2, Sort sort);
 
-    List<Booking> findByItemId(Long itemId, Sort sort);
+//    Optional<Booking> findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(Long itemId, Status status, LocalDateTime time);
 
-    List<Booking> findByItemIdIn(List<Long> itemsIds, Sort sort);
+//    Optional<Booking> findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(Long itemId, Status status, LocalDateTime time);
+
+    List<Booking> findAllByItem_IdAndStartBeforeOrderByStartDesc(long itemId, LocalDateTime now);
+
+    List<Booking> findAllByItem_IdAndStartAfterOrderByStartDesc(long itemId, LocalDateTime now);
+
+    @Query("select b from Booking b " +
+            "where b.item.id = ?1 and " +
+            "b.item.owner.id = ?2 and " +
+            "b.end < ?3 order by b.start desc")
+    List<Booking> findPastOwnerBookings(long itemId, long ownerId, LocalDateTime now);
+
+    @Query("select b from Booking b " +
+            "where b.item.id = ?1 and " +
+            "b.item.owner.id = ?2 and " +
+            "b.start > ?3 " +
+            "order by b.start desc")
+    List<Booking> findFutureOwnerBookings(long itemId, long ownerId, LocalDateTime now);
+
 
 }

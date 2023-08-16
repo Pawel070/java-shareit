@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import java.time.LocalDateTime;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,9 +23,6 @@ import ru.practicum.shareit.user.model.User;
 //@Mapper(componentModel = "spring", uses = ItemMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ItemMapper {
-
-//    @Mapping(target = "authorName", source = "author.name")
-//    CommentDto toCommentDto(Comment comment);
 
     public static Item toItem(ItemDto itemDto, User owner, ItemRequest request) {
         return Item.builder()
