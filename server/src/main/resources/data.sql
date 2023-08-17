@@ -1,4 +1,4 @@
--- загрузка базы первичными данными
+-- очистка настройка и загрузка базы первичными данными
 
 delete from ITEMS where ITEMS.ID > 0;
 delete from USERS where USERS.ID > 0;
