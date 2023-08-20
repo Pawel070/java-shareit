@@ -105,29 +105,36 @@ public class ItemServiceImpl implements ItemService {
         Item item = repository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl getItemById: Вещь с УИН " + itemId + " не существует."));
         log.info("\nfindById(itemId) ---> {}, userId {} ", item, userId);
+
         List<Booking> bookingsL = bookingRepository.findPastOwnerBookings(item.getId(), userId, localDateTime);
+        List<Booking> bookingsN = bookingRepository.findFutureOwnerBookings(item.getId(), userId, localDateTime);
         log.info("\nfindPastOwnerBookings ===> bookingsL {} =====> {} ", bookingsL, bookingsL.size());
-        //  lastBooking = bookingsL.stream().min(Comparator.comparing(Booking::getEnd)).orElse(null);
-        for (Booking booking : bookingsL) {
-            if (booking.getStart().isBefore(LocalDateTime.now())
+
+           lastBooking = bookingsL.stream().min(Comparator.comparing(Booking::getStart)).orElse(null);
+           nextBooking = bookingsN.stream().max(Comparator.comparing(Booking::getStart)).orElse(null);
+
+ /*       for (Booking booking : bookingsL) {
+            if (booking.getStart().isBefore(localDateTime)
                     && booking.getItem().getOwner().getId().equals(userId)
                     && booking.getStatus().equals(Status.APPROVED))
                 lastBooking = booking;
+            break;
         }
-        List<Booking> bookingsN = bookingRepository.findFutureOwnerBookings(item.getId(), userId, localDateTime);
         log.info("\nfindFutureOwnerBookings ===> bookingsN {} =====> {} ", bookingsN, bookingsN.size());
-//        nextBooking = bookingsN.stream().max(Comparator.comparing(Booking::getStart)).orElse(null);
         for (Booking booking : bookingsN) {
-            if (booking.getStart().isAfter(LocalDateTime.now())
+            if (booking.getStart().isAfter(localDateTime)
                     && booking.getItem().getOwner().getId().equals(userId)
                     && booking.getStatus().equals(Status.APPROVED))
                 nextBooking = booking;
+            break;
         }
-        log.info("\n---> lastBooking {} \n---> nextBooking {} ", lastBooking, nextBooking);
+  */      log.info("\n---> lastBooking {} \n---> nextBooking {} ", lastBooking, nextBooking);
         List<CommentDto> commentsDto = commentRepository.findAllByItem_IdOrderByIdAsc(item.getId()).stream()
                 .map(CommentMapper::toCommentDto).collect(Collectors.toList());
+
         itemInfoDto = ItemMapper.toItemInfoDto(item, null, null, Collections.emptyList());
-//        itemInfoDto = ItemMapper.toItemInfoDto(item, lastBooking, nextBooking, commentsDto);
+//        itemInfoDto = ItemMapper.toItemInfoDto(item, toBookingInfoDto(lastBooking), toBookingInfoDto(nextBooking), commentsDto);
+
         if (lastBooking != null) {
             itemInfoDto.setLastBooking(toBookingInfoDto(lastBooking));
         }

@@ -72,27 +72,27 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
 //    List<Booking> findAllByItem_IdAndStartAfterOrderByStartDesc(long itemId, LocalDateTime now);
 
-    List<Booking> findAllByItem_IdAndStartBefore(long itemId, LocalDateTime now);
+    List<Booking> findAllByItem_IdAndStartBefore(Long itemId, LocalDateTime now);
 
-    List<Booking> findAllByItem_IdAndEndAfter(long itemId, LocalDateTime now);
+    List<Booking> findAllByItem_IdAndEndAfter(Long itemId, LocalDateTime now);
 
 
-    List<Booking> findAllByBookerIdAndStartAfterOrderByStartDesc(long bookerId, LocalDateTime now);
+    List<Booking> findAllByBookerIdAndStartAfterOrderByStartDesc(Long bookerId, LocalDateTime now);
 
-    List<Booking> findAllByItemOwnerIdAndStartAfterOrderByStartDesc(long ownerId, LocalDateTime now);
+    List<Booking> findAllByItemOwnerIdAndStartAfterOrderByStartDesc(Long ownerId, LocalDateTime now);
 
     @Query("select b from Booking b " +
             "where b.item.id = ?1 and " +
             "b.item.owner.id = ?2 and " +
-            "b.end < ?3 order by b.start desc")
-    List<Booking> findPastOwnerBookings(long itemId, long ownerId, LocalDateTime now);
+            "b.end < ?3 order by b.start asc")
+    List<Booking> findPastOwnerBookings(Long itemId, Long ownerId, LocalDateTime now);
 
     @Query("select b from Booking b " +
             "where b.item.id = ?1 and " +
             "b.item.owner.id = ?2 and " +
             "b.start > ?3 " +
-            "order by b.start desc")
-    List<Booking> findFutureOwnerBookings(long itemId, long ownerId, LocalDateTime now);
+            "order by b.start asc")
+    List<Booking> findFutureOwnerBookings(Long itemId, Long ownerId, LocalDateTime now);
 
 
 }
