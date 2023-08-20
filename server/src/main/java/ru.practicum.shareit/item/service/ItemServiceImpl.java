@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +36,7 @@ import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 @Slf4j
+@Data
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
@@ -139,7 +141,7 @@ public class ItemServiceImpl implements ItemService {
         return itemInfoDto;
     }
 
-    private List<ItemInfoDto> getItemDto(List<Item> items) {
+    public List<ItemInfoDto> getItemDto(List<Item> items) {
         List<ItemInfoDto> list = new ArrayList<>();
         LocalDateTime localDateTime = LocalDateTime.now();
         ItemInfoDto itemInfoDto;
@@ -164,7 +166,7 @@ public class ItemServiceImpl implements ItemService {
         return list;
     }
 
-    private Booking bookingLast(Item item, LocalDateTime localDateTime) {
+    public Booking bookingLast(Item item, LocalDateTime localDateTime) {
         log.info("item {} ", item);
         List<Booking> bookings;
         Booking booking = null;
@@ -178,7 +180,7 @@ public class ItemServiceImpl implements ItemService {
         return booking;
     }
 
-    private Booking bookingNext(Item item, LocalDateTime localDateTime) {
+    public Booking bookingNext(Item item, LocalDateTime localDateTime) {
         log.info("item {} ", item);
         List<Booking> bookings;
         Booking booking = null;
@@ -192,7 +194,7 @@ public class ItemServiceImpl implements ItemService {
         return booking;
     }
 
-    private List<CommentDto> commentDto(Item item) {
+    public List<CommentDto> commentDto(Item item) {
         log.info("item {} ", item);
         return commentRepository.findAllByItem_IdOrderByIdAsc(item.getId())
                 .stream()

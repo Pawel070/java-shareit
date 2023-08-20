@@ -17,7 +17,7 @@ class ErrorResponseTest {
         private final ErrorHandler errorHandler;
 
     @Test
-    void getError() {
+    void errorResponseTest() {
         ErrorResponse error = errorHandler.handleServerError(new ServerError("message"));
         Assertions.assertEquals(error.getError(), "http:500 Ошибка на сервере.");
     }

@@ -1,6 +1,5 @@
 package ru.practicum.shareit.expections;
 
-
 import lombok.RequiredArgsConstructor;
 
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +17,7 @@ class ValidationExceptionTest {
     private final ErrorHandler errorHandler;
 
     @Test
-    void getMessage() {
+    void validationExceptionTest() {
         ErrorResponse error = errorHandler.handleServerError(new ServerError("message"));
         Assertions.assertEquals(error.getError(), "http:500 Ошибка на сервере.");
     }
