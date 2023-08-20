@@ -6,10 +6,10 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
+import javax.xml.bind.ValidationException;
 import java.time.LocalDateTime;
 
 import java.util.List;
@@ -486,8 +486,8 @@ class BookingServiceImplTest {
 
     @Test
     void getAllBookingByOwner_wrongState() {
- //       assertThrows(UnsupportedState.class,
- //               () -> bookingService.getAllBookingByOwner(owner.getId(), "MEOW", pageable));
+        //       assertThrows(UnsupportedState.class,
+        //               () -> bookingService.getAllBookingByOwner(owner.getId(), "MEOW", pageable));
     }
 
     @Test
@@ -506,6 +506,49 @@ class BookingServiceImplTest {
     void isCheckFromSizeNoFromSizeTest() {
         assertThrows(Exception.class,
                 () -> bookingService.isCheckFromSize(-2, 0));
+    }
+
+    @Test
+    void update() {
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
+        String error = String.format("BookingServiceImpl: Пользователь с УИН  1 не является владельцем вещи 1", booking.getId());
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> bookingService.update(booking.getId(), 1L, false));
+        assertEquals(error, exception.getMessage());
+        when(bookingRepository.save(any())).thenReturn(booking);
+        assertEquals(booking.getId(), bookingModelDto.getId());
+    }
+    @Test
+    void updateUserBad() {
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
+        String error = String.format("BookingServiceImpl: Пользователь с УИН  0 не является владельцем вещи 1", booking.getId());
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> bookingService.update(booking.getId(), 0L, false));
+        assertEquals(error, exception.getMessage());
+        when(bookingRepository.save(any())).thenReturn(booking);
+        assertEquals(booking.getId(), bookingModelDto.getId());
+    }
+
+    @Test
+    void updateBookingBad() {
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
+        String error = String.format("BookingServiceImpl: Пользователь с УИН  1 не является владельцем вещи 0", booking.getId());
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> bookingService.update(0L, 1L, false));
+        assertEquals(error, exception.getMessage());
+        when(bookingRepository.save(any())).thenReturn(booking);
+        assertEquals(booking.getId(), bookingModelDto.getId());
+    }
+
+    @Test
+    void updateApprovedBad() {
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
+        String error = String.format("BookingServiceImpl: Пользователь с УИН  1 не является владельцем вещи 1", booking.getId());
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> bookingService.update(booking.getId(), 1L, null));
+        assertEquals(error, exception.getMessage());
+        when(bookingRepository.save(any())).thenReturn(booking);
+        assertEquals(booking.getId(), bookingModelDto.getId());
     }
 
 }

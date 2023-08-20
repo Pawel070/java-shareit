@@ -18,7 +18,7 @@ class ValidationExceptionTest {
     private final ErrorHandler errorHandler;
 
     @Test
-    void getMessage() {
+    void validationExceptionTest() {
         ErrorResponse error = errorHandler.handleServerError(new ServerError("message"));
         Assertions.assertEquals(error.getError(), "http:500 Ошибка на сервере.");
     }

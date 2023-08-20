@@ -73,4 +73,12 @@ public class ItemController {
         log.info("User {} добавил комментарий к item {} ", userId, itemId);
         return itemClient.addComment(itemId, userId, commentDto);
     }
+
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<Object> deleteItem(@RequestHeader(USER_ID) Long userId,
+                                             @PathVariable Long itemId) {
+        log.info("Удаление item {} ", itemId);
+        return itemClient.deleteItem(userId, itemId);
+    }
+
 }

@@ -1,8 +1,10 @@
 package ru.practicum.shareit.expections;
 
 import lombok.RequiredArgsConstructor;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ErrorHandlerTest {
 
-        private final ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler;
 
     @Test
     void notFoundExceptionTest() {
@@ -53,6 +55,18 @@ class ErrorHandlerTest {
     @Test
     void entityNotAvailable() {
         ErrorResponse error = errorHandler.entityNotAvailable(new EntityNotAvailable("message"));
+        Assertions.assertEquals(error.getError(), "message");
+    }
+
+    @Test
+    void handleException() {
+        ErrorResponse error = errorHandler.handleException(new BadRequestException("message"));
+        Assertions.assertEquals(error.getError(), "message");
+    }
+
+    @Test
+    void handleStatusErrorException() {
+        ErrorResponse error = errorHandler.handleStatusErrorException(new StatusErrorException("message"));
         Assertions.assertEquals(error.getError(), "message");
     }
 
