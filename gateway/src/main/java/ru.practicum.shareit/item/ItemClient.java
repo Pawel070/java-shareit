@@ -58,4 +58,9 @@ public class ItemClient extends BaseClient {
     public ResponseEntity<Object> addComment(Long itemId, Long userId, CommentDto commentDto) {
         return post("/" + itemId + "/comment", userId, commentDto);
     }
+
+    public ResponseEntity<Object> deleteItem(long userId, long itemId) {
+        return delete("/" + itemId, userId);
+    }
+
 }

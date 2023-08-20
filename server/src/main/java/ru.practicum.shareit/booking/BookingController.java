@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import static ru.practicum.shareit.Constants.USER_ID;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -49,8 +50,8 @@ public class BookingController {
     public List<BookingModelDto> getBookingsOwner(
             @RequestHeader(USER_ID) Long userId,
             @RequestParam(value = "state", defaultValue = "ALL") String state,
-            @RequestParam(value = "from", defaultValue = "0") int from,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "from", defaultValue = "0") @Min(0) int from,
+            @RequestParam(value = "size", defaultValue = "10") @Min(0) int size) {
         service.isCheckFromSize(from, size);
         log.info("BookingController getBookings: Получен GET-запрос с параметром STATE = {} from = {} size = {} " +
                 "списка бронирований пользователя с УИН {}", state, from, size, userId);
@@ -61,8 +62,8 @@ public class BookingController {
     public List<BookingModelDto> getAllBookingByOwner(
             @RequestHeader(USER_ID) Long userId,
             @RequestParam(value = "state", defaultValue = "ALL") String state,
-            @RequestParam(value = "from", defaultValue = "0") int from,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "from", defaultValue = "0") @Min(0) int from,
+            @RequestParam(value = "size", defaultValue = "10") @Min(0) int size) {
         service.isCheckFromSize(from, size);
         log.info("BookingController getBookingsOwner: Получен GET-запрос с параметром STATE = {} from = {} size = {} на получение списка " +
                 "бронирований вещей пользователя с УИН {}", state, from, size, userId);

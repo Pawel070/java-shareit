@@ -44,6 +44,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingModelDto create(BookingDto bookingDto, Long bookerId) {
         log.info("BookingServiceImpl: isExistUser - create {} - {} ", bookingDto, bookerId);
+        LocalDateTime localDateTime = LocalDateTime.now();
         Long itemId = bookingDto.getItemId();
         Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Вещь с УИН " + itemId + " не существует."));
@@ -51,8 +52,11 @@ public class BookingServiceImpl implements BookingService {
             throw new EntityNotAvailable("BookingServiceImpl: Вещь с УИН " +
                     bookingDto.getItemId() + " не может быть забронирована.");
         }
-        if (bookingDto.getEnd() == null || bookingDto.getStart() == null) {
-            throw new EntityNotAvailable("BookingServiceImpl: Неопределённое время бронирования.");
+       if (bookingDto.getEnd() == null || bookingDto.getStart() == null ||
+                bookingDto.getStart().isBefore(localDateTime) ||
+                bookingDto.getEnd().isBefore(bookingDto.getStart()) ||
+                bookingDto.getEnd().isEqual(bookingDto.getStart())) {
+            throw new EntityNotAvailable("BookingServiceImpl: Некорректное время бронирования.");
         }
         if (!bookingDto.getEnd().isAfter(bookingDto.getStart())) {
             throw new EntityNotAvailable("BookingServiceImpl: Время окончания бронирования не может быть раньше времени начала бронирования.");
