@@ -6,10 +6,10 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-import javax.xml.bind.ValidationException;
 import java.time.LocalDateTime;
 
 import java.util.List;
@@ -518,6 +518,7 @@ class BookingServiceImplTest {
         when(bookingRepository.save(any())).thenReturn(booking);
         assertEquals(booking.getId(), bookingModelDto.getId());
     }
+
     @Test
     void updateUserBad() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));

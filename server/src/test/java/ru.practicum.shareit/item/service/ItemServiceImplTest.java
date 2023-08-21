@@ -1,23 +1,32 @@
 package ru.practicum.shareit.item.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+
 import static ru.practicum.shareit.booking.model.Status.APPROVED;
 
 import java.time.LocalDateTime;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingRepository;
@@ -237,7 +246,7 @@ class ItemServiceImplTest {
         booking1.setBooker(user2);
         Booking booking = null;
         when(bookingRepository.save(any())).thenReturn(booking1);
-       // when(commentRepository.save(any())).thenReturn(comment);
+        // when(commentRepository.save(any())).thenReturn(comment);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
         when(bookingRepository.findFirstByBooker_IdAndItem_Id(1L, 1L)).thenReturn(booking);
@@ -335,11 +344,13 @@ class ItemServiceImplTest {
                 () -> itemService.isCheckItemOwner(100L, 200L));
         //assertFalse(itemService.isCheckItemOwner(100L, 200L));
     }
+
     @Test
     void isCheckItemOwnerMin() {
         assertThrows(Exception.class,
                 () -> itemService.isCheckItemOwner(0L, 0L));
     }
+
     @Test
     void isCheckItemOwnerMax() {
         assertThrows(Exception.class,
@@ -368,26 +379,28 @@ class ItemServiceImplTest {
         assertEquals(itemTest.getAvailable(), true);
     }
 
-        @Test
+    @Test
     void getItemDto() {
         // assertThrows(Exception.class, () -> itemService.getItemDto(Collections.emptyList());
-         assertEquals(itemService.getItemDto(Collections.emptyList()).size(), 0);
-    }
-    @Test
-    void bookingLast() {
-        assertThrows(Exception.class, () -> itemService.bookingLast(item, LocalDateTime.now()));
-       // assertEquals(itemService.bookingLast(item, LocalDateTime.now()), null);
-    }
-    @Test
-    void bookingNext() {
-        assertThrows(Exception.class, () -> itemService.bookingNext(item, LocalDateTime.now()));
-//                assertEquals(itemService.bookingNext(item, LocalDateTime.now()), null);
-    }
-    @Test
-    void commentDto() {
-       // assertThrows(Exception.class, () -> itemService.commentDto(item));
-        assertEquals(itemService.commentDto(item).size(), 0);
+        assertEquals(itemService.getItemDto(Collections.emptyList()).size(), 0);
     }
 
+    @Test
+    void bookingLast() {
+//        assertThrows(Exception.class, () -> itemService.bookingLast(item, LocalDateTime.now()));
+        assertEquals(itemService.bookingLast(item, LocalDateTime.now()), null);
+    }
+
+    @Test
+    void bookingNext() {
+//        assertThrows(Exception.class, () -> itemService.bookingNext(item, LocalDateTime.now()));
+        assertEquals(itemService.bookingNext(item, LocalDateTime.now()), null);
+    }
+
+    @Test
+    void commentDto() {
+        // assertThrows(Exception.class, () -> itemService.commentDto(item));
+        assertEquals(itemService.commentDto(item).size(), 0);
+    }
 
 }

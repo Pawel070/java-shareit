@@ -39,6 +39,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     //List<Booking> findAllByBookerIdAndItemId(Long bookerId, Long itemId, Status status, LocalDateTime end);
     //List<Booking> findByBookerIdAndItemIdAndStatusEqualsAndEndIsBefore(Long bookerId, Long itemId, Status status, LocalDateTime end);
+
     List<Booking> findByBookerIdAndItemIdAndStatusAndStartIsBefore(Long userId, Long itemId, Status status, LocalDateTime end);
 
     List<Booking> findAllByItem_Owner_IdOrderByStartDesc(Long userId, Pageable pageable);
@@ -72,27 +73,29 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
 //    List<Booking> findAllByItem_IdAndStartAfterOrderByStartDesc(long itemId, LocalDateTime now);
 
-    List<Booking> findAllByItem_IdAndStartBefore(long itemId, LocalDateTime now);
+    List<Booking> findAllByItem_IdAndStartBefore(Long itemId, LocalDateTime now);
 
-    List<Booking> findAllByItem_IdAndEndAfter(long itemId, LocalDateTime now);
+    List<Booking> findAllByItem_IdAndEndAfter(Long itemId, LocalDateTime now);
 
 
-    List<Booking> findAllByBookerIdAndStartAfterOrderByStartDesc(long bookerId, LocalDateTime now);
+    List<Booking> findAllByBookerIdAndStartAfterOrderByStartDesc(Long bookerId, LocalDateTime now);
 
-    List<Booking> findAllByItemOwnerIdAndStartAfterOrderByStartDesc(long ownerId, LocalDateTime now);
+    List<Booking> findAllByItemOwnerIdAndStartAfterOrderByStartDesc(Long ownerId, LocalDateTime now);
 
     @Query("select b from Booking b " +
             "where b.item.id = ?1 and " +
             "b.item.owner.id = ?2 and " +
-            "b.end < ?3 order by b.start asc")
-    List<Booking> findPastOwnerBookings(long itemId, long ownerId, LocalDateTime now);
+            "b.end <= ?3 order by b.start asc")
+    List<Booking> findPastOwnerBookings(Long itemId, Long ownerId, LocalDateTime now);
 
     @Query("select b from Booking b " +
             "where b.item.id = ?1 and " +
             "b.item.owner.id = ?2 and " +
             "b.start > ?3 " +
             "order by b.start asc")
-    List<Booking> findFutureOwnerBookings(long itemId, long ownerId, LocalDateTime now);
+    List<Booking> findFutureOwnerBookings(Long itemId, Long ownerId, LocalDateTime now);
 
+    List<Booking> findAllByItemIdAndItemOwnerIdAndStartAfter(Long itemId, Long ownerId, LocalDateTime now);
 
+    List<Booking> findAllByItemIdAndItemOwnerIdAndStartBefore(Long itemId, Long ownerId, LocalDateTime now);
 }

@@ -62,4 +62,5 @@ public class ItemClient extends BaseClient {
     public ResponseEntity<Object> deleteItem(long userId, long itemId) {
         return delete("/" + itemId, userId);
     }
+
 }

@@ -1,6 +1,5 @@
 package ru.practicum.shareit.expections;
 
-
 import lombok.RequiredArgsConstructor;
 
 import org.junit.jupiter.api.Assertions;

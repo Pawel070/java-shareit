@@ -15,7 +15,7 @@ class ConstraintViolationExceptionTest {
 
     @Test
     void constraintViolationException() {
-        ConstraintViolationException constraintViolationException=
+        ConstraintViolationException constraintViolationException =
                 new ConstraintViolationException("http:500 Ошибка на сервере.");
     }
 
