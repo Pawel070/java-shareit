@@ -3,19 +3,19 @@ package ru.practicum.shareit.booking.service;
 import static ru.practicum.shareit.Constants.SORT;
 
 import javax.transaction.Transactional;
-
 import java.time.LocalDateTime;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.State;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -52,7 +52,7 @@ public class BookingServiceImpl implements BookingService {
             throw new EntityNotAvailable("BookingServiceImpl: Вещь с УИН " +
                     bookingDto.getItemId() + " не может быть забронирована.");
         }
-       if (bookingDto.getEnd() == null || bookingDto.getStart() == null ||
+        if (bookingDto.getEnd() == null || bookingDto.getStart() == null ||
                 bookingDto.getStart().isBefore(localDateTime) ||
                 bookingDto.getEnd().isBefore(bookingDto.getStart()) ||
                 bookingDto.getEnd().isEqual(bookingDto.getStart())) {
@@ -75,6 +75,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Transactional
+    @Generated
     @Override
     public BookingModelDto update(Long bookingId, Long userId, Boolean accepted) {
         log.info("BookingServiceImpl: isExistUser - update");
@@ -140,13 +141,6 @@ public class BookingServiceImpl implements BookingService {
             default:
                 throw new StatusErrorException("Unknown state: " + state);
         }
-/*        List<BookingModelDto> bookingModelDtos;
-        if (bookings.isEmpty()) bookingModelDtos = Collections.emptyList();
-        else bookingModelDtos = bookings.stream()
-                .map(BookingMapper::toBookingModelDto)
-                .collect(Collectors.toList());
-        log.info("==> {} в статусе {} ", bookingModelDtos, state);
-        return bookingModelDtos;*/
         return bookings.stream().map(BookingMapper::toBookingModelDto).collect(Collectors.toList());
     }
 
@@ -167,7 +161,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = repository.findAllByItem_Owner_IdAndEndIsBefore(userId, LocalDateTime.now(), SORT);
                 break;
             case FUTURE:
-                 bookings = repository.findAllByItem_Owner_IdAndStartIsAfter(userId, LocalDateTime.now(), SORT);
+                bookings = repository.findAllByItem_Owner_IdAndStartIsAfter(userId, LocalDateTime.now(), SORT);
                 //bookings = repository.findAllByItemOwnerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
                 break;
             case CURRENT:
@@ -180,14 +174,9 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 bookings = repository.findAllByItem_Owner_IdAndStatus(userId, Status.REJECTED);
                 break;
-             default:
+            default:
                 throw new StatusErrorException("Unknown state: " + state);
         }
-//        List<BookingModelDto> collect = bookings.stream()
-//                .map(BookingMapper::toBookingModelDto)
-//                .collect(Collectors.toList());
-//        log.info("==> {} в статусе {} ", collect, state);
- //       return collect;
         return bookings.stream().map(BookingMapper::toBookingModelDto).collect(Collectors.toList());
     }
 

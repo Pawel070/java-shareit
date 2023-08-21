@@ -105,36 +105,15 @@ public class ItemServiceImpl implements ItemService {
         Item item = repository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl getItemById: Вещь с УИН " + itemId + " не существует."));
         log.info("\nfindById(itemId) ---> {}, userId {} ", item, userId);
-
         List<Booking> bookingsL = bookingRepository.findAllByItemIdAndItemOwnerIdAndStartBefore(item.getId(), userId, localDateTime);
         List<Booking> bookingsN = bookingRepository.findAllByItemIdAndItemOwnerIdAndStartAfter(item.getId(), userId, localDateTime);
         log.info("\nfindPastOwnerBookings ===> bookingsL {} =====> {} ", bookingsL, bookingsL.size());
-
         lastBooking = bookingsL.stream().max(Comparator.comparing(Booking::getStart)).filter(it -> (it.getStatus() == Status.APPROVED)).orElse(null);
         nextBooking = bookingsN.stream().min(Comparator.comparing(Booking::getStart)).filter(it -> (it.getStatus() == Status.APPROVED)).orElse(null);
-
- /*       for (Booking booking : bookingsL) {
-            if (booking.getStart().isBefore(localDateTime)
-                    && booking.getItem().getOwner().getId().equals(userId)
-                    && booking.getStatus().equals(Status.APPROVED))
-                lastBooking = booking;
-            break;
-        }
-        log.info("\nfindFutureOwnerBookings ===> bookingsN {} =====> {} ", bookingsN, bookingsN.size());
-        for (Booking booking : bookingsN) {
-            if (booking.getStart().isAfter(localDateTime)
-                    && booking.getItem().getOwner().getId().equals(userId)
-                    && booking.getStatus().equals(Status.APPROVED))
-                nextBooking = booking;
-            break;
-        }
-  */      log.info("\n---> lastBooking {} \n---> nextBooking {} ", lastBooking, nextBooking);
+        log.info("\n---> lastBooking {} \n---> nextBooking {} ", lastBooking, nextBooking);
         List<CommentDto> commentsDto = commentRepository.findAllByItem_IdOrderByIdAsc(item.getId()).stream()
                 .map(CommentMapper::toCommentDto).collect(Collectors.toList());
-
         itemInfoDto = ItemMapper.toItemInfoDto(item, null, null, Collections.emptyList());
-//        itemInfoDto = ItemMapper.toItemInfoDto(item, toBookingInfoDto(lastBooking), toBookingInfoDto(nextBooking), commentsDto);
-
         if (lastBooking != null) {
             itemInfoDto.setLastBooking(toBookingInfoDto(lastBooking));
         }
@@ -157,7 +136,6 @@ public class ItemServiceImpl implements ItemService {
             Booking nextBooking = bookingNext(item, localDateTime);
             List<CommentDto> commentsDto = commentDto(item);
             itemInfoDto = ItemMapper.toItemInfoDto(item, null, null, Collections.emptyList());
-//            itemInfoDto = ItemMapper.toItemInfoDto(item, lastBooking, nextBooking, commentsDto);
             if (lastBooking != null) {
                 itemInfoDto.setLastBooking(toBookingInfoDto(lastBooking));
             }
@@ -179,7 +157,7 @@ public class ItemServiceImpl implements ItemService {
         Booking booking = null;
         try {
             bookings = bookingRepository.findAllByItem_IdAndStartBefore(item.getId(), localDateTime);
-booking = bookings.stream().max(Comparator.comparing(Booking::getEnd)).orElse(null);
+            booking = bookings.stream().max(Comparator.comparing(Booking::getEnd)).orElse(null);
             log.info("\n**** bookingLast booking ===> {} === bookings ===> {} ", booking, bookings);
         } catch (Exception exception) {
             log.info("Проблема запроса к базе bookingRepository.findAllByItem_IdAndStartBeforeOrderByStartDesc");
@@ -193,7 +171,7 @@ booking = bookings.stream().max(Comparator.comparing(Booking::getEnd)).orElse(nu
         Booking booking = null;
         try {
             bookings = bookingRepository.findAllByItem_IdAndEndAfter(item.getId(), localDateTime);
-booking = bookings.stream().min(Comparator.comparing(Booking::getStart)).orElse(null);
+            booking = bookings.stream().min(Comparator.comparing(Booking::getStart)).orElse(null);
             log.info("\n**** bookingLast booking ===> {} === bookings ===> {} ", booking, bookings);
         } catch (Exception exception) {
             log.info("Проблема запроса к базе bookingRepository.findAllByItem_IdAndStartAfterOrderByStartDesc");
