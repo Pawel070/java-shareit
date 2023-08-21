@@ -46,7 +46,6 @@ public class BookingServiceImpl implements BookingService {
         log.info("BookingServiceImpl: isExistUser - create {} - {} ", bookingDto, bookerId);
         LocalDateTime localDateTime = LocalDateTime.now();
         Long itemId = bookingDto.getItemId();
-        LocalDateTime localDateTime = LocalDateTime.now();
         Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(() -> new NotFoundException("BookingServiceImpl: Вещь с УИН " + itemId + " не существует."));
         if (!item.getAvailable()) {
