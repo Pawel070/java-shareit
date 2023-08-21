@@ -106,12 +106,12 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NotFoundException("ItemServiceImpl getItemById: Вещь с УИН " + itemId + " не существует."));
         log.info("\nfindById(itemId) ---> {}, userId {} ", item, userId);
 
-        List<Booking> bookingsL = bookingRepository.findPastOwnerBookings(item.getId(), userId, localDateTime);
-        List<Booking> bookingsN = bookingRepository.findFutureOwnerBookings(item.getId(), userId, localDateTime);
+        List<Booking> bookingsL = bookingRepository.findAllByItemIdAndItemOwnerIdAndStartBefore(item.getId(), userId, localDateTime);
+        List<Booking> bookingsN = bookingRepository.findAllByItemIdAndItemOwnerIdAndStartAfter(item.getId(), userId, localDateTime);
         log.info("\nfindPastOwnerBookings ===> bookingsL {} =====> {} ", bookingsL, bookingsL.size());
 
-           lastBooking = bookingsL.stream().min(Comparator.comparing(Booking::getStart)).orElse(null);
-           nextBooking = bookingsN.stream().max(Comparator.comparing(Booking::getStart)).orElse(null);
+        lastBooking = bookingsL.stream().max(Comparator.comparing(Booking::getStart)).filter(it -> (it.getStatus() == Status.APPROVED)).orElse(null);
+        nextBooking = bookingsN.stream().min(Comparator.comparing(Booking::getStart)).filter(it -> (it.getStatus() == Status.APPROVED)).orElse(null);
 
  /*       for (Booking booking : bookingsL) {
             if (booking.getStart().isBefore(localDateTime)
@@ -179,7 +179,7 @@ public class ItemServiceImpl implements ItemService {
         Booking booking = null;
         try {
             bookings = bookingRepository.findAllByItem_IdAndStartBefore(item.getId(), localDateTime);
-            booking = bookings.stream().min(Comparator.comparing(Booking::getEnd)).orElse(null);
+booking = bookings.stream().max(Comparator.comparing(Booking::getEnd)).orElse(null);
             log.info("\n**** bookingLast booking ===> {} === bookings ===> {} ", booking, bookings);
         } catch (Exception exception) {
             log.info("Проблема запроса к базе bookingRepository.findAllByItem_IdAndStartBeforeOrderByStartDesc");
@@ -193,7 +193,7 @@ public class ItemServiceImpl implements ItemService {
         Booking booking = null;
         try {
             bookings = bookingRepository.findAllByItem_IdAndEndAfter(item.getId(), localDateTime);
-            booking = bookings.stream().max(Comparator.comparing(Booking::getStart)).orElse(null);
+booking = bookings.stream().min(Comparator.comparing(Booking::getStart)).orElse(null);
             log.info("\n**** bookingLast booking ===> {} === bookings ===> {} ", booking, bookings);
         } catch (Exception exception) {
             log.info("Проблема запроса к базе bookingRepository.findAllByItem_IdAndStartAfterOrderByStartDesc");

@@ -84,7 +84,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b " +
             "where b.item.id = ?1 and " +
             "b.item.owner.id = ?2 and " +
-            "b.end < ?3 order by b.start asc")
+            "b.end <= ?3 order by b.start asc")
     List<Booking> findPastOwnerBookings(Long itemId, Long ownerId, LocalDateTime now);
 
     @Query("select b from Booking b " +
@@ -94,5 +94,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start asc")
     List<Booking> findFutureOwnerBookings(Long itemId, Long ownerId, LocalDateTime now);
 
+    List<Booking> findAllByItemIdAndItemOwnerIdAndStartAfter(Long itemId, Long ownerId, LocalDateTime now);
 
+    List<Booking> findAllByItemIdAndItemOwnerIdAndStartBefore(Long itemId, Long ownerId, LocalDateTime now);
 }
